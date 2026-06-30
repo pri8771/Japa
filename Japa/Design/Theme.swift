@@ -35,15 +35,18 @@ enum Theme {
     static let surface = Color(light: 0xFCF8EF, dark: 0x221B14)
     static let surfaceElevated = Color(light: 0xFFFFFF, dark: 0x2A2219)
 
-    // Accent (muted, dignified gold — darker on light backgrounds for contrast)
-    static let accent = Color(light: 0xB5792A, dark: 0xD9A24B)
-    static let accentBright = Color(light: 0xC2862F, dark: 0xE8B567)
-    static let accentSoft = Color(light: 0xEADBBF, dark: 0x4A3A21)
+    // Accent (muted, dignified gold). In light mode the *bright* role is the
+    // deep gold used for text/CTAs (it must read on cream, so it's darker, not
+    // lighter); `accent` is the stroke gold. In dark mode both brighten. Tuned
+    // for WCAG AA contrast against the surfaces they sit on.
+    static let accent = Color(light: 0xA66E22, dark: 0xD9A24B)
+    static let accentBright = Color(light: 0x8A5512, dark: 0xE8B567)
+    static let accentSoft = Color(light: 0xE3D2B2, dark: 0x4A3A21)
 
     // Text
     static let textPrimary = Color(light: 0x2A2118, dark: 0xF2EBDD)
-    static let textSecondary = Color(light: 0x6B5F4D, dark: 0xA89C88)
-    static let textMuted = Color(light: 0x9A8D78, dark: 0x6E6250)
+    static let textSecondary = Color(light: 0x645840, dark: 0xB0A48E)
+    static let textMuted = Color(light: 0x6E6450, dark: 0x847862)
 
     // Lines
     static let ringTrack = Color(light: 0xE6DCC8, dark: 0x2E2619)
