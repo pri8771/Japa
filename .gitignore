@@ -1,0 +1,18 @@
+# Xcode / build artifacts
+build/
+build-release/
+DerivedData/
+*.xcresult
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# The .xcodeproj is generated from project.yml by XcodeGen.
+# It is committed for one-step opening; regenerate with `xcodegen generate`.

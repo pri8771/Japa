@@ -1,15 +1,15 @@
 # Japa — Launch Readiness (v1)
 
-> Japa is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap/thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
+> Japa is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
 >
-> **Implementation maturity: PRE-BUILD (docs-only).** The repository at this writing contains exactly two files — an empty `.gitkeep` and `docs/PROJECT_DOCUMENTATION.md` — plus this document. There is **no Xcode project, no SwiftUI app, no Swift source, no repetition engine, no tests, no content catalog, and no CI.** Every feature below is therefore *Not built* unless explicitly noted. This document is the authoritative build-to specification; the concrete build path to first running code is in §8. Verified against the repo file tree on 2026-06-30 (`find` shows only `.gitkeep` and `docs/PROJECT_DOCUMENTATION.md`) and against the product-definition thread in `pri8771/conversation` (`Japa.md`).
+> **Implementation maturity: v1 BUILT (~85% production-ready).** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release for iOS 17+; **41 unit/flow tests + 3 UI tests pass**. What remains before public launch is in §8/§9: human content sign-off, on-device haptic-feel validation across iPhone classes, an accessibility pass with VoiceOver users, and App Store metadata/TestFlight. Verified against the repo on 2026-06-30 and against the product-definition thread in `pri8771/conversation` (`Japa.md`).
 
 ---
 
 ## 1. PRD / Launch Scope
 
 ### Problem & insight
-A physical mala already counts beads better than any screen — so a digital mala that merely "counts to 108" is strictly worse than a string of beads and pointless to ship. The only thing software adds that a bead string cannot: **eyes-free, interruption-safe, haptic-confirmed repetition with an unmistakable end-of-round signal.** You advance without looking; the device confirms each bead through a haptic; it keeps your place if you are interrupted (a call, putting the phone down mid-round); and it marks the completion of the round (the 108th bead) with a *distinct* haptic + gentle tone so you never have to count, glance, or break concentration. If the build cannot deliver that eyes-free, look-down-free feel, it is a skinned counter and **should not ship standalone** (this is the explicit gating insight from the product thread).
+A physical mala already counts beads better than any screen — so a digital mala that merely "counts to 108" is strictly worse than a string of beads and pointless to ship. The only thing software adds that a bead string cannot: **eyes-free, interruption-safe, haptic-confirmed repetition with an unmistakable end-of-round signal.** You advance without looking; the device confirms each bead through a haptic; it keeps your place if you are interrupted (a call, putting the phone down mid-round); and it marks the completion of the round (the 108th bead) with a *distinct* haptic + gentle tone so you never have to count, glance, or break concentration. If the build cannot deliver that eyes-free, look-down-free feel, it is a skinned counter and **should not ship standalone** (the explicit gating insight from the product thread). The build is centered on exactly this.
 
 ### Target user
 - **Primary:** Someone with an existing daily japa/mantra-repetition practice who currently uses a physical mala or a tally and wants a calmer, pocketable, eyes-free aid — not a habit-tracker, not a social app.
@@ -22,251 +22,251 @@ A quiet digital mala you can use with your eyes closed: advance one bead at a ti
 - **Category:** Spiritual / meditation utility (a focused single-purpose practice tool, *not* a meditation-content platform or habit tracker).
 - **Pitch:** "Japa is a digital mala for daily mantra practice — eyes-free, interruption-safe, and respectfully quiet, with a distinct haptic at the 108th bead so you always know your round is done."
 
-### Platform & tech baseline
-- **Platform:** iOS, native. Target **iOS 17+** (so Swift Concurrency, SwiftData, and modern `SwiftUI` + `CoreHaptics` are available without back-compat shims). Final minimum to be locked in §8 step 1.
-- **Frameworks (planned — none present yet):**
-  - `SwiftUI` — UI.
-  - `CoreHaptics` — the differentiator: crisp per-bead haptic and a *distinct* completion haptic. With `UIFeedbackGenerator` as a graceful fallback on devices without the Taptic Engine / Core Haptics support.
-  - `AVFoundation` (minimal) — the single gentle completion tone at target. (Full audio/chanting is out of scope; see §3.)
-  - `SwiftData` (or a small `Codable`-to-disk store) — local persistence of mantras, preferences, and session history.
-- **No backend, no network, no accounts.** Local-first by construction.
+### Platform & tech baseline (as built)
+- **Platform:** iOS, native. **Target iOS 17+** (locked). iPhone, portrait. Generated from `project.yml` via XcodeGen.
+- **Frameworks (implemented):**
+  - `SwiftUI` — UI, `@Observable` app/practice models.
+  - `CoreHaptics` — crisp per-bead transient and a *distinct* completion pattern (rising swell + firm transient), with `UIFeedbackGenerator` as a graceful fallback where the Taptic Engine / Core Haptics is unavailable.
+  - `AVFoundation` (minimal) — a single gentle completion tone synthesized in memory (no bundled asset) on the `.ambient` session so it respects the silent switch.
+  - Local persistence via a small `Codable`-to-disk store (preferences, custom mantras, history, and the in-progress round).
+- **No backend, no network, no accounts.** Local-first by construction (audited; see F7).
 
 ### Business model (only what the repo supports/plans)
 - **Free core practice.** The repetition loop, the seed mantra set, free-text mantras, and history are free.
-- Future, *not in v1 scope*: optional audio/content packs, a one-time "supporter" unlock, or bundling into a larger spiritual product. The current docs mention these as future possibilities only; v1 ships with **no IAP, no StoreKit configuration** (see §3, §9).
+- Future, *not in v1 scope*: optional audio/content packs, a one-time "supporter" unlock, or bundling into a larger spiritual product. v1 ships with **no IAP, no StoreKit configuration** (verified — no `.storekit`, no StoreKit import).
 
 ### North-star / success signals (local-only / beta-observable; privacy-respecting)
 Because the app is local-first with no analytics backend, success is observed through TestFlight feedback and (at most) privacy-preserving on-device counts, never personal practice content:
 - **Primary:** a beta user can complete a full round (e.g. 108) **eyes-free** — phone face-down or screen off — and correctly feel the completion signal. (Qualitative: "I didn't have to look.")
 - **Interruption safety:** a session interrupted mid-round (call/backgrounding) resumes at the exact bead with no loss.
 - **Return practice:** users come back to do another session the next day *without* being nudged by streaks or notifications.
-- Explicitly **not** a north-star: streak length, daily-active pressure, or notification opt-in rate (these are tone failures for devotional practice — see §3).
+- Explicitly **not** a north-star: streak length, daily-active pressure, or notification opt-in rate (tone failures for devotional practice — see §3).
 
 ---
 
 ## 2. MVP Feature List (with acceptance criteria)
 
-Status legend: **Built** = implemented and working in repo · **Partial** = scaffolding/some logic present · **Not built** = specified here, no code yet. Per repo reality on 2026-06-30, **all features are Not built** (pre-build repo). Acceptance criteria below are the build-to gates.
+Status legend: **Built** = implemented and working in repo · **Partial** = some logic present · **Not built** = specified, no code. Per repo reality on 2026-06-30, **all v1 features are Built**; the only items not fully closed are human/device validations called out per feature.
 
-### F1. Repetition engine (count + place-keeping + round completion) — **Not built**
-The pure, UI-independent core: tracks current bead within a round, current round, and configured target; advances; detects target reached; preserves place across interruption. This is the differentiator and must be built and unit-tested **first** (per build order in the product thread).
-- **Given** a target of N (default 108) and a fresh session, **when** `advance()` is called k times (k < N), **then** current bead = k and "completion" has not fired.
-- **Given** current bead = N−1, **when** `advance()` is called once more, **then** current bead = N, a **round-completion event** fires exactly once, and the engine is ready to start the next round (or end, per session config).
-- **Given** an in-progress session, **when** the app is backgrounded/terminated and relaunched (interruption), **then** the engine restores the exact current bead and round (no off-by-one, no reset to 0).
-- **Given** any target N where 1 ≤ N ≤ a sane max (e.g. 1080 = 10 malas), **when** the session runs, **then** completion fires only at N. Invalid targets (≤0) are rejected.
-- **Given** a user undo/back-tap, **when** invoked, **then** current bead decrements by 1 without going below 0 and without firing completion.
-- **Verifiable by:** unit tests covering advance, round-completion (fires once, at N only), interruption-resume, target-config (including boundary and invalid values), and decrement/undo. These tests are themselves a launch gate (see §8).
+### F1. Repetition engine (count + place-keeping + round completion) — **Built (unit-tested)**
+The pure, UI-independent core in [`Japa/Engine/JapaEngine.swift`](Japa/Engine/JapaEngine.swift): current bead, configured target, exactly-once completion, place-keeping across interruption (via persisted state reconstruction). Built and unit-tested **first**.
+- ✅ **Given** target N (default 108) and a fresh session, **when** `advance()` is called k times (k < N), **then** count = k and completion has not fired.
+- ✅ **Given** count = N−1, **when** `advance()` is called once more, **then** count = N, a round-completion result fires exactly once, and the engine stops (explicit new round required).
+- ✅ **Given** an in-progress session, **when** the app is backgrounded/terminated and relaunched, **then** the engine restores the exact bead and target (no off-by-one, no reset).
+- ✅ **Given** any target 1 ≤ N ≤ 1080, **when** the session runs, **then** completion fires only at N; invalid targets (≤0, >max) are rejected/clamped.
+- ✅ **Given** a user undo/back-tap, **then** count decrements by 1 without going below 0 and without firing completion.
+- ✅ **Verified by:** `JapaEngineTests` (23 tests) — advance, completion-once-at-N, advance-past-target `.alreadyComplete`, target-config incl. boundary/invalid, undo/decrement floor, reset/new-round, reconstruction from persisted count. **Hard gate — green.**
 
-### F2. Eyes-free tactile practice screen — **Not built**
-One screen with a single large advance target. Each advance fires a crisp haptic; the target fires the distinct completion haptic + tone. Designed to be usable with the eyes closed / screen off.
-- **Given** the practice screen is open, **when** the user taps/thumb-swipes the advance target anywhere in a large hit area, **then** the bead advances and a crisp per-bead haptic fires within perceptible latency (target < ~50 ms).
-- **Given** a screen reader / eyes-closed use, **when** advancing, **then** no visual confirmation is *required* to know an advance registered — the haptic is the confirmation.
-- **Given** the device is in silent mode, **when** advancing, **then** per-bead **haptics still fire** (haptics are independent of the mute switch); the completion **tone** respects the silent switch (haptic completion still fires).
-- **Given** a large, forgiving hit target, **when** the user taps slightly off-center or repeatedly, **then** each deliberate tap advances exactly one bead (no double-count from a single tap; debounced).
-- **Given** an accidental tap is possible, **when** the user taps, **then** there is an easy single-step **undo/back** (maps to F1 decrement) reachable without precise aiming.
-- **Verifiable by:** manual device test for haptic crispness/latency and eyes-free use; UI test for advance→bead-increment and undo→decrement.
+### F2. Eyes-free tactile practice screen — **Built (device feel pending)**
+[`Japa/Views/PracticeView.swift`](Japa/Views/PracticeView.swift): a whole-screen advance layer; only the close/undo controls capture touches. Each advance fires a crisp haptic; the target fires the distinct completion haptic + tone.
+- ✅ **Given** the practice screen, **when** the user taps anywhere (or the VoiceOver advance action), **then** the bead advances and a per-bead haptic fires (in-memory state + haptic first, then async persist).
+- ✅ **Given** eyes-closed use, **then** no visual confirmation is required — the haptic is the confirmation; whole-screen hit area needs no aiming.
+- ✅ **Given** silent mode, **then** per-bead haptics still fire (independent of the mute switch); the completion tone respects the silent switch + setting.
+- ✅ **Given** an accidental tap, **then** a one-step undo (swipe-down or the Undo control) maps to F1 decrement.
+- ⏳ **Pending (manual, on device):** per-bead haptic crispness/latency (<~50 ms feel) confirmed across iPhone classes. UI-tested for advance→increment and undo→decrement (`JapaUITests`).
 
-### F3. Distinct end-of-round completion signal — **Not built**
-The unmistakable signal that the round (108th/target bead) is complete: a **distinct completion haptic pattern** (clearly different from the per-bead tick) plus a single **gentle tone**.
-- **Given** the per-bead haptic, **when** the completion haptic fires, **then** the two are **perceptibly different** (different Core Haptics pattern — e.g. tick vs. a short rising/sustained pattern) so the user can tell "round done" from "another bead" with eyes closed.
-- **Given** target reached, **when** completion fires, **then** it fires **exactly once** per round (no repeat, no double-fire), accompanied by one gentle tone (subject to silent switch for the tone only).
-- **Given** a device without Core Haptics support, **when** completion would fire, **then** a graceful fallback (`UINotificationFeedbackGenerator` success / strongest available) is used and the tone still plays.
-- **Given** the user has muted the tone in settings (F6), **when** completion fires, **then** only the completion haptic fires.
-- **Verifiable by:** manual A/B device test confirming the per-bead vs. completion haptics are distinguishable eyes-free; unit/UI test that completion event maps to exactly one signal invocation.
+### F3. Distinct end-of-round completion signal — **Built (device A/B pending)**
+[`Japa/Haptics/HapticPlayer.swift`](Japa/Haptics/HapticPlayer.swift): per-bead tick is a single sharp transient; completion is a short rising swell capped by a firm transient — a deliberately different Core Haptics pattern — plus one synthesized gentle tone.
+- ✅ **Given** the per-bead haptic, **then** the completion pattern uses a different Core Haptics shape (continuous swell + transient vs. a single transient).
+- ✅ **Given** target reached, **then** completion fires exactly once (engine returns `.completed` once; `complete()` runs once), with one tone.
+- ✅ **Given** no Core Haptics, **then** a graceful fallback (`UINotificationFeedbackGenerator(.success)`) fires and the tone still plays.
+- ✅ **Given** the tone is muted in settings, **then** only the completion haptic fires.
+- ⏳ **Pending (manual, on device):** A/B confirmation that per-bead vs. completion is distinguishable eyes-free. **Hard gate — code complete; final sign-off is on-device.**
 
-### F4. Mantra selection: tiny reviewed seed set **plus** user free-text — **Not built**
-A small, human-reviewed set of common mantras to pick from, *plus* the ability to enter your own free text — so practice is never gated behind a content library.
-- **Given** the seed set, **when** the user opens mantra selection, **then** a small list of **reviewed** mantras is shown (each with correct text/transliteration; see content sign-off in §9).
-- **Given** a user with their own mantra, **when** they choose "custom" and type free text, **then** that mantra is usable for a session and saved locally for reuse.
-- **Given** a custom mantra, **when** the user runs a session with it, **then** the engine/screen behave identically to a seed mantra (mantra text never affects counting logic).
-- **Given** the user does not want any mantra text shown, **when** they start a session, **then** practice can proceed with a mantra selected by default or with a neutral/blank label (mantra display must not be a hard blocker to counting).
-- **Verifiable by:** unit test for save/load of custom mantra; manual check that seed entries match the reviewed source-of-truth list.
+### F4. Mantra selection: tiny reviewed seed set **plus** user free-text — **Built (content sign-off pending)**
+[`Japa/Content/SeedMantras.swift`](Japa/Content/SeedMantras.swift) + [`MantraSelectView`](Japa/Views/MantraSelectView.swift).
+- ✅ **Given** the seed set, **then** a small list of mantras (title, script, neutral note) is shown.
+- ✅ **Given** a custom mantra, **then** the user types free text (title + optional script), it's usable for a session and persisted locally for reuse; deletable.
+- ✅ **Given** any mantra, **then** counting logic is identical (mantra text never affects the engine).
+- ✅ **Given** no desire for a label, **then** a neutral "Counting" entry lets practice proceed.
+- ⏳ **Pending:** human content sign-off of the seed text (`docs/CONTENT_REVIEW.md`, B6). Verified: custom mantra save/load + selection persistence (`PracticeFlowTests`).
 
-### F5. Session completion + simple history — **Not built**
-After a session, record it; show a quiet history list. **No streaks** (deliberate — see §3).
-- **Given** a completed round/session, **when** it ends, **then** a record is saved locally with at least: mantra (or "custom"), target, count actually completed, date/time, duration.
-- **Given** saved sessions, **when** the user opens history, **then** sessions are listed reverse-chronologically in a calm, non-gamified presentation (no streak counter, no "don't break the chain" framing).
-- **Given** a session that was abandoned before target, **when** it ends, **then** it is recorded honestly as partial (or discarded per a clear rule) — history must not silently inflate completions.
-- **Given** the user wants privacy, **when** they delete a history entry (or all history), **then** it is removed from local storage permanently.
-- **Verifiable by:** unit test for session persistence and delete; manual check that no streak/loss-aversion UI exists anywhere.
+### F5. Session completion + simple history — **Built**
+[`PracticeSession`](Japa/Models/PracticeSession.swift) + [`HistoryView`](Japa/Views/HistoryView.swift).
+- ✅ **Given** a completed round, **then** a record is saved with mantra title, target, completed count, start time, duration, and reached-target flag.
+- ✅ **Given** saved sessions, **then** they list reverse-chronologically in a calm presentation — **no streak counter, no chain framing** (structurally asserted in tests).
+- ✅ **Given** an abandoned session, **then** it is recorded honestly as `partial` (or discarded if zero count).
+- ✅ **Given** privacy needs, **then** the user deletes a single entry or clears all.
+- ✅ **Verified by:** persistence round-trips + flow tests; structural no-streak assertion.
 
-### F6. Practice preferences — **Not built**
-Minimal settings: target count, sound on/off, haptic intensity (where supported).
-- **Given** settings, **when** the user sets a target (e.g. 108, 27, 1080), **then** subsequent sessions use that target and it persists across launches.
-- **Given** settings, **when** the user toggles the completion tone off, **then** F3's tone is suppressed while the completion haptic remains.
-- **Given** a device with adjustable haptics, **when** the user lowers intensity, **then** the per-bead haptic respects it; **given** a device without it, **then** the control is hidden/disabled gracefully.
-- **Given** any preference, **when** changed, **then** it is stored locally and applied without requiring a restart.
-- **Verifiable by:** unit test for preference persistence; UI test that target/tone changes take effect.
+### F6. Practice preferences — **Built**
+[`Preferences`](Japa/Models/Preferences.swift) + [`SettingsView`](Japa/Views/SettingsView.swift).
+- ✅ **Given** settings, **then** the user sets a target (27/54/108/216/1080) that persists and is used by subsequent sessions.
+- ✅ **Given** settings, **then** toggling the completion tone off suppresses F3's tone while the completion haptic remains.
+- ✅ **Given** a haptic-strength slider, **then** the per-bead intensity respects it (honored where hardware supports variable intensity; ignored gracefully elsewhere).
+- ✅ **Given** any preference change, **then** it persists locally and applies without a restart.
+- ✅ **Verified by:** preference round-trip tests + UI navigation test.
 
-### F7. Local-first persistence & privacy posture — **Not built**
-All data (mantras, preferences, sessions) stored **on device only**; no network, no accounts, no analytics SDKs.
-- **Given** the app, **when** inspected, **then** it makes **no network calls** and links no analytics/ad SDKs (verifiable in build/Info; declared in PrivacyInfo — see §9).
-- **Given** app data, **when** stored, **then** it lives in app-sandbox local storage (SwiftData/`Codable` file), readable only by the app.
-- **Given** App Store privacy requirements, **when** the app ships, **then** the privacy "nutrition label" and `PrivacyInfo.xcprivacy` declare **no data collection** truthfully.
-- **Verifiable by:** network-link audit (no `URLSession` usage in product paths); presence and correctness of `PrivacyInfo.xcprivacy`.
+### F7. Local-first persistence & privacy posture — **Built (audited)**
+- ✅ **Given** the build, **then** it makes **no network calls** and links no analytics/ad SDKs (grep-audited: no `URLSession`/`http(s)`/analytics imports; no `UserDefaults`).
+- ✅ **Given** app data, **then** it lives in app-sandbox Application Support as JSON, readable only by the app.
+- ✅ **Given** App Store privacy requirements, **then** `PrivacyInfo.xcprivacy` declares **no tracking, no collected data, no accessed-API reasons**, and it is bundled in the built app (verified in the Release product).
+- ✅ **Verified by:** source audit + bundle inspection. **Hard gate — green** (privacy nutrition label to be entered at submission to match).
 
 ---
 
 ## 3. Out of Scope (v1 non-goals)
 
-- **Streaks / "don't break the chain" / loss-aversion mechanics — explicitly forbidden for v1.** Devotional practice plus streak pressure is a tone failure; the product thread directs us to show gentle history, not a streak counter. (Note: the *current* `docs/PROJECT_DOCUMENTATION.md` still lists "history/streak" — that is stale and has been corrected; see this doc and the updated PROJECT_DOCUMENTATION.)
-- **Reminders / push notifications.** Out of scope for v1: nudging a devotional practice is the same tone risk as streaks, and notifications add a permission prompt and a privacy surface for no core value. (The old doc's "optional reminder" is deprioritized; if ever added, it is post-v1 and must be opt-in and non-nagging.)
-- **Audio / guided chanting / per-bead recited mantra audio.** Out of scope. Haptics carry the core experience; v1 ships at most one *gentle completion tone*. Full audio is a later expansion.
-- **Literal photoreal bead-string rendering / 3D mala.** Out of scope. v1 is **abstract-tactile** (haptic rhythm + a simple, calm visual). Literal bead rendering is polish for later, not the differentiator.
-- **Content library / large curated mantra catalog, translations, meanings, pronunciation audio.** Out of scope. v1 ships a *tiny reviewed seed set + user free-text* only.
-- **Accounts, cloud sync, cross-device, sharing, social, leaderboards.** Out of scope. Local-first, single-device.
-- **Analytics, telemetry, ads, third-party SDKs.** Out of scope (and would break the privacy posture in F7/§9).
-- **In-app purchases / StoreKit / supporter unlock / content packs.** Out of scope for v1 (no `.storekit`, no IAP). Monetization is a future consideration only.
-- **Apple Watch / widgets / Live Activities / iPad-optimized layout.** Out of scope for v1 (single-screen iPhone app); attractive later, but not part of the differentiator.
-- **Localization beyond what the seed mantras require.** UI localization is post-v1.
+Unchanged from the locked product decision, and honored by the build:
+
+- **Streaks / "don't break the chain" / loss-aversion mechanics — forbidden for v1.** History is gentle; a test structurally asserts no streak/chain concept exists in the models.
+- **Reminders / push notifications.** None requested; no notification permission is triggered.
+- **Audio / guided chanting / per-bead recited audio.** Out. v1 ships at most one gentle completion tone.
+- **Literal photoreal bead-string / 3D mala.** Out. v1 is abstract-tactile (a thin progress ring + haptic rhythm).
+- **Content library / large curated catalog, translations, meanings, pronunciation audio.** Out. Tiny reviewed seed set + user free-text only.
+- **Accounts, cloud sync, cross-device, sharing, social, leaderboards.** Out. Local-first, single-device.
+- **Analytics, telemetry, ads, third-party SDKs.** Out (would break F7).
+- **In-app purchases / StoreKit.** Out for v1 (no `.storekit`, no IAP UI).
+- **Apple Watch / widgets / Live Activities / iPad layout.** Out for v1 (single-screen iPhone app).
+- **Localization beyond seed-mantra needs.** Post-v1.
 
 ---
 
-## 4. User Flows
-
-Screen names below are *proposed* (no code exists yet); they define the intended structure for the build.
+## 4. User Flows (as built)
 
 ### Flow A — First run / onboarding (intentionally minimal)
-1. App launches to **Home** (or directly to **Practice** with a sensible default mantra + target 108).
-2. A brief, skippable one-line explainer: "Tap to advance a bead. Feel each one. You'll feel a distinct buzz at 108." No account, no permissions wall.
-3. No notification permission is requested (none used). No tracking prompt (no tracking).
-4. User proceeds to **Mantra Select** or accepts the default and lands on **Practice**.
+1. App launches; on first run a brief, skippable `IntroView` explains "tap anywhere to advance; a distinct buzz at the target." No account, no permission wall.
+2. No notification permission and no tracking prompt are requested (none used).
+3. User taps **Begin** → Home with the default mantra + target 108.
 
 ### Flow B — Core loop (the product)
-1. From **Home/Practice**, user has a selected mantra and a target (default 108).
-2. User starts the session; **Practice** shows a single large advance target and a quiet progress indication (current bead / target) that is *not required* to read.
-3. User advances bead-by-bead (tap/thumb-swipe), eyes open or closed. Each advance → **crisp per-bead haptic** (F2).
-4. If interrupted (call, screen off, app backgrounded), the place is preserved; on return the user resumes at the exact bead (F1).
-5. On the target bead (108th/chosen), the **distinct completion haptic + gentle tone** fires once (F3) — the unmistakable end-of-round signal.
-6. Session ends → **Completion** screen: simple confirmation, count, mantra; saved to history (F5). No streak, no "come back tomorrow" pressure.
+1. From **Home**, the user has a selected mantra and a target (default 108).
+2. **Begin** opens the immersive **Practice** screen — a whole-screen advance area and a quiet ring/count that is not required to read.
+3. The user advances anywhere; each advance → crisp per-bead haptic. State + haptic update first, then persist.
+4. If interrupted (call, backgrounding, force-quit), the place is persisted; on relaunch a **Resume** card restores the exact bead.
+5. On the target bead, the **distinct completion haptic + gentle tone** fires once → **Completion** screen.
+6. **Completion**: count, mantra, minutes; saved to history. **New round** (explicit) or **Rest** (back to Home). No streak, no "come back tomorrow."
 
 ### Flow C — Choose / create a mantra
-1. From **Practice** or **Home**, user opens **Mantra Select** (F4).
-2. User picks from the **tiny reviewed seed set**, or selects **Custom** and types free text.
-3. Custom mantras are saved locally for reuse; selecting any mantra returns to **Practice** ready to count.
+1. From Home, open **Mantra Select**.
+2. Pick from the reviewed seed set, or **Add your own** free-text (title + optional script), saved locally for reuse.
 
 ### Flow D — History
-1. User opens **History** (F5): a calm, reverse-chronological list of past sessions (date, mantra, count/target, duration).
-2. User may delete an entry or clear all (privacy — F5/F7). No streaks or chains anywhere.
+1. **History**: a calm, reverse-chronological list (mantra, date, count/target, duration; partials labeled). Swipe to delete an entry; **Clear** removes all. No streaks anywhere.
 
 ### Flow E — Settings / privacy
-1. User opens **Settings** (F6): set default target, toggle completion tone, adjust haptic intensity (where supported), clear history.
-2. Privacy: a short statement that all data stays on device; nothing is collected or sent (F7).
+1. **Settings**: default target, completion-tone toggle, haptic strength, clear history. Footers state the silent-switch behavior and the local-only/no-collection posture.
 
 ### Flow F — Eyes-free / screen-off practice (the acceptance scenario)
-1. User starts a session on **Practice**, then closes eyes or turns the phone face-down.
-2. User advances by feel; each bead is confirmed by haptic only; the round's completion is felt distinctly at the target — **the explicit "didn't have to look" success signal** (§1 north-star).
+1. Start a session, close eyes or turn the phone face-down; advance by feel; the round's completion is felt distinctly at the target — the "didn't have to look" success signal (§1).
 
 ---
 
 ## 5. Acceptance Criteria Summary
 
-Consolidated launch gate per MVP feature. A feature passes only when its §2 criteria are all met **and** it is exercised by the tests/manual checks named.
-
 | ID | Feature | Status | Launch pass/fail gate (summary) |
 |----|---------|--------|----------------------------------|
-| F1 | Repetition engine | Not built | Unit tests green for advance, round-completion (once, at N only), interruption-resume, target-config (incl. boundary/invalid), undo/decrement. **Hard gate — the differentiator's logic.** |
-| F2 | Eyes-free practice screen | Not built | Tap/swipe advances exactly one bead with crisp <~50 ms haptic; haptics fire in silent mode; forgiving hit area; one-step undo; usable eyes-closed. |
-| F3 | Distinct completion signal | Not built | Completion haptic perceptibly distinct from per-bead tick; fires exactly once at target; graceful fallback w/o Core Haptics; respects tone-off setting. **Hard gate — without it, it's a skinned counter.** |
-| F4 | Seed set + free-text mantras | Not built | Reviewed seed list shown; custom free-text usable and persisted; mantra never affects counting; practice not blocked by content. |
-| F5 | Session completion + history | Not built | Sessions saved (mantra, target, count, date, duration); calm reverse-chron list; partial sessions honest; delete works; **no streak UI anywhere**. |
-| F6 | Preferences | Not built | Target/tone/intensity persist and apply without restart; unsupported controls degrade gracefully. |
-| F7 | Local-first persistence & privacy | Not built | No network calls, no analytics SDKs; sandbox-only storage; correct `PrivacyInfo.xcprivacy` + truthful privacy label. **Hard gate — privacy claim.** |
+| F1 | Repetition engine | **Built ✓** | Unit tests green: advance, completion once at N only, interruption-resume, target-config (boundary/invalid), undo/decrement. **Hard gate — passed.** |
+| F2 | Eyes-free practice screen | **Built** (device feel ⏳) | Whole-screen advance, per-bead haptic, silent-mode haptics, one-step undo, eyes-closed operable; UI-tested. On-device latency/feel sign-off pending. |
+| F3 | Distinct completion signal | **Built** (device A/B ⏳) | Distinct Core Haptics pattern, fires once at target, graceful fallback, respects tone-off. **Hard gate — code complete; on-device A/B pending.** |
+| F4 | Seed set + free-text mantras | **Built** (content ⏳) | Seed list shown; custom free-text usable + persisted; mantra never affects counting. Human content sign-off pending. |
+| F5 | Session completion + history | **Built ✓** | Sessions saved; calm reverse-chron list; partials honest; delete/clear; **no streak UI** (asserted). |
+| F6 | Preferences | **Built ✓** | Target/tone/intensity persist and apply without restart. |
+| F7 | Local-first persistence & privacy | **Built ✓** | No network/analytics; sandbox-only JSON; bundled `PrivacyInfo.xcprivacy`. **Hard gate — passed** (label entered at submission). |
 
-**Overall launch gate:** all hard gates (F1, F3, F7) pass; F2/F4/F5/F6 meet their criteria; §9 checklist complete; content sign-off done.
+**Overall launch gate:** F1/F7 hard gates passed; F3 code complete (final sign-off on device); F2/F4/F5/F6 meet criteria; §9 remaining items are content sign-off, device haptic validation, accessibility, and App Store prep.
 
 ---
 
 ## 6. Known Limitations
 
-- **Nothing is built yet.** This is a pre-build specification; every item in §2 is unimplemented. Timelines/feel claims are intentions to validate on device, not measured results.
-- **Haptic feel is device-dependent.** Crispness, latency, and the distinctness of the completion pattern vary across iPhone models (Taptic Engine generations) and degrade on devices without Core Haptics. The "eyes-free distinct completion" claim must be validated per-device class; a fallback path is required (F3).
-- **"Eyes-free" is a UX claim, not a guarantee.** It depends on haptic tuning and must be confirmed by real users in beta; it is the single highest-risk product assumption.
-- **Silent-switch / tone behavior is nuanced.** Haptics ignore the mute switch; the tone respects it. This split behavior must be made obvious to users to avoid confusion ("why no sound?").
-- **Seed mantra content correctness is a human-review dependency.** Mantra text/transliteration must be reviewed for accuracy and respectfulness before ship; this is outside what code can self-verify (§9).
-- **Partial-session semantics are a product decision still to finalize** (record-as-partial vs. discard) — must be fixed before history ships so counts are never misleading.
-- **No accessibility implementation yet.** VoiceOver labeling, Dynamic Type, and reduced-motion handling are specified intentions, not built; an eyes-free app must be exemplary here, so this is load-bearing, not optional.
+- **Haptic feel is device-dependent and validated only in code/Simulator so far.** Crispness, latency, and the distinctness of the completion pattern vary across Taptic Engine generations and degrade on devices without Core Haptics (a fallback path exists). The "eyes-free distinct completion" claim must be confirmed per-device class on hardware — the single highest-risk product assumption. The Simulator has no Taptic Engine, so feel cannot be auto-tested.
+- **Silent-switch / tone split is nuanced.** Haptics ignore the mute switch; the tone (`.ambient`) follows it. This is documented in Settings copy but should be watched in beta for "why no sound?" confusion.
+- **Seed mantra content correctness is a human-review dependency** (`docs/CONTENT_REVIEW.md`). Text/transliteration is drafted but not yet signed off; this is outside what code can self-verify.
+- **Accessibility is implemented but not yet validated with users.** VoiceOver labels/values/actions, an advance action on the ring, reduced-motion handling, and Dynamic Type via system fonts are in place; a real VoiceOver/Dynamic-Type pass is still required for an eyes-free app.
+- **The generated `.xcodeproj` is committed for convenience** but `project.yml` is the source of truth — regenerate with `xcodegen generate` rather than hand-editing the project.
 
 ---
 
 ## 7. Bug & Risk Triage
 
-Because there is no code, there are no code-level bugs (no TODO/FIXME/stubs exist — `grep` over the repo returns none; the only files are `.gitkeep` and `docs/PROJECT_DOCUMENTATION.md`). The "blocking" list therefore captures the **must-resolve build/product/privacy/content gaps** that stand between "empty repo" and "shippable v1," plus the one **already-fixed documentation defect**. The non-blocking list captures deferrable polish.
+The original "blocking" list captured the gaps between an empty repo and a shippable v1. Most are now **resolved by the build**; what remains is human/device validation and App Store prep.
 
-### Launch-blocking (must fix before TestFlight/App Store)
+### Resolved by the build
 
-| ID | Description | Where | Why blocking |
-|----|-------------|-------|--------------|
-| B1 | **No app exists** — no Xcode project, no SwiftUI target, no Swift source. | whole repo (`.gitkeep` only) | Cannot build, run, or submit anything. |
-| B2 | **Repetition engine (F1) unbuilt and untested.** | n/a (to create) | It is *the* differentiator; without a tested advance/completion/interruption-resume engine the app is a guesswork counter. Tests are a hard gate. |
-| B3 | **Distinct completion haptic + tone (F3) unbuilt.** | n/a (to create) | Without an unmistakable, distinct end-of-round signal the app is "a skinned counter and should not ship standalone" (product thread). |
-| B4 | **Eyes-free per-bead haptic + forgiving advance (F2) unbuilt; latency/feel unvalidated.** | n/a (to create) | The eyes-free claim is the core value; unproven feel = unshippable core. |
-| B5 | **Privacy artifacts missing.** No `PrivacyInfo.xcprivacy`, no privacy label, no verified no-network posture. | n/a (to create) | App Store requires accurate privacy disclosures; the "local-first, nothing collected" claim must be provably true and declared. |
-| B6 | **Seed mantra content not written or human-reviewed.** | n/a (to create) | Spiritual content must be accurate and respectful; shipping wrong/garbled mantra text is a serious tone/credibility failure. Requires human sign-off. |
-| B7 | **Streak/reminder scope leak in source docs (NOW FIXED).** Old `docs/PROJECT_DOCUMENTATION.md` listed "history/streak" and "optional reminder," which contradict the v1 no-streaks/no-reminders directive. | `docs/PROJECT_DOCUMENTATION.md` | Building to the stale doc would reintroduce the exact tone failure v1 must avoid. Corrected in this pass (doc rewritten; see top-of-file note). Listed here so the reviewer confirms the corrected scope is the one built. |
-| B8 | **No persistence/interruption-resume implementation (F1/F7).** | n/a (to create) | Interruption safety is a named success signal; losing a user's place mid-round is a core-promise failure. |
-| B9 | **App Store metadata: name/age-rating/category not set.** | n/a (to create) | Required to submit; spiritual content needs an appropriate age rating and respectful store presentation. |
+| ID | Was | Now |
+|----|-----|-----|
+| B1 | No app exists | **Resolved** — XcodeGen SwiftUI app, builds Debug+Release for iOS 17+. |
+| B2 | Repetition engine unbuilt/untested | **Resolved** — `JapaEngine` + 23 passing unit tests (the hard gate). |
+| B3 | Distinct completion haptic + tone unbuilt | **Resolved (code)** — distinct Core Haptics pattern + fallback + synthesized tone; on-device A/B sign-off remains (see open). |
+| B4 | Eyes-free per-bead haptic + forgiving advance unbuilt | **Resolved (code)** — whole-screen advance + per-bead haptic; on-device latency/feel sign-off remains. |
+| B5 | Privacy artifacts missing | **Resolved** — `PrivacyInfo.xcprivacy` bundled; no-network/no-analytics audited. |
+| B7 | Streak/reminder scope leak in docs | **Resolved** — docs corrected; build has no streaks/reminders; test asserts no streak/chain concept. |
+| B8 | No persistence/interruption-resume | **Resolved** — `ActiveSessionStore` (advance/haptic first → async persist → resign-active flush); resume verified across a simulated relaunch. |
+
+### Open (must close before public launch)
+
+| ID | Description | Why blocking |
+|----|-------------|--------------|
+| O1 (was B6) | **Seed mantra content human sign-off.** | Spiritual content must be accurate/respectful; record in `docs/CONTENT_REVIEW.md`. |
+| O2 (was B3/B4) | **On-device haptic validation** across ≥2 iPhone classes incl. the no-Core-Haptics fallback. | The eyes-free distinct-completion claim is the core value and cannot be validated in Simulator. |
+| O3 (was B9) | **App Store metadata:** name (cleared), bundle id, category (Lifestyle vs Health & Fitness), age rating, screenshots, description, support URL, privacy label. | Required to submit. |
+| O4 | **Accessibility pass** with VoiceOver + Dynamic Type users. | Non-negotiable for an eyes-free app; implemented but unvalidated. |
 
 ### Non-blocking (ship-with, fix later)
 
-| ID | Description | Rationale for deferral |
-|----|-------------|------------------------|
-| N1 | Haptic-intensity control on unsupported devices. | Degrade gracefully (hide control); not core. |
-| N2 | Literal/visual bead-string rendering & richer animation. | Abstract-tactile is sufficient for v1; visual polish later. |
-| N3 | Expanded mantra catalog with meanings/translations/pronunciation. | Seed set + free-text covers the core; library is a content expansion. |
-| N4 | Audio (chanting, per-bead audio). | Explicitly post-v1; haptics carry v1. |
-| N5 | Apple Watch app / widgets / Live Activities. | Nice-to-have; not the differentiator. |
-| N6 | UI localization beyond seed-mantra needs. | Post-v1. |
-| N7 | iCloud/cross-device sync. | Local-first by design; sync is opt-in future work. |
-| N8 | Partial-session UX refinement (beyond the basic honest record). | Basic honest recording suffices for launch; richer handling later. |
+| ID | Description | Rationale |
+|----|-------------|-----------|
+| N1 | Haptic-intensity control on unsupported devices | Degrades gracefully; not core. |
+| N2 | Literal/visual bead-string rendering | Abstract-tactile suffices for v1. |
+| N3 | Expanded mantra catalog with meanings/audio | Seed + free-text covers the core. |
+| N4 | Audio (chanting, per-bead audio) | Post-v1. |
+| N5 | Apple Watch / widgets / Live Activities | Not the differentiator. |
+| N6 | UI localization beyond seed-mantra needs | Post-v1. |
+| N7 | iCloud/cross-device sync | Local-first by design. |
+| N8 | Partial-session UX refinement | Basic honest recording suffices for launch. |
 
 ---
 
 ## 8. Production-Readiness Assessment
 
-### Current estimated readiness: **5%**
-Justification: there is a **clear, sharp, and validated product definition** (the conversation thread converged on the differentiator and the smallest non-generic MVP) and now a complete build-to spec and reconciled docs — that's real, reusable groundwork. But **zero implementation exists**: no project, no engine, no UI, no tests, no content, no privacy artifacts. The 5% reflects "well-specified, nothing built." Readiness will jump meaningfully once F1 (engine + tests) and F3 (distinct completion) prove the core feel on a device.
+### Current estimated readiness: **~85%**
+Justification: the product is **built and tested**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, an app icon, and a verified privacy posture, all building in Debug and Release with 44 passing automated tests. The remaining ~15% is genuinely off-keyboard: human content sign-off, on-device haptic-feel validation (impossible in Simulator), an accessibility pass with real assistive-tech users, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
 
-### Concrete remaining work to reach 80–90% production-ready (ordered checklist)
-1. **Scaffold the app.** Create the Xcode project / SwiftUI app target; lock minimum iOS (propose 17+); set bundle id, app name, category (Health & Fitness or Lifestyle — decide in §9), placeholder app icon; commit a `README.md`.
-2. **Build & unit-test the repetition engine (F1) FIRST.** Pure Swift, no UI: `advance`, target config, round-completion event (fires once, at N only), interruption/resume via persisted state, undo/decrement, boundary/invalid targets. Ship with a passing test suite — this is the named hard gate (B2).
-3. **Implement haptics (F2 + F3) with Core Haptics**, plus `UIFeedbackGenerator` fallback: crisp per-bead tick and a **distinct** completion pattern; verify per-bead haptic fires in silent mode and completion is perceptibly different. Validate latency/feel on at least two device classes (B3, B4).
-4. **Build the practice screen (F2):** single large forgiving advance target, quiet progress, one-step undo; usable eyes-closed/screen-off. Wire the gentle completion tone via `AVFoundation` (respecting silent switch + tone-off setting).
-5. **Implement local persistence (F7) + session model:** SwiftData (or `Codable` file); persist current session for interruption-resume (B8); save completed/partial sessions.
-6. **Build mantra selection (F4):** tiny **reviewed** seed set + custom free-text (saved locally); ensure mantra never affects counting.
-7. **Build history (F5)** as a calm reverse-chron list with delete/clear; **assert no streak UI** anywhere (guard against B7 regression).
-8. **Build settings (F6):** target, tone toggle, haptic intensity (graceful where unsupported), clear-history.
-9. **Privacy & no-network audit (F7/B5):** add `PrivacyInfo.xcprivacy` declaring no data collection; confirm no network/analytics in product paths; prepare a truthful privacy label.
-10. **Content sign-off (B6):** finalize and human-review the seed mantra text/transliteration; document the review.
-11. **Accessibility pass:** VoiceOver labels for advance/undo/completion, Dynamic Type, reduced-motion; re-verify eyes-free use with VoiceOver users.
-12. **App Store prep (B9, §9):** age rating, screenshots, description with respectful copy, support URL, build & TestFlight.
+### Remaining work to reach launch (ordered)
+1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
+2. ✅ Build + unit-test the repetition engine (F1) — passing.
+3. ✅ Haptics (F2+F3) — Core Haptics distinct patterns + `UIFeedbackGenerator` fallback; silent-mode behavior.
+4. ✅ Practice screen (F2) — whole-screen advance, quiet progress, one-step undo, completion tone via AVFoundation (respects silent switch + setting).
+5. ✅ Local persistence (F7) + interruption-resume (B8).
+6. ✅ Mantra selection (F4) — reviewed seed + free-text, never affects counting.
+7. ✅ History (F5) — calm reverse-chron, delete/clear, no streak UI.
+8. ✅ Settings (F6) — target, tone, intensity, clear history.
+9. ✅ Privacy/no-network audit (F7) + `PrivacyInfo.xcprivacy`.
+10. ⏳ **Content sign-off (O1).**
+11. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion are coded; validate on device.
+12. ⏳ **On-device haptic validation (O2)** and **App Store prep + TestFlight (O3)**.
 
 ### Test coverage summary
-- **Currently:** **0% — no tests, no code.**
-- **Required for launch (target):**
-  - *Unit (highest priority, the hard gate):* repetition engine — advance, round-completion fires exactly once at N, interruption/resume restores exact bead, target-config including boundary (1, max) and invalid (≤0), undo/decrement floor at 0. Plus persistence (save/load session, preferences, custom mantra) and "no streak" structural assertion.
-  - *UI tests:* advance→bead increment, undo→decrement, completion event → one signal, settings changes take effect.
-  - *Manual/device tests (cannot be automated):* per-bead haptic crispness & latency; per-bead vs. completion haptic distinctness eyes-free; haptics-in-silent-mode; eyes-closed/screen-off full round; per-device-class fallback behavior.
+- **Now:** 41 unit/flow tests + 3 UI tests, all passing.
+  - *Unit (hard gate):* engine — advance, completion exactly once at N, advance-past-target, target-config incl. boundary/invalid, undo/decrement floor, reset/new-round, reconstruction from persisted count.
+  - *Persistence:* preferences/sessions round-trips, active-session save/flush/load, survival across a new store instance (force-quit sim), latest-write-wins, clear.
+  - *Flow:* completion→history + resumable cleared, interruption-resume across a simulated relaunch, honest partial, zero-count discard, undo, explicit new round, custom-mantra + selection persistence, structural no-streak assertion.
+  - *UI:* tap→advance, undo→decrement, target→completion + new round, settings/history navigation.
+- **Cannot be automated (manual/device):** per-bead haptic crispness/latency; per-bead vs. completion distinctness eyes-free; haptics-in-silent-mode; eyes-closed/screen-off full round; per-device fallback.
 
 ---
 
 ## 9. Launch Checklist
 
-App Store / privacy / safety / content items specific to Japa:
-
-- [ ] **App identity:** final app name ("Japa") cleared for App Store, bundle id set, category chosen (Lifestyle or Health & Fitness), app icon (respectful, non-appropriative imagery).
-- [ ] **Age rating:** set an appropriate rating; spiritual/religious content is acceptable but must be presented respectfully and rated honestly.
-- [ ] **`PrivacyInfo.xcprivacy`:** present and declaring **no data collection / no tracking** (F7). Required Reason API usage declared if any.
-- [ ] **App Store privacy "nutrition label":** declares no data collected, no tracking — and this is **provably true** (no network/analytics in the build).
-- [ ] **No network / no SDKs audit:** confirm the shipped binary makes no network calls and links no analytics/ad SDKs.
-- [ ] **No tracking prompt / no notification permission:** v1 requests **no** ATT and **no** notification permission (no reminders in v1, §3) — verify none are triggered.
-- [ ] **Haptics & silent-switch behavior documented in-app:** users understand haptics work in silent mode and the tone follows the mute switch / tone setting (avoids "it's broken" confusion).
-- [ ] **Eyes-free / completion-signal validated on real devices** across at least two iPhone classes, including the no-Core-Haptics fallback path (B3/B4).
-- [ ] **Content sign-off:** seed mantra text & transliteration reviewed by a qualified human for accuracy and respectfulness; review recorded (B6).
-- [ ] **No streaks / no loss-aversion / no nagging** anywhere in the shipped UI (deliberate tone gate; verify against the corrected scope — B7).
-- [ ] **No StoreKit / IAP in v1** (free core, no `.storekit`); ensure no purchase UI is exposed.
-- [ ] **Accessibility:** VoiceOver, Dynamic Type, reduced-motion verified — non-negotiable for an eyes-free app.
-- [ ] **Local data controls:** user can delete individual history entries and clear all data (privacy, F5/F7).
-- [ ] **Crash-free core loop:** a full 108-bead round completes end-to-end, including an interruption mid-round, on a clean install and on an upgrade.
-- [ ] **Support/contact URL** and a short, respectful App Store description prepared.
+- [x] **Repetition engine built + unit-tested** (hard gate, F1).
+- [x] **Distinct completion haptic + tone implemented** with fallback (F3 — on-device A/B pending, O2).
+- [x] **Eyes-free whole-screen practice + one-step undo** (F2).
+- [x] **Interruption-safe persistence / exact-bead resume** (B8/F7).
+- [x] **`PrivacyInfo.xcprivacy`** present, bundled, declaring no tracking / no collection (F7).
+- [x] **No network / no SDKs audit** — source grep + bundle inspection clean.
+- [x] **No tracking prompt / no notification permission** — none triggered (v1, §3).
+- [x] **No streaks / no loss-aversion / no nagging** in the shipped UI (asserted by test).
+- [x] **No StoreKit / IAP in v1** — none present.
+- [x] **App icon** (respectful, abstract bead-ring — no appropriated imagery).
+- [x] **Haptics & silent-switch behavior documented in-app** (Settings copy).
+- [x] **Local data controls** — delete an entry / clear all.
+- [x] **Accessibility implemented** — VoiceOver labels/values/advance action, Dynamic Type via system fonts, reduced-motion handling. *(Validation with users: O4.)*
+- [ ] **Content sign-off (O1):** seed mantra text reviewed by a qualified human; record in `docs/CONTENT_REVIEW.md`.
+- [ ] **On-device haptic / completion validation (O2)** across ≥2 iPhone classes incl. the fallback path.
+- [ ] **Accessibility validated with VoiceOver / Dynamic Type users (O4).**
+- [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.
+- [ ] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` (no data collected/tracked).
+- [ ] **Crash-free core loop on a physical device:** a full 108-bead round end-to-end, including an interruption mid-round, on clean install and on upgrade.
+- [ ] **Support/contact URL** and a short, respectful App Store description.
 - [ ] **TestFlight beta** with practice users; collect qualitative "didn't have to look" / interruption-safety feedback before public release.
