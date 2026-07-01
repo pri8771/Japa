@@ -10,6 +10,7 @@
 		0327F239B0DC2607EDA2BA20 /* HapticPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3C41A38D48049E9EE6F32 /* HapticPlayer.swift */; };
 		0551F0AAFB244FADA94E38DC /* SeedMantras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419010C5C0377493AD93A9F /* SeedMantras.swift */; };
 		12A730E0CDE654C7981FDA56 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745051048833680674B1BA35 /* Persistence.swift */; };
+		213728C0BAAA850383E9E9F9 /* FeatureAuditUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */; };
 		290AC85EF7C14E3C5A5EDB77 /* Mantra.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942EF61A653CDA2EEAA3E97D /* Mantra.swift */; };
 		2CD195B6ACB41134E9ECC3AF /* ActiveSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802D380AA515DBF28EC369CC /* ActiveSessionStore.swift */; };
 		300947FADE278268B7B3AC59 /* JapaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8588D4BB7D8002BF1F66F04 /* JapaApp.swift */; };
@@ -70,6 +71,7 @@
 		417D2DBDEE07D83D9833C12F /* JapaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaEngine.swift; sourceTree = "<group>"; };
 		46FCDF158BAF5105716503AF /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		4A673A33C6212E2048747DE4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAuditUITests.swift; sourceTree = "<group>"; };
 		5926A2B2C1C3E540E6F46D28 /* ActiveSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSessionState.swift; sourceTree = "<group>"; };
 		6EA7323AFAFABE38BB3F814C /* JapaEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaEngineTests.swift; sourceTree = "<group>"; };
 		70B3C41A38D48049E9EE6F32 /* HapticPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticPlayer.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 		ACB9A64F9D9B2AD915E170BA /* JapaUITests */ = {
 			isa = PBXGroup;
 			children = (
+				4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */,
 				966FF5AA15A66D625C309384 /* JapaUITests.swift */,
 			);
 			path = JapaUITests;
@@ -402,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				213728C0BAAA850383E9E9F9 /* FeatureAuditUITests.swift in Sources */,
 				EB56029EF211FA0096ABD5C9 /* JapaUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

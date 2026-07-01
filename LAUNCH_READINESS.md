@@ -237,12 +237,19 @@ Justification: the product is **built and tested**, not specified — a pure tes
 11. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion are coded; validate on device.
 12. ⏳ **On-device haptic validation (O2)** and **App Store prep + TestFlight (O3)**.
 
+### Audit (2026-07-01)
+A full audit was run against the built app. Findings fixed:
+- **Haptic engine reliability (core experience).** `CHHapticEngine.isAutoShutdownEnabled` was `true`, which would stop the Taptic Engine between slow japa taps and drop the next bead's haptic; it is now `false`, the engine resumes on `didBecomeActive` (so a bead is never dropped after a call/backgrounding — the exact interruption this app targets), and a failed play restarts + retries once before falling back. 
+- **Resume-card reactivity + disk I/O.** `resumableState` was a computed property doing synchronous disk reads on every Home render and wasn't observable; it's now cached observable state refreshed on launch, on returning from practice, and on foreground.
+- **Mantra-add double-dismiss** removed (adding a custom mantra no longer pops the whole stack unexpectedly).
+The flagship interruption-safety flow was verified **end-to-end in the running app** (advance → background → terminate → relaunch → resume card → exact bead restored), along with mantra selection/creation, history record + delete, and settings.
+
 ### Test coverage summary
-- **Now:** 41 unit/flow tests + 3 UI tests, all passing.
+- **Now:** 46 unit/flow tests + 7 UI tests, all passing (fresh-simulator run).
   - *Unit (hard gate):* engine — advance, completion exactly once at N, advance-past-target, target-config incl. boundary/invalid, undo/decrement floor, reset/new-round, reconstruction from persisted count.
   - *Persistence:* preferences/sessions round-trips, active-session save/flush/load, survival across a new store instance (force-quit sim), latest-write-wins, clear.
   - *Flow:* completion→history + resumable cleared, interruption-resume across a simulated relaunch, honest partial, zero-count discard, undo, explicit new round, custom-mantra + selection persistence, structural no-streak assertion.
-  - *UI:* tap→advance, undo→decrement, target→completion + new round, settings/history navigation.
+  - *UI:* tap→advance, undo→decrement, target→completion + new round, settings/history navigation, **resume after interruption (background → terminate → relaunch → exact bead)**, mantra selection + custom authoring, history record + swipe-delete, settings tone toggle.
 - **Cannot be automated (manual/device):** per-bead haptic crispness/latency; per-bead vs. completion distinctness eyes-free; haptics-in-silent-mode; eyes-closed/screen-off full round; per-device fallback.
 
 ---

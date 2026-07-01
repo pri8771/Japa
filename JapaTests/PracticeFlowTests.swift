@@ -135,6 +135,76 @@ final class PracticeFlowTests: XCTestCase {
         XCTAssertEqual(relaunched.selectedMantra.id, target.id)
     }
 
+    // MARK: Preferences & resumable state
+
+    func testPreferenceSettersPersist() {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("japa-prefs-\(UUID().uuidString)", isDirectory: true)
+        let persistence = Persistence(directory: dir)
+        let app = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
+        app.setDefaultTarget(27)
+        app.setCompletionToneEnabled(false)
+        app.setHapticIntensity(0.3)
+
+        let relaunched = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
+        XCTAssertEqual(relaunched.preferences.defaultTarget, 27)
+        XCTAssertFalse(relaunched.preferences.completionToneEnabled)
+        XCTAssertEqual(relaunched.preferences.hapticIntensity, 0.3, accuracy: 0.0001)
+    }
+
+    func testSetDefaultTargetClampsOutOfRange() {
+        let app = makeApp()
+        app.setDefaultTarget(99999)
+        XCTAssertEqual(app.preferences.defaultTarget, JapaEngine.maxTarget)
+        app.setDefaultTarget(0)
+        XCTAssertEqual(app.preferences.defaultTarget, JapaEngine.minTarget)
+    }
+
+    func testRefreshResumableReflectsInProgressRound() {
+        let app = makeApp()
+        app.setDefaultTarget(10)
+        XCTAssertNil(app.resumableState)
+        let controller = app.newPracticeController()
+        controller.prepare()
+        controller.advance()
+        controller.advance()
+        controller.persistNow()
+
+        app.refreshResumable()
+        XCTAssertEqual(app.resumableState?.count, 2)
+
+        // Completing the round clears the resumable snapshot.
+        for _ in 0..<8 { controller.advance() }
+        app.refreshResumable()
+        XCTAssertNil(app.resumableState)
+    }
+
+    func testDiscardResumableClearsCacheAndDisk() {
+        let app = makeApp()
+        app.setDefaultTarget(10)
+        let controller = app.newPracticeController()
+        controller.prepare()
+        controller.advance()
+        controller.persistNow()
+        app.refreshResumable()
+        XCTAssertNotNil(app.resumableState)
+
+        app.discardResumable()
+        XCTAssertNil(app.resumableState)
+        app.refreshResumable()
+        XCTAssertNil(app.resumableState, "Cleared on disk too")
+    }
+
+    func testDeletingSelectedCustomMantraResetsSelection() {
+        let app = makeApp()
+        let mantra = app.addCustomMantra(title: "Temp")!
+        app.select(mantra)
+        XCTAssertEqual(app.selectedMantra.id, mantra.id)
+        app.deleteCustomMantra(mantra)
+        XCTAssertNotEqual(app.selectedMantra.id, mantra.id, "Selection falls back to a seed mantra")
+        XCTAssertTrue(app.selectedMantra.isSeed)
+    }
+
     // MARK: Tone gate (no streaks anywhere)
 
     func testModelsHaveNoStreakOrChainConcept() {

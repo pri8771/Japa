@@ -103,6 +103,7 @@ struct HomeView: View {
             }
         }
         .accessibilityLabel("Mantra: \(app.selectedMantra.title). Change mantra.")
+        .accessibilityIdentifier("mantraRow")
     }
 
     private func resumeCard(_ state: ActiveSessionState) -> some View {
@@ -126,6 +127,7 @@ struct HomeView: View {
             .cardSurface()
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("resumeCard")
     }
 }
 

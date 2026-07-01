@@ -14,6 +14,9 @@ final class AppModel {
     private(set) var customMantras: [Mantra]
     private(set) var sessions: [PracticeSession]
     private(set) var selectedMantra: Mantra
+    /// The resumable in-progress round, cached as observable state so Home reacts
+    /// to it and doesn't hit disk on every render. Refresh via `refreshResumable()`.
+    private(set) var resumableState: ActiveSessionState?
 
     private let persistence: Persistence
     let activeStore: ActiveSessionStore
@@ -44,6 +47,19 @@ final class AppModel {
             pool.first { $0.id == prefs.lastMantraID }
             ?? pool.first { $0.title == "Om Namah Shivaya" }
             ?? Mantra.none
+
+        refreshResumable()
+    }
+
+    /// Re-reads the in-progress round from disk into the cached, observable
+    /// `resumableState`. Called on launch and whenever Home may become visible
+    /// (returning from practice, or the app returning to the foreground).
+    func refreshResumable() {
+        if let state = activeStore.load(), state.count > 0, !state.makeEngine().isComplete {
+            resumableState = state
+        } else {
+            resumableState = nil
+        }
     }
 
     private enum Keys {
@@ -130,24 +146,21 @@ final class AppModel {
 
     // MARK: - Practice controllers
 
-    /// A resumable in-progress round, if one was persisted and has real progress.
-    var resumableState: ActiveSessionState? {
-        guard let state = activeStore.load(), state.count > 0, !state.makeEngine().isComplete else { return nil }
-        return state
-    }
-
     func newPracticeController() -> PracticeController {
         makeController(mantra: selectedMantra, target: preferences.defaultTarget, restoredCount: nil, startedAt: Date())
     }
 
     func resumePracticeController() -> PracticeController? {
-        guard let state = resumableState else { return nil }
+        // Read fresh from disk rather than trusting the cache, so a resume always
+        // restores the exact persisted bead.
+        guard let state = activeStore.load(), state.count > 0, !state.makeEngine().isComplete else { return nil }
         let mantra = allMantras.first { $0.title == state.mantraTitle } ?? Mantra(title: state.mantraTitle)
         return makeController(mantra: mantra, target: state.target, restoredCount: state.count, startedAt: state.startedAt)
     }
 
     func discardResumable() {
         activeStore.clear()
+        resumableState = nil
     }
 
     private func makeController(mantra: Mantra, target: Int, restoredCount: Int?, startedAt: Date) -> PracticeController {
