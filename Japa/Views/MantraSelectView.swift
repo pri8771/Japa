@@ -41,6 +41,7 @@ struct MantraSelectView: View {
                         .foregroundStyle(Theme.accentBright)
                 }
                 .listRowBackground(Theme.surface)
+                .accessibilityIdentifier("addMantraButton")
             }
         }
         .listStyle(.insetGrouped)
@@ -50,9 +51,10 @@ struct MantraSelectView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingAdd) {
             AddMantraView { title, script in
+                // Add and select; the sheet dismisses itself. We stay on Mantra
+                // Select showing the new mantra checked (no double-dismiss).
                 if let mantra = app.addCustomMantra(title: title, script: script) {
                     app.select(mantra)
-                    dismiss()
                 }
             }
         }
@@ -105,6 +107,7 @@ private struct MantraRow: View {
         }
         .listRowBackground(Theme.surface)
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityIdentifier("mantra-\(mantra.title)")
     }
 }
 
@@ -121,7 +124,9 @@ private struct AddMantraView: View {
             Form {
                 Section {
                     TextField("Mantra name", text: $title)
+                        .accessibilityIdentifier("mantraNameField")
                     TextField("Script or transliteration (optional)", text: $script)
+                        .accessibilityIdentifier("mantraScriptField")
                 } footer: {
                     Text("Your mantra stays on this device. It's a label for your practice — counting works the same either way.")
                 }

@@ -10,6 +10,13 @@ import UIKit
 ///
 /// All paths fire independently of the silent switch — haptics are tactile, not
 /// audio — which is exactly what eyes-free, screen-off practice needs.
+///
+/// Reliability matters here more than anywhere: japa taps can be seconds apart,
+/// and interruptions (a phone call) are the exact scenario this app is built
+/// around. So the engine keeps auto-shutdown **off** (it must not stop itself
+/// between slow taps), restarts proactively when the app returns to the
+/// foreground, and — if a play still fails mid-round — restarts and retries once
+/// rather than dropping the bead's confirmation.
 @MainActor
 final class HapticPlayer: HapticFeedback {
 
@@ -21,22 +28,46 @@ final class HapticPlayer: HapticFeedback {
     private let impactSoft = UIImpactFeedbackGenerator(style: .soft)
     private let notification = UINotificationFeedbackGenerator()
 
+    init() {
+        // Resume the engine when the app returns to the foreground — iOS stops
+        // Core Haptics while suspended (a call, backgrounding), and we must not
+        // drop the first tap after the interruption this app exists to survive.
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.resume() }
+        }
+    }
+
     func prepare() {
         guard supportsHaptics else {
             impactLight.prepare()
+            impactSoft.prepare()
             notification.prepare()
             return
         }
         startEngineIfNeeded()
     }
 
+    /// Restart the engine after a foreground transition.
+    private func resume() {
+        guard supportsHaptics else { return }
+        if engine == nil {
+            startEngineIfNeeded()
+        } else {
+            try? engine?.start()
+        }
+    }
+
     private func startEngineIfNeeded() {
         guard supportsHaptics, engine == nil else { return }
         do {
             let engine = try CHHapticEngine()
-            engine.isAutoShutdownEnabled = true
-            // Core Haptics stops the engine on interruptions; restart it so the
-            // next bead still fires.
+            // Keep the engine alive between taps — japa taps are slow, and
+            // auto-shutdown would stop it and drop the next bead's haptic.
+            engine.isAutoShutdownEnabled = false
             engine.resetHandler = { [weak self] in
                 try? self?.engine?.start()
             }
@@ -52,26 +83,30 @@ final class HapticPlayer: HapticFeedback {
 
     func tick(intensity: Double) {
         let clamped = Float(min(max(intensity, 0), 1))
-        guard supportsHaptics, let engine else {
+        guard supportsHaptics else {
             impactLight.impactOccurred(intensity: CGFloat(max(0.25, clamped)))
             impactLight.prepare()
             return
         }
-        let event = CHHapticEvent(
-            eventType: .hapticTransient,
-            parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: clamped),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.75)
-            ],
-            relativeTime: 0
-        )
-        play(events: [event], on: engine)
+        play([
+            CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: clamped),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.75)
+                ],
+                relativeTime: 0
+            )
+        ], fallback: {
+            self.impactLight.impactOccurred(intensity: CGFloat(max(0.25, clamped)))
+            self.impactLight.prepare()
+        })
     }
 
     // MARK: Distinct completion
 
     func completion() {
-        guard supportsHaptics, let engine else {
+        guard supportsHaptics else {
             notification.notificationOccurred(.success)
             notification.prepare()
             return
@@ -102,40 +137,60 @@ final class HapticPlayer: HapticFeedback {
             ],
             relativeTime: 0
         )
-        play(events: [swell, cap], curves: [rise], on: engine)
+        play([swell, cap], curves: [rise], fallback: {
+            self.notification.notificationOccurred(.success)
+            self.notification.prepare()
+        })
     }
 
     // MARK: Undo
 
     func back() {
-        guard supportsHaptics, let engine else {
+        guard supportsHaptics else {
             impactSoft.impactOccurred(intensity: 0.5)
             impactSoft.prepare()
             return
         }
-        let event = CHHapticEvent(
-            eventType: .hapticTransient,
-            parameters: [
-                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.45),
-                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.25)
-            ],
-            relativeTime: 0
-        )
-        play(events: [event], on: engine)
+        play([
+            CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.45),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.25)
+                ],
+                relativeTime: 0
+            )
+        ], fallback: {
+            self.impactSoft.impactOccurred(intensity: 0.5)
+            self.impactSoft.prepare()
+        })
     }
 
     // MARK: Engine plumbing
 
-    private func play(events: [CHHapticEvent], curves: [CHHapticParameterCurve] = [], on engine: CHHapticEngine) {
+    /// Plays a pattern, restarting the engine and retrying once if the first
+    /// attempt fails (e.g. the engine was stopped by an interruption). Only if
+    /// the retry also fails do we drop to the `UIFeedbackGenerator` fallback, so
+    /// a bead is never left entirely unconfirmed.
+    private func play(_ events: [CHHapticEvent], curves: [CHHapticParameterCurve] = [], fallback: () -> Void) {
+        startEngineIfNeeded()
+        if attemptPlay(events, curves) { return }
+        // Restart and retry once.
+        engine = nil
+        startEngineIfNeeded()
+        if attemptPlay(events, curves) { return }
+        fallback()
+    }
+
+    private func attemptPlay(_ events: [CHHapticEvent], _ curves: [CHHapticParameterCurve]) -> Bool {
+        guard let engine else { return false }
         do {
             let pattern = try CHHapticPattern(events: events, parameterCurves: curves)
             let player = try engine.makePlayer(with: pattern)
             try player.start(atTime: CHHapticTimeImmediate)
+            return true
         } catch {
-            // If a play fails (engine reset mid-interaction), restart and drop this
-            // one event rather than stalling the loop.
-            self.engine = nil
-            startEngineIfNeeded()
+            return false
         }
     }
 }

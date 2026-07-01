@@ -30,7 +30,7 @@ struct RootView: View {
                 }
             }
         }
-        .fullScreenCover(item: $practice) { controller in
+        .fullScreenCover(item: $practice, onDismiss: { app.refreshResumable() }) { controller in
             PracticeContainerView(controller: controller) { practice = nil }
                 .environment(app)
         }
@@ -42,7 +42,11 @@ struct RootView: View {
             if !app.preferences.hasSeenIntro { showIntro = true }
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { practice?.persistNow() }
+            if phase == .active {
+                app.refreshResumable()
+            } else {
+                practice?.persistNow()
+            }
         }
     }
 
