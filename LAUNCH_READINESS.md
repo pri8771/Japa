@@ -2,7 +2,7 @@
 
 > Japa is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
 >
-> **Implementation maturity: v1 BUILT (~85% production-ready).** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release for iOS 17+; **41 unit/flow tests + 3 UI tests pass**. What remains before public launch is in §8/§9: human content sign-off, on-device haptic-feel validation across iPhone classes, an accessibility pass with VoiceOver users, and App Store metadata/TestFlight. Verified against the repo on 2026-06-30 and against the product-definition thread in `pri8771/conversation` (`Japa.md`).
+> **Implementation maturity: v1 BUILT (~85% production-ready).** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release for iOS 17+; **46 unit/flow tests + 7 UI tests pass** (53 total — reconfirmed by a live `xcodebuild test` run on 2026-07-17). What remains before public launch is in §8/§9: human content sign-off, on-device haptic-feel validation across iPhone classes, an accessibility pass with VoiceOver users, code signing, and App Store metadata/TestFlight. Verified against the repo on 2026-06-30 and against the product-definition thread in `pri8771/conversation` (`Japa.md`). Test counts and the App Factory registration status were re-verified 2026-07-17 — see `docs/STATUS.md` and `docs/DECISIONS.md` DEC-004.
 
 ---
 
@@ -201,7 +201,8 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 | O1 (was B6) | **Seed mantra content human sign-off.** | Spiritual content must be accurate/respectful; record in `docs/CONTENT_REVIEW.md`. |
 | O2 (was B3/B4) | **On-device haptic validation** across ≥2 iPhone classes incl. the no-Core-Haptics fallback. | The eyes-free distinct-completion claim is the core value and cannot be validated in Simulator. |
 | O3 (was B9) | **App Store metadata:** name (cleared), bundle id, category (Lifestyle vs Health & Fitness), age rating, screenshots, description, support URL, privacy label. | Required to submit. |
-| O4 | **Accessibility pass** with VoiceOver + Dynamic Type users. | Non-negotiable for an eyes-free app; implemented but unvalidated. |
+| O4 | **Accessibility pass** with VoiceOver + Dynamic Type users. | Non-negotiable for an eyes-free app; VoiceOver is coded but unvalidated — **Dynamic Type is not implemented** (`Japa/Design/Theme.swift` uses fixed-point font sizes with no scaling), corrected 2026-07-17 (was previously assumed coded). |
+| O5 | **Code signing disabled** (`project.yml`: `CODE_SIGNING_ALLOWED: NO`, empty `DEVELOPMENT_TEAM`). | Blocks any device or TestFlight build; tracked as `docs/BUGS.md` B-SIGN. |
 
 ### Non-blocking (ship-with, fix later)
 
@@ -221,7 +222,7 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 ## 8. Production-Readiness Assessment
 
 ### Current estimated readiness: **~85%**
-Justification: the product is **built and tested**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, an app icon, and a verified privacy posture, all building in Debug and Release with 44 passing automated tests. The remaining ~15% is genuinely off-keyboard: human content sign-off, on-device haptic-feel validation (impossible in Simulator), an accessibility pass with real assistive-tech users, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
+Justification: the product is **built and tested**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, an app icon, and a verified privacy posture, all building in Debug and Release with 53 passing automated tests (46 unit/flow + 7 UI). The remaining ~15% is genuinely off-keyboard: human content sign-off, on-device haptic-feel validation (impossible in Simulator), an accessibility pass with real assistive-tech users, code signing, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
 
 ### Remaining work to reach launch (ordered)
 1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
@@ -268,11 +269,12 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 - [x] **App icon** (respectful, abstract bead-ring — no appropriated imagery).
 - [x] **Haptics & silent-switch behavior documented in-app** (Settings copy).
 - [x] **Local data controls** — delete an entry / clear all.
-- [x] **Accessibility implemented** — VoiceOver labels/values/advance action, Dynamic Type via system fonts, reduced-motion handling. *(Validation with users: O4.)*
+- [x] **Accessibility partially implemented** — VoiceOver labels/values/advance action and reduced-motion handling are coded; **Dynamic Type is not implemented** (corrected 2026-07-17 — see O4).
 - [ ] **Content sign-off (O1):** seed mantra text reviewed by a qualified human; record in `docs/CONTENT_REVIEW.md`.
 - [ ] **On-device haptic / completion validation (O2)** across ≥2 iPhone classes incl. the fallback path.
-- [ ] **Accessibility validated with VoiceOver / Dynamic Type users (O4).**
+- [ ] **Accessibility validated with VoiceOver users, and Dynamic Type implemented and validated (O4).**
 - [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.
+- [ ] **Code signing enabled (O5)** with a real Development Team, for device/TestFlight builds.
 - [ ] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` (no data collected/tracked).
 - [ ] **Crash-free core loop on a physical device:** a full 108-bead round end-to-end, including an interruption mid-round, on clean install and on upgrade.
 - [ ] **Support/contact URL** and a short, respectful App Store description.

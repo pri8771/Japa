@@ -3,10 +3,11 @@
 A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iOS.
 
 > **Status: v1 implemented (~85% production-ready).** The app is built: a tested
-> repetition engine, the eyes-free haptic practice screen, a distinct completion
-> signal, mantra selection (reviewed seed set + free-text), quiet history, and
-> settings — all local-first. Remaining work is human content sign-off, on-device
-> haptic tuning across iPhone classes, an accessibility pass, and App Store prep
+> repetition engine (46 unit/flow tests + 7 UI tests, all passing), the eyes-free
+> haptic practice screen, a distinct completion signal, mantra selection (reviewed
+> seed set + free-text), quiet history, and settings — all local-first. Remaining
+> work is human content sign-off, on-device haptic tuning across iPhone classes,
+> an accessibility pass, code signing, and App Store prep
 > (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §8–9).
 
 ## What it is
@@ -42,7 +43,7 @@ From the command line:
 ```bash
 # Build
 xcodebuild build -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
-# Test (41 unit/flow tests + 3 UI tests)
+# Test (46 unit/flow tests + 7 UI tests)
 xcodebuild test  -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 

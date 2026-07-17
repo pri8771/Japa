@@ -57,8 +57,16 @@ Complete App Factory onboarding for the existing Japa codebase: document baselin
 - Seed mantra content review unsigned (App Store blocker for spiritual content)
 - Atlassian MCP auth incomplete — cannot create Jira issues yet
 
+## Documentation reconciliation (2026-07-17)
+
+- App Factory registration upgraded 0.2.0 → 0.4.0; repository-map.json, library-catalog.json, docs/README.md, docs/REUSABLE_COMPONENTS.md created; verify-project-registration.sh passes clean
+- Stale test-count claims (41+3) corrected to the actual 46+7=53 across README.md, docs/PROJECT_DOCUMENTATION.md, LAUNCH_READINESS.md (B-DOC resolved)
+- docs/RELEASE_CHECKLIST.md reconciled against verified evidence (was an unstarted template despite several items being done)
+- BUGS.md B-A11Y corrected: Dynamic Type is not implemented, not just unvalidated; new O5/signing-blocker row added to LAUNCH_READINESS.md §7/§9
+- FEAT-001 extended with explicit completion-signal-distinctness requirements; verification gap (no spy-based test) documented rather than silently left implied-covered
+
 ## Next action
 
-1. Confirm baseline tests pass (or record pre-existing failures).
-2. Complete Atlassian auth and sync `docs/JIRA_SYNC_PENDING.md`.
-3. Close launch gates: content, device haptics, a11y, signing/TestFlight.
+1. Complete Atlassian auth and sync `docs/JIRA_SYNC_PENDING.md` (Jira project confirmed as **Jala**; still blocked on connector auth).
+2. Close launch gates: content, device haptics, a11y (incl. implementing Dynamic Type), signing/TestFlight.
+3. Decide whether to add the spy-based haptic/tone tests FEAT-001 now calls for.
