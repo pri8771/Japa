@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/pri8771/iOS_app_factory_rules/main/schemas/feature-contract.schema.json",
+  "id": "FEAT-001",
+  "name": "Practice advance, undo, and complete",
+  "status": "implemented",
+  "userOutcome": "User advances beads by whole-screen tap, undoes one step if needed, and reaches a distinct completion state exactly once at the target count. The completion event must be perceptibly distinguishable from an ordinary per-bead tick through haptics and/or tone, without requiring the user to look at the screen — including when the ringer is silenced, since the completion tone intentionally uses the .ambient audio category and the haptic alone must then carry the signal.",
+  "entryPoints": [
+    "HomeView Start / Resume",
+    "PracticeView whole-screen advance",
+    "PracticeView undo",
+    "CompletionView"
+  ],
+  "productionDataSource": "Live PracticeController + JapaEngine state; preferences target count; selected mantra labels only (does not affect count).",
+  "states": [
+    "idle",
+    "practicing",
+    "completed",
+    "ended_early"
+  ],
+  "errorBehavior": "Invalid advances when already complete return alreadyComplete and do not re-fire completion side effects. Undo floors at 0. Persistence failures must not silently invent progress.",
+  "duplicateProtectionRequired": true,
+  "persistenceRequired": true,
+  "layoutScenarios": [
+    "iPhone portrait"
+  ],
+  "accessibilityRequirements": [
+    "Advance and undo are accessible actions",
+    "Progress is available to VoiceOver without requiring vision",
+    "Respect reduce motion where animation is cosmetic",
+    "Completion must be signaled through a haptic pattern and/or tone that is distinguishable from the ordinary per-bead tick pattern, so an eyes-free user can tell progress from completion by feel alone"
+  ],
+  "prohibitedBehavior": [
+    "Do not use undisclosed sample data in production history",
+    "Do not fire completion haptic/tone more than once per round",
+    "Do not require looking at the screen to advance",
+    "Do not make the completion haptic pattern identical to (indistinguishable from) the per-bead tick pattern",
+    "Do not let the silent-switch/muted case leave the user with no perceptible completion signal at all — the haptic must carry the signal when the tone is suppressed"
+  ],
+  "acceptanceTests": [
+    "JapaEngineTests — advance and completion-once",
+    "PracticeFlowTests — complete records history and clears resumable",
+    "JapaUITests — tap advance/undo and reach completion"
+  ],
+  "verificationGaps": [
+    "No automated test spies on HapticFeedback/TonePlaying to verify that advance() calls tick() while only the target-reaching advance() calls completion(), or that tone.play() fires on completion when the preference is enabled. Every existing test injects NoopHaptics/NoopTone or never inspects them (confirmed by source audit, 2026-07-17).",
+    "No acceptance test models the muted/silent-switch scenario to confirm the haptic-only fallback actually delivers a distinguishable completion signal.",
+    "Perceptual distinctness of tick vs. completion haptic patterns on physical hardware is unvalidated — tracked as docs/BUGS.md B-HAPT, device-only verification, Simulator insufficient."
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://raw.githubusercontent.com/pri8771/iOS_app_factory_rules/main/schemas/repository-map.schema.json",
+  "schemaVersion": "1.0.0",
+  "repositoryType": "product",
+  "entryPoints": [
+    "AGENTS.md",
+    ".factory/repository-map.json",
+    ".factory/project-context.json",
+    "docs/README.md"
+  ],
+  "canonicalDocuments": {
+    "projectIdentity": ".factory/project-context.json",
+    "standardsLock": ".factory/standard-lock.json",
+    "libraryCatalog": ".factory/library-catalog.json",
+    "documentationIndex": "docs/README.md",
+    "currentStatus": "docs/STATUS.md",
+    "currentArchitecture": "docs/ARCHITECTURE.md",
+    "featureInventory": "docs/FEATURES.md",
+    "bugs": "docs/BUGS.md",
+    "decisions": "docs/DECISIONS.md",
+    "risks": "docs/RISKS.md",
+    "assumptions": "docs/ASSUMPTIONS.md",
+    "testPlan": "docs/TEST_PLAN.md",
+    "releaseReadiness": "docs/RELEASE_CHECKLIST.md",
+    "handoff": "docs/HANDOFF.md",
+    "reusableComponents": "docs/REUSABLE_COMPONENTS.md",
+    "productOverview": "README.md",
+    "launchSpec": "LAUNCH_READINESS.md",
+    "detailedProjectDocumentation": "docs/PROJECT_DOCUMENTATION.md",
+    "contentReview": "docs/CONTENT_REVIEW.md"
+  },
+  "locations": {
+    "sourceRoots": [
+      "Japa/JapaApp.swift",
+      "Japa/Engine",
+      "Japa/Models",
+      "Japa/Persistence",
+      "Japa/Haptics",
+      "Japa/Audio",
+      "Japa/Content",
+      "Japa/ViewModels",
+      "Japa/Views",
+      "Japa/Design",
+      "Japa/Resources"
+    ],
+    "testRoots": [
+      "JapaTests",
+      "JapaUITests"
+    ],
+    "buildConfiguration": [
+      "project.yml",
+      "Japa.xcodeproj"
+    ],
+    "ciConfiguration": [],
+    "featureContracts": "quality/feature-contracts",
+    "completionReports": "quality/completion-reports",
+    "qualityEvidence": "quality/evidence",
+    "libraryCatalog": ".factory/library-catalog.json",
+    "reusableComponents": "docs/REUSABLE_COMPONENTS.md"
+  },
+  "taskRoutes": {
+    "onboarding": [
+      ".factory/project-context.json",
+      "docs/README.md",
+      "docs/STATUS.md",
+      "docs/ARCHITECTURE.md",
+      "docs/FEATURES.md"
+    ],
+    "understand-product": [
+      "README.md",
+      "LAUNCH_READINESS.md",
+      "docs/STATUS.md",
+      "docs/ARCHITECTURE.md",
+      "docs/FEATURES.md"
+    ],
+    "change-core-practice": [
+      "Japa/Engine/JapaEngine.swift",
+      "Japa/Engine/AdvanceResult.swift",
+      "Japa/ViewModels/PracticeController.swift",
+      "quality/feature-contracts/FEAT-001-practice-advance-undo-complete.json",
+      "quality/feature-contracts/FEAT-003-engine-round-contract.json"
+    ],
+    "change-persistence": [
+      "Japa/Persistence/Persistence.swift",
+      "Japa/Persistence/ActiveSessionStore.swift",
+      "Japa/Models/ActiveSessionState.swift",
+      "quality/feature-contracts/FEAT-002-interruption-resume.json"
+    ],
+    "change-haptics": [
+      "Japa/Haptics/HapticPlayer.swift",
+      "Japa/Haptics/HapticFeedback.swift",
+      "docs/BUGS.md"
+    ],
+    "change-audio": [
+      "Japa/Audio/CompletionTone.swift"
+    ],
+    "change-content": [
+      "Japa/Content/SeedMantras.swift",
+      "Japa/Models/Mantra.swift",
+      "docs/CONTENT_REVIEW.md"
+    ],
+    "change-ui": [
+      "Japa/Views",
+      "Japa/Design/Theme.swift",
+      "docs/ARCHITECTURE.md"
+    ],
+    "run-tests": [
+      "docs/TEST_PLAN.md",
+      "JapaTests",
+      "JapaUITests"
+    ],
+    "bugFix": [
+      "docs/BUGS.md",
+      "docs/ARCHITECTURE.md",
+      "docs/TEST_PLAN.md"
+    ],
+    "prepare-release": [
+      "docs/STATUS.md",
+      "docs/TEST_PLAN.md",
+      "docs/RELEASE_CHECKLIST.md",
+      "LAUNCH_READINESS.md"
+    ],
+    "evaluate-reuse": [
+      ".factory/library-catalog.json",
+      "docs/REUSABLE_COMPONENTS.md",
+      "docs/ARCHITECTURE.md"
+    ]
+  },
+  "nonAuthoritative": [
+    "templates",
+    "examples",
+    "quality/feature-contracts/EXAMPLE.json",
+    "quality/completion-reports/EXAMPLE.json"
+  ],
+  "notes": [
+    "Populated from the actual Japa source tree during the 2026-07-17 registration-upgrade pass (standard 0.2.0 -> 0.4.0).",
+    "ciConfiguration is intentionally empty: no .github/workflows exist yet (tracked as docs/BUGS.md B-CI).",
+    "docs/PROMPT_LOG.md and docs/JIRA_SYNC_PENDING.md are working logs, not canonical product documentation — see docs/README.md's documentation-gaps section.",
+    "Do not treat templates or examples as implemented product facts."
+  ]
+}
