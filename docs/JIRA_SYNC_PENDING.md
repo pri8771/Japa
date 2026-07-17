@@ -1,22 +1,22 @@
 ---
 id: DOC-JIRA-SYNC-PENDING
-canonicalFor: pending-jira-sync-queue
+canonicalFor: jira-sync-record
 status: active
 lastVerified: 2026-07-17
 readWhen:
-  - syncing to Jira once Atlassian auth is available
+  - checking which Jira issue tracks a given launch gate
 related:
   - STATUS.md
 supersedes: []
 ---
 
-# Jira Sync Pending
+# Jira Sync — Complete
 
-Jira was **not updated** in this session. Atlassian MCP authentication is still required — no Jira/Atlassian connector is authorized in this environment; issue tools are unavailable until the user connects it (via claude.ai connector settings, or `/mcp` in an interactive session).
+All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo connector was reconnected. This file is retained as a record of the sync, not a pending queue.
 
-**Jira project:** `Jala` (confirmed by the user 2026-07-17 — previously unnamed in this doc; not yet verified to exist in Jira itself since no connector is available to query it).
+**Jira project:** `JALA` (project id 10248, cloud `priyanshchordia-1779372280524.atlassian.net`)
 
-**Date Recorded:** 2026-07-16 (project name added 2026-07-17)  
+**Date Recorded:** 2026-07-16 (synced 2026-07-17)  
 **Related Prompt:** App Factory existing registration + onboarding; documentation/Notion/Jira update pass  
 **Notion sync:** completed (Projects row + Tasks JAP-010..015)
 
@@ -24,7 +24,8 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 
 ### EPIC — Japa App Factory onboarding / launch gates
 
-- **Jira Project:** Jala
+- **Jira Key:** [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1)
+- **Jira Project:** JALA
 - **Summary:** Japa existing-project App Factory registration and remaining launch gates
 - **Description:** Register and govern `pri8771/Japa` under `pri8771/iOS_app_factory_rules` as an existing iOS app. v1 is implemented (~85%). Remaining work is content sign-off, device haptics, a11y validation (incl. implementing Dynamic Type), and TestFlight/signing.
 - **Acceptance Criteria:**
@@ -45,14 +46,15 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `.factory/`, `docs/`, `quality/feature-contracts/`
 - **Suggested Issue Type:** Epic
 - **Suggested Parent / Epic:**
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced 2026-07-17**
 - **Notion mirror:** [JAP-010](https://app.notion.com/p/39fab1f2276581cd8fdcf09e68bc2318)
 
 ---
 
 ### STORY — Content sign-off (B6)
 
+- **Jira Key:** [JALA-2](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-2)
+- **Jira Project:** JALA
 - **Summary:** Seed mantra human content sign-off
 - **Description:** Human-review bundled seed mantras for accuracy/respect before App Store submit. Record in `docs/CONTENT_REVIEW.md`.
 - **Acceptance Criteria:** `CONTENT_REVIEW.md` signed; seed set approved
@@ -70,15 +72,15 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `docs/CONTENT_REVIEW.md`, `Japa/Content/SeedMantras.swift`
 - **Suggested Issue Type:** Story
 - **Suggested Parent / Epic:** Japa App Factory onboarding / launch gates
-- **Jira Project:** Jala
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced 2026-07-17**
 - **Notion mirror:** [JAP-011](https://app.notion.com/p/39fab1f227658199b1c0e226b50fc2f4)
 
 ---
 
 ### STORY — On-device haptic validation
 
+- **Jira Key:** [JALA-3](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-3)
+- **Jira Project:** JALA
 - **Summary:** Validate eyes-free distinct completion haptic on ≥2 iPhone classes
 - **Description:** Core differentiator cannot be proven in Simulator. Need device evidence + fallback path check.
 - **Acceptance Criteria:** Distinctness confirmed; silent-mode OK; evidence in `quality/evidence/`
@@ -96,15 +98,15 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `Japa/Haptics/`, `LAUNCH_READINESS.md`
 - **Suggested Issue Type:** Story
 - **Suggested Parent / Epic:** Japa App Factory onboarding / launch gates
-- **Jira Project:** Jala
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced 2026-07-17**
 - **Notion mirror:** [JAP-012](https://app.notion.com/p/39fab1f2276581819283d529671910d8)
 
 ---
 
 ### STORY — Accessibility validation
 
+- **Jira Key:** [JALA-4](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-4)
+- **Jira Project:** JALA
 - **Summary:** VoiceOver / Dynamic Type validation pass
 - **Description:** Accessibility code exists; needs real-user validation for an eyes-free app.
 - **Acceptance Criteria:** Round completable with VoiceOver; Dynamic Type usable; findings logged
@@ -122,15 +124,15 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `docs/BUGS.md`, practice views
 - **Suggested Issue Type:** Story
 - **Suggested Parent / Epic:** Japa App Factory onboarding / launch gates
-- **Jira Project:** Jala
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced 2026-07-17**
 - **Notion mirror:** [JAP-013](https://app.notion.com/p/39fab1f2276581589dd5c5ff118ed461)
 
 ---
 
 ### STORY — Signing + TestFlight / App Store prep
 
+- **Jira Key:** [JALA-5](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-5)
+- **Jira Project:** JALA
 - **Summary:** Enable signing and prepare TestFlight / App Store
 - **Description:** `project.yml` has `CODE_SIGNING_ALLOWED: NO` and empty team — blocks device evidence and distribution.
 - **Acceptance Criteria:** Signed device build; TestFlight; metadata/screenshots/support URL drafted
@@ -148,15 +150,15 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `project.yml`, `docs/RELEASE_CHECKLIST.md`
 - **Suggested Issue Type:** Story
 - **Suggested Parent / Epic:** Japa App Factory onboarding / launch gates
-- **Jira Project:** Jala
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced 2026-07-17**
 - **Notion mirror:** [JAP-014](https://app.notion.com/p/39fab1f22765811cae2fcefe3eb82a41)
 
 ---
 
 ### TASK — Sync pending items once Atlassian auth works
 
+- **Jira Key:** [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) — status **Done**
+- **Jira Project:** JALA
 - **Summary:** Create the above Jira issues and write keys back to docs
 - **Description:** Execute sync after MCP auth completes; mark this file entries synced with keys.
 - **Acceptance Criteria:** Jira keys present; pending entries marked synced
@@ -174,7 +176,5 @@ Jira was **not updated** in this session. Atlassian MCP authentication is still 
 - **Related Files:** `docs/JIRA_SYNC_PENDING.md`
 - **Suggested Issue Type:** Task
 - **Suggested Parent / Epic:** Japa App Factory onboarding / launch gates
-- **Jira Project:** Jala
-- **Sync Action:** create
-- **Reason Pending:** auth unavailable
+- **Sync Action:** ~~create~~ **synced and completed 2026-07-17**
 - **Notion mirror:** [JAP-015](https://app.notion.com/p/39fab1f227658175af7eded79bbdd29d)

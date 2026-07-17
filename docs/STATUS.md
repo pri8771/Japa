@@ -47,15 +47,15 @@ Complete App Factory onboarding for the existing Japa codebase: document baselin
 
 ## External trackers
 
-- **Notion Projects:** updated to MVP Ready (2026-07-16) — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
+- **Notion Projects:** updated to MVP Ready, reviewed 2026-07-17 — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
 - **Notion Tasks:** JAP-010 Done; JAP-011..015 created; JAP-004 Done; JAP-005 Ready
-- **Jira:** not synced — pending auth (see `docs/JIRA_SYNC_PENDING.md`)
+- **Jira:** synced 2026-07-17 — project `JALA`: [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1) (Epic) with [JALA-2](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-2)..[JALA-5](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-5) (launch-gate stories) and [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) (sync task, Done) — see `docs/JIRA_SYNC_PENDING.md`
 
 ## Blockers
 
-- `CODE_SIGNING_ALLOWED: NO` and empty `DEVELOPMENT_TEAM` in `project.yml` block device/TestFlight evidence until release signing is enabled
-- Seed mantra content review unsigned (App Store blocker for spiritual content)
-- Atlassian MCP auth incomplete — cannot create Jira issues yet
+- `CODE_SIGNING_ALLOWED: NO` and empty `DEVELOPMENT_TEAM` in `project.yml` block device/TestFlight evidence until release signing is enabled (tracked: JALA-5)
+- Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JALA-2)
+- On-device haptic and accessibility validation still required (tracked: JALA-3, JALA-4)
 
 ## Documentation reconciliation (2026-07-17)
 
