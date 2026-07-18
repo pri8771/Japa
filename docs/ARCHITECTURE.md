@@ -36,7 +36,7 @@ JapaApp
         │     ├── JapaEngine (pure value type — count/completion contract)
         │     ├── HapticPlayer / HapticFeedback
         │     └── CompletionTone (AVFoundation ambient)
-        └── Views (Root → Home / Practice / Completion / MantraSelect / History / Settings / MalaStylePicker / Intro)
+        └── Views (Root → Practice surface [is the home screen] / Completion overlay / MantraSelect / History / Settings / MalaStylePicker / Intro)
 ```
 
 ### Modules
@@ -68,8 +68,8 @@ Bundle ID: `com.priyansh.japa`
 
 - Application Support `/Japa/` JSON files (not UserDefaults / Core Data / SwiftData / iCloud)
 - Advance → haptic → async enqueue active-session write; `persistNow()` / `flush()` on resign/background
-- Home resume card restores exact bead via `JapaEngine(target:count:)`
-- Completion clears active snapshot and appends `PracticeSession` to history
+- The practice surface is the home screen (no Begin step, 2026-07-17): launch auto-resumes the exact persisted bead in place via `JapaEngine(target:count:)`
+- Completion clears active snapshot and appends `PracticeSession` to history; completion overlays the surface in place
 
 ### Quality boundaries
 

@@ -1,8 +1,14 @@
 import SwiftUI
 
-// Strand-arrangement styles: beads laid along a line/curve that slides so the
-// current bead sits in a fixed on-screen spot, rather than beads rotating
-// around a fixed ring.
+// Strand-arrangement styles: beads laid along a line that slides so the
+// current bead sits in a fixed on-screen spot.
+//
+// The visible beads are individual SwiftUI views (not Canvas) in a window
+// around the active bead, so the one-step slide on each tap actually
+// animates — a Canvas redraw snaps instantly and can't. The window is wide
+// enough to cover the screen plus one step of travel; beads entering or
+// leaving do so offscreen. The final (target) bead renders red so the
+// practitioner can see the round's end approaching.
 
 /// 02 — Warm & Tactile: sandalwood strand sliding through warm light.
 struct MalaRender_WarmTactile: View {
@@ -11,23 +17,31 @@ struct MalaRender_WarmTactile: View {
         GeometryReader { geo in
             let c = MalaCanvas(size: geo.size)
             let y: CGFloat = 270, sp: CGFloat = 34
-            let tx = 139 - CGFloat(count - 1) * sp
+            let active = count - 1
             ZStack {
                 RadialGradient(colors: [Color(hex: 0xf5e8d3), Color(hex: 0xe2ccaa)], center: UnitPoint(x: 0.5, y: 0.2), startRadius: 0, endRadius: c.len(300))
-                Canvas { ctx, _ in
-                    for i in 0..<target {
-                        let x = c.x(CGFloat(i) * sp + tx)
-                        guard x > -c.len(20), x < geo.size.width + c.len(20) else { continue }
-                        let py = c.y(y)
-                        let rad = c.len(16)
-                        ctx.fill(Path(ellipseIn: CGRect(x: x - rad, y: py - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0x7c4a24)))
-                        let hr = c.len(5)
-                        ctx.fill(Path(ellipseIn: CGRect(x: x - c.len(4.5) - hr / 2, y: py - c.len(5.5) - hr / 2, width: hr, height: hr * 0.7)),
-                                 with: .color(Color.white.opacity(0.26)))
+                Ellipse().fill(Color(hex: 0x5a3a1e).opacity(0.2)).frame(width: c.len(70), height: c.len(15)).position(c.pt(139, y + 22))
+                Rectangle().fill(Color(hex: 0x6b4a2b).opacity(0.5))
+                    .frame(width: geo.size.width + c.len(120), height: c.len(5))
+                    .position(x: geo.size.width / 2, y: c.y(y))
+
+                ForEach(strandWindow(active: active, target: target, halfWidth: 8), id: \.self) { idx in
+                    ZStack {
+                        Circle()
+                            .fill(idx == target - 1 ? Color.malaFinalBead : Color(hex: 0x7c4a24))
+                            .frame(width: c.len(32), height: c.len(32))
+                        Ellipse().fill(Color.white.opacity(0.26))
+                            .frame(width: c.len(10), height: c.len(6.8))
+                            .offset(x: -c.len(4.5), y: -c.len(5.5))
                     }
+                    .position(x: c.x(139) + c.x(sp) * CGFloat(idx - active), y: c.y(y))
+                    .malaTapTransition(count, reduceMotion: reduceMotion)
                 }
-                Circle().fill(Color(hex: 0x7c4a24)).frame(width: c.len(41), height: c.len(41)).position(c.pt(139, y))
+
+                // Fixed warm spotlight + the settled active bead at center.
+                Circle()
+                    .fill(active == target - 1 ? Color.malaFinalBead : Color(hex: 0x7c4a24))
+                    .frame(width: c.len(41), height: c.len(41)).position(c.pt(139, y))
                 Ellipse().fill(Color.white.opacity(0.3)).frame(width: c.len(13), height: c.len(8.8)).position(c.pt(133, y - 7))
                 Circle().fill(RadialGradient(colors: [Color(hex: 0xfff6e8).opacity(0.6), Color(hex: 0xfff6e8).opacity(0.14), Color(hex: 0xfff6e8).opacity(0)], center: .center, startRadius: 0, endRadius: c.len(30)))
                     .frame(width: c.len(60), height: c.len(60)).position(c.pt(139, y)).blendMode(.screen)
@@ -40,7 +54,6 @@ struct MalaRender_WarmTactile: View {
                 )
             }
             .clipped()
-            .malaTapTransition(count, reduceMotion: reduceMotion)
         }
     }
 }
@@ -52,22 +65,22 @@ struct MalaRender_SoftlySpiritual: View {
         GeometryReader { geo in
             let c = MalaCanvas(size: geo.size)
             let x: CGFloat = 139, cy: CGFloat = 296, sp: CGFloat = 30
-            let ty = cy - CGFloat(count - 1) * sp
+            let active = count - 1
             ZStack {
                 RadialGradient(colors: [Color(hex: 0x4c3b66), Color(hex: 0x241a34), Color(hex: 0x1a1327)], center: UnitPoint(x: 0.5, y: 0.34), startRadius: 0, endRadius: c.len(400))
-                Canvas { ctx, _ in
-                    for i in 0..<target {
-                        let py = c.y(CGFloat(i) * sp + ty)
-                        guard py > -c.len(20), py < geo.size.height + c.len(20) else { continue }
-                        let px = c.x(x)
-                        let glowR = c.len(13)
-                        ctx.fill(Path(ellipseIn: CGRect(x: px - glowR, y: py - glowR, width: glowR * 2, height: glowR * 2)),
-                                 with: .color(Color(hex: 0xd98ba0).opacity(0.22)))
-                        let coreR = c.len(6.5)
-                        ctx.fill(Path(ellipseIn: CGRect(x: px - coreR, y: py - coreR, width: coreR * 2, height: coreR * 2)),
-                                 with: .color(Color(hex: 0xf0c39c)))
+
+                ForEach(strandWindow(active: active, target: target, halfWidth: 14), id: \.self) { idx in
+                    ZStack {
+                        Circle().fill(RadialGradient(colors: [Color(hex: 0xf6d9c0).opacity(0.5), Color(hex: 0xd98ba0).opacity(0.18), Color(hex: 0xd98ba0).opacity(0)], center: .center, startRadius: 0, endRadius: c.len(13)))
+                            .frame(width: c.len(26), height: c.len(26))
+                        Circle()
+                            .fill(idx == target - 1 ? Color.malaFinalBead : Color(hex: 0xf0c39c))
+                            .frame(width: c.len(13), height: c.len(13))
                     }
+                    .position(x: c.x(x), y: c.y(cy) + c.y(sp) * CGFloat(idx - active))
+                    .malaTapTransition(count, reduceMotion: reduceMotion)
                 }
+
                 Circle().fill(RadialGradient(colors: [Color(hex: 0xffe9d6).opacity(0.85), Color(hex: 0xf3b98f).opacity(0.3), Color(hex: 0xf3b98f).opacity(0)], center: .center, startRadius: 0, endRadius: c.len(30)))
                     .frame(width: c.len(60), height: c.len(60))
                     .position(c.pt(x, cy))
@@ -81,7 +94,6 @@ struct MalaRender_SoftlySpiritual: View {
                 )
             }
             .clipped()
-            .malaTapTransition(count, reduceMotion: reduceMotion)
         }
     }
 }
@@ -93,19 +105,18 @@ struct MalaRender_DarkMeditative: View {
         GeometryReader { geo in
             let c = MalaCanvas(size: geo.size)
             let x: CGFloat = 139, cy: CGFloat = 300, sp: CGFloat = 26
-            let ty = cy - CGFloat(count - 1) * sp
+            let active = count - 1
             ZStack {
                 RadialGradient(colors: [Color(hex: 0x0e0b08), Color.black], center: UnitPoint(x: 0.5, y: 0.46), startRadius: 0, endRadius: c.len(400))
-                Canvas { ctx, _ in
-                    for i in 0..<target {
-                        let py = c.y(CGFloat(i) * sp + ty)
-                        guard py > -c.len(20), py < geo.size.height + c.len(20) else { continue }
-                        let px = c.x(x)
-                        let r = c.len(6)
-                        ctx.fill(Path(ellipseIn: CGRect(x: px - r, y: py - r, width: r * 2, height: r * 2)),
-                                 with: .color(Color(hex: 0x28211a)))
-                    }
+
+                ForEach(strandWindow(active: active, target: target, halfWidth: 14), id: \.self) { idx in
+                    Circle()
+                        .fill(idx == target - 1 ? Color.malaFinalBead.opacity(0.85) : Color(hex: 0x28211a))
+                        .frame(width: c.len(12), height: c.len(12))
+                        .position(x: c.x(x), y: c.y(cy) + c.y(sp) * CGFloat(idx - active))
+                        .malaTapTransition(count, reduceMotion: reduceMotion)
                 }
+
                 Circle().fill(RadialGradient(colors: [Color(hex: 0xffd9a0).opacity(0.95), Color(hex: 0xe07d2a).opacity(0.5), Color(hex: 0xe07d2a).opacity(0)], center: .center, startRadius: 0, endRadius: c.len(34)))
                     .frame(width: c.len(68), height: c.len(68))
                     .position(c.pt(x, cy))
@@ -113,7 +124,6 @@ struct MalaRender_DarkMeditative: View {
                 Circle().fill(RadialGradient(colors: [Color(hex: 0xfff1d4), Color(hex: 0xf0a544), Color(hex: 0xc96a1e)], center: UnitPoint(x: 0.4, y: 0.34), startRadius: 0, endRadius: c.len(7)))
                     .frame(width: c.len(14), height: c.len(14))
                     .position(c.pt(x, cy))
-                    .malaTapTransition(count, reduceMotion: reduceMotion)
 
                 MalaCountBlock(
                     count: count, target: target, topFraction: 0.75,
@@ -135,29 +145,34 @@ struct MalaRender_LightAiry: View {
         GeometryReader { geo in
             let c = MalaCanvas(size: geo.size)
             let y: CGFloat = 302, sp: CGFloat = 30
-            let tx = 139 - CGFloat(count - 1) * sp
+            let active = count - 1
             ZStack {
                 LinearGradient(colors: [Color(hex: 0xfde8d4), Color(hex: 0xf6dbe0), Color(hex: 0xdfeaf4)], startPoint: .top, endPoint: .bottom)
-                Canvas { ctx, _ in
-                    for i in 0..<target {
-                        let x = c.x(CGFloat(i) * sp + tx)
-                        guard x > -c.len(20), x < geo.size.width + c.len(20) else { continue }
-                        let py = c.y(y)
-                        let rad = c.len(13)
-                        ctx.fill(Path(ellipseIn: CGRect(x: x - rad, y: py - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0xfce7dd)))
+
+                ForEach(strandWindow(active: active, target: target, halfWidth: 8), id: \.self) { idx in
+                    ZStack {
+                        Circle()
+                            .fill(idx == target - 1 ? Color.malaFinalBead.opacity(0.9) : Color(hex: 0xfce7dd))
+                            .frame(width: c.len(26), height: c.len(26))
+                        Ellipse().fill(Color.white.opacity(0.7))
+                            .frame(width: c.len(9), height: c.len(6))
+                            .offset(x: -c.len(4), y: -c.len(5))
                     }
+                    .position(x: c.x(139) + c.x(sp) * CGFloat(idx - active), y: c.y(y))
+                    .malaTapTransition(count, reduceMotion: reduceMotion)
                 }
+
                 Circle().stroke(Color.white.opacity(0.5), lineWidth: c.len(2)).frame(width: c.len(52), height: c.len(52))
                     .position(c.pt(139, 264))
                     .malaLoop(duration: 3.4, scale: 1.22, opacity: 0.85, active: !reduceMotion)
                 ZStack {
-                    Circle().fill(Color(hex: 0xfff0ea)).frame(width: c.len(32), height: c.len(32))
+                    Circle()
+                        .fill(active == target - 1 ? Color.malaFinalBead.opacity(0.9) : Color(hex: 0xfff0ea))
+                        .frame(width: c.len(32), height: c.len(32))
                     Ellipse().fill(Color.white.opacity(0.85)).frame(width: c.len(11), height: c.len(7.2)).offset(x: -c.len(5), y: -c.len(6))
                 }
                 .position(c.pt(139, 264))
                 .malaLoop(duration: 4.5, yOffset: -c.len(7), active: !reduceMotion)
-                .malaTapTransition(count, reduceMotion: reduceMotion)
 
                 MalaCountBlock(
                     count: count, target: target, topFraction: 0.3,
@@ -167,9 +182,17 @@ struct MalaRender_LightAiry: View {
                 )
             }
             .clipped()
-            .malaTapTransition(count, reduceMotion: reduceMotion)
         }
     }
+}
+
+/// The visible bead-index window around the active bead. Clamped to the real
+/// bead range and guaranteed non-empty (count 0 → active -1 still yields a
+/// valid leading window).
+func strandWindow(active: Int, target: Int, halfWidth: Int) -> ClosedRange<Int> {
+    let lower = max(0, active - halfWidth)
+    let upper = min(target - 1, active + halfWidth)
+    return lower...max(lower, upper)
 }
 
 /// 14 — Zen Ink: sumi-e ink dots along an open enso.
@@ -192,8 +215,11 @@ struct MalaRender_ZenInk: View {
                         let ang = a0 + Double(i) * step
                         let p = c.polar(cx: cx, cy: cy, radius: R, degrees: ang)
                         let rad: CGFloat = i < count ? c.len(3.4) : c.len(2.4)
+                        let color: Color = i == target - 1
+                            ? .malaFinalBead
+                            : Color(hex: 0x1a1712).opacity(i < count ? 0.9 : 0.3)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0x1a1712).opacity(i < count ? 0.9 : 0.3)))
+                                 with: .color(color))
                     }
                 }
                 let aPt = c.polar(cx: cx, cy: cy, radius: R, degrees: a0 + Double(count - 1) * step)
@@ -237,8 +263,11 @@ struct MalaRender_Aurora: View {
                         let t = target > 1 ? CGFloat(i) / CGFloat(target - 1) : 0
                         let p = c.pt(px(t), py(t))
                         let r = c.len(2.2)
+                        let color: Color = i == target - 1
+                            ? .malaFinalBead
+                            : Color(hex: 0xbff0d2).opacity(i < count ? 0.8 : 0.28)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)),
-                                 with: .color(Color(hex: 0xbff0d2).opacity(i < count ? 0.8 : 0.28)))
+                                 with: .color(color))
                     }
                 }
                 let at = target > 1 ? CGFloat(count - 1) / CGFloat(target - 1) : 0
@@ -287,8 +316,9 @@ struct MalaRender_WovenTextile: View {
                         let t = target > 1 ? CGFloat(i) / CGFloat(target - 1) : 0
                         let p = c.pt(dropX(t), py(t))
                         let rad = c.len(5.5)
+                        let color: Color = i == target - 1 ? .malaFinalBead : Color(hex: 0x8a4a30)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0x8a4a30)))
+                                 with: .color(color))
                     }
                 }
                 .malaLoop(duration: 6, rotationDegrees: 1.4, active: !reduceMotion)

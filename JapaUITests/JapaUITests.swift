@@ -53,22 +53,20 @@ final class JapaUITests: XCTestCase {
         add(attachment)
     }
 
-    private func dismissIntroAndBegin(_ app: XCUIApplication) {
+    /// The practice surface is the home screen — dismissing the intro drops the
+    /// user straight onto the live round; there is no Begin step.
+    private func dismissIntro(_ app: XCUIApplication) {
         let introBegin = app.buttons["introBegin"]
         if introBegin.waitForExistence(timeout: 8) {
             attach(app, "01-Intro")
             introBegin.tap()
         }
-        let homeBegin = app.buttons["homeBegin"]
-        XCTAssertTrue(homeBegin.waitForExistence(timeout: 8), "Home Begin button should appear")
-        attach(app, "02-Home")
-        homeBegin.tap()
     }
 
     func testTapAdvancesAndUndoSteps() {
         let app = makeApp(target: 5)
         app.launch()
-        dismissIntroAndBegin(app)
+        dismissIntro(app)
 
         let ring = app.buttons["advanceRing"]
         XCTAssertTrue(ring.waitForExistence(timeout: 8))
@@ -86,7 +84,7 @@ final class JapaUITests: XCTestCase {
     func testReachingTargetShowsCompletion() {
         let app = makeApp(target: 5)
         app.launch()
-        dismissIntroAndBegin(app)
+        dismissIntro(app)
 
         let ring = app.buttons["advanceRing"]
         XCTAssertTrue(ring.waitForExistence(timeout: 8))
@@ -142,11 +140,11 @@ final class JapaUITests: XCTestCase {
         XCTAssertTrue(introBegin.isHittable)
         introBegin.tap()
 
-        let homeBegin = app.buttons["homeBegin"]
-        XCTAssertTrue(homeBegin.waitForExistence(timeout: 8))
-        XCTAssertTrue(homeBegin.isHittable)
-
+        // The live practice surface is the home screen; its chrome must be
+        // present and hittable at accessibility text size.
+        XCTAssertTrue(app.buttons["advanceRing"].waitForExistence(timeout: 8))
         XCTAssertTrue(app.buttons["settingsButton"].exists)
         XCTAssertTrue(app.buttons["historyButton"].exists)
+        XCTAssertTrue(app.buttons["Undo"].isHittable)
     }
 }

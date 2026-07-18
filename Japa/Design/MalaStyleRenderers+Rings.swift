@@ -66,8 +66,11 @@ struct MalaRender_UltraMinimal: View {
                     for i in 0..<target {
                         let p = c.polar(cx: cx, cy: cy, radius: r, degrees: Double(i) * step)
                         let dotR: CGFloat = i < count ? c.len(2.5) : c.len(2)
+                        let color: Color = i == target - 1
+                            ? .malaFinalBead
+                            : Color(hex: 0x161512).opacity(i < count ? 0.5 : 0.17)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - dotR, y: p.y - dotR, width: dotR * 2, height: dotR * 2)),
-                                 with: .color(Color(hex: 0x161512).opacity(i < count ? 0.5 : 0.17)))
+                                 with: .color(color))
                     }
                 }
                 let activePt = c.polar(cx: cx, cy: cy, radius: r, degrees: Double(count - 1) * step)
@@ -105,7 +108,7 @@ struct MalaRender_ModernLuxury: View {
                         let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                         let rad = c.len(5.4)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0x22242c)))
+                                 with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0x22242c)))
                     }
                 }
                 let activeAngle = Double(count - 1) * step
@@ -155,7 +158,7 @@ struct MalaRender_AbstractAtmospheric: View {
                             let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                             let rad = c.len(3.6)
                             ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                     with: .color(Color(hex: 0x4fc3d4).opacity(0.85)))
+                                     with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0x4fc3d4).opacity(0.85)))
                         }
                     }
                     let activePt = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(count - 1) * step)
@@ -264,7 +267,7 @@ struct MalaRender_Liquid: View {
                         let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                         let rad = c.len(3.8)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0x5fb6d6).opacity(0.9)))
+                                 with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0x5fb6d6).opacity(0.9)))
                     }
                 }
                 let activePt = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(count - 1) * step)
@@ -311,7 +314,7 @@ struct MalaRender_Crystalline: View {
                         path.addLine(to: CGPoint(x: p.x, y: p.y + s))
                         path.addLine(to: CGPoint(x: p.x - s, y: p.y))
                         path.closeSubpath()
-                        ctx.fill(path, with: .color(Color(hex: 0xa9c4e6)))
+                        ctx.fill(path, with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0xa9c4e6)))
                     }
                 }
                 let activeAngle = Double(count - 1) * step
@@ -377,7 +380,7 @@ struct MalaRender_Celestial: View {
                             let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                             let rad = c.len(2.6)
                             ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                     with: .color(Color(hex: 0xb9c6f0)))
+                                     with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0xb9c6f0)))
                         }
                     }
                     let activePt = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(count - 1) * step)
@@ -421,7 +424,7 @@ struct MalaRender_Botanical: View {
                             let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                             let rad = c.len(5.2)
                             ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                     with: .color(Color(hex: 0x8a6a33)))
+                                     with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0x8a6a33)))
                         }
                     }
                     let activePt = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(count - 1) * step)
@@ -461,7 +464,7 @@ struct MalaRender_TempleBrass: View {
                         let p = c.polar(cx: cx, cy: cy, radius: R, degrees: Double(i) * step)
                         let rad = c.len(5)
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
-                                 with: .color(Color(hex: 0xc79a3e)))
+                                 with: .color(i == target - 1 ? .malaFinalBead : Color(hex: 0xc79a3e)))
                     }
                 }
                 let activeAngle = Double(count - 1) * step

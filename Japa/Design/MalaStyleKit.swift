@@ -1,5 +1,12 @@
 import SwiftUI
 
+extension Color {
+    /// The final (target) bead in every bead-based style — deliberately a
+    /// different color (red, per product direction) so the practitioner can
+    /// see the round's end approaching at a glance.
+    static let malaFinalBead = Color(hex: 0xCE3B2C)
+}
+
 /// Maps the mala styles' design coordinates (fixed 278×604 canvas, matching
 /// the source design's phone-frame viewBox) onto whatever size the practice
 /// screen actually renders at. Circles stay circular by using a single

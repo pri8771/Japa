@@ -31,54 +31,13 @@ struct MalaStylePickerView: View {
     private var currentTarget: Int { app.preferences.defaultTarget }
 
     var body: some View {
-        VStack(spacing: 28) {
-            deviceFrame
-                .frame(width: 278, height: 604)
-                .padding(.top, 12)
-
-            Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.background.ignoresSafeArea())
-        .navigationTitle("Change Mala")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            pickerIndex = appliedStyle.rawValue
-        }
-    }
-
-    // MARK: Device frame chrome
-
-    private var deviceFrame: some View {
+        // Full-screen live previews — the style fills the real screen (no fake
+        // device bezel), so what you see and feel is exactly what you'll get.
+        // The chevrons and info/Apply overlay live once at the container level
+        // (not per page), so there is exactly one of each on screen.
         ZStack {
-            RoundedRectangle(cornerRadius: 48, style: .continuous)
-                .fill(LinearGradient(colors: [Color(hex: 0x2a2a2c), Color(hex: 0x0d0d0e)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: .black.opacity(0.35), radius: 30, y: 20)
-
             TabView(selection: $pickerIndex) {
                 ForEach(styles) { style in
-                    previewPage(for: style)
-                        .tag(style.rawValue)
-                }
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .padding(11)
-            .clipShape(RoundedRectangle(cornerRadius: 48, style: .continuous))
-
-            // Notch.
-            Capsule()
-                .fill(Color(hex: 0x050505))
-                .frame(width: 86, height: 25)
-                .position(x: 139, y: 24.5)
-                .allowsHitTesting(false)
-        }
-    }
-
-    private func previewPage(for style: MalaStyle) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 38, style: .continuous)
-                .fill(Color.black)
-                .overlay(
                     MalaStyleView(
                         style: style,
                         count: previewCount(for: style),
@@ -86,21 +45,14 @@ struct MalaStylePickerView: View {
                         isComplete: false,
                         breathing: true
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 38, style: .continuous))
+                    .ignoresSafeArea()
                     .contentShape(Rectangle())
                     .onTapGesture { tapAdvance(style) }
-                )
-
-            VStack {
-                Text("Change Mala")
-                    .font(Theme.ui(10, weight: .semibold))
-                    .tracking(3)
-                    .textCase(.uppercase)
-                    .foregroundStyle(.white.opacity(0.55))
-                    .padding(.top, 44)
-                Spacer()
+                    .tag(style.rawValue)
+                }
             }
-            .allowsHitTesting(false)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea(edges: .bottom)
 
             HStack {
                 chevron("chevron.left") { step(-1) }
@@ -111,8 +63,16 @@ struct MalaStylePickerView: View {
 
             VStack {
                 Spacer()
-                bottomOverlay(for: style)
+                bottomOverlay(for: currentStyle)
             }
+        }
+        .background(Color.black.ignoresSafeArea())
+        .navigationTitle("Change Mala")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .onAppear {
+            pickerIndex = appliedStyle.rawValue
         }
     }
 

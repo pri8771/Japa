@@ -14,22 +14,29 @@ struct MalaRender_Semi3DSculptural: View {
                 LinearGradient(colors: [Color(hex: 0xeceae5), Color(hex: 0xd3cdc4), Color(hex: 0xc2bbb0)], startPoint: .top, endPoint: .bottom)
                 Ellipse().fill(RadialGradient(colors: [Color(hex: 0x463c30).opacity(0.34), .clear], center: .center, startRadius: 0, endRadius: c.len(75)))
                     .frame(width: c.len(150), height: c.len(30)).blur(radius: c.len(4)).position(c.pt(139, 322))
-                ForEach(-3...3, id: \.self) { o in
-                    let ao = Double(abs(o))
-                    let sc = 1 - ao * 0.23
-                    let bl = ao * 2.6
-                    let op = max(0, 1 - ao * 0.19)
-                    Circle()
-                        .fill(RadialGradient(colors: [Color(hex: 0xf4f1ea), Color(hex: 0xcfc7ba), Color(hex: 0x8f887b), Color(hex: 0x5d564b)],
-                                              center: UnitPoint(x: 0.33, y: 0.27), startRadius: 0, endRadius: c.len(61)))
-                        .frame(width: c.len(122), height: c.len(122))
-                        .blur(radius: c.len(bl))
-                        .opacity(op)
-                        .scaleEffect(sc)
-                        .position(c.pt(139 + CGFloat(o) * 74, 238))
-                        .zIndex(10 - ao)
+                // Bead-index identity (not slot offset) so each bead's view
+                // persists across taps and its position/scale/blur animate —
+                // the design's "rolling through focus" motion.
+                let active = count - 1
+                ForEach((active - 3)...(active + 3), id: \.self) { idx in
+                    if idx >= 0 && idx < target {
+                        let o = Double(idx - active)
+                        let ao = abs(o)
+                        let stoneColors: [Color] = idx == target - 1
+                            ? [Color(hex: 0xf6c1b8), Color(hex: 0xd97a68), Color(hex: 0xa8402e), Color(hex: 0x6e2417)]
+                            : [Color(hex: 0xf4f1ea), Color(hex: 0xcfc7ba), Color(hex: 0x8f887b), Color(hex: 0x5d564b)]
+                        Circle()
+                            .fill(RadialGradient(colors: stoneColors,
+                                                  center: UnitPoint(x: 0.33, y: 0.27), startRadius: 0, endRadius: c.len(61)))
+                            .frame(width: c.len(122), height: c.len(122))
+                            .blur(radius: c.len(ao * 2.6))
+                            .opacity(max(0, 1 - ao * 0.19))
+                            .scaleEffect(1 - ao * 0.23)
+                            .position(c.pt(139 + CGFloat(o) * 74, 238))
+                            .zIndex(10 - ao)
+                            .malaTapTransition(count, reduceMotion: reduceMotion)
+                    }
                 }
-                .malaTapTransition(count, reduceMotion: reduceMotion)
 
                 MalaCountBlock(
                     count: count, target: target, topFraction: 0.66,
@@ -64,6 +71,10 @@ struct MalaRender_PainterlyRealism: View {
                             if i < count {
                                 ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
                                          with: .color(Color(hex: 0x7c4a2c)))
+                            }
+                            if i == target - 1 {
+                                ctx.fill(Path(ellipseIn: CGRect(x: p.x - rad, y: p.y - rad, width: rad * 2, height: rad * 2)),
+                                         with: .color(.malaFinalBead))
                             }
                         }
                     }
@@ -143,38 +154,45 @@ struct MalaRender_CeramicGlaze: View {
                 LinearGradient(colors: [Color(hex: 0xe8ebe4), Color(hex: 0xd3d8ce), Color(hex: 0xc3cabf)], startPoint: .top, endPoint: .bottom)
                 Ellipse().fill(RadialGradient(colors: [Color(hex: 0x465648).opacity(0.28), .clear], center: .center, startRadius: 0, endRadius: c.len(60)))
                     .frame(width: c.len(120), height: c.len(22)).blur(radius: c.len(4)).position(c.pt(139, 312))
-                ForEach(-3...3, id: \.self) { o in
-                    let ao = Double(abs(o))
-                    let sc = 1 - ao * 0.14
-                    let op = max(0, 1 - ao * 0.22)
-                    ZStack {
-                        Circle()
-                            .fill(RadialGradient(colors: [Color(hex: 0xeef3ea), Color(hex: 0xcdd8cb), Color(hex: 0xa7b6a6), Color(hex: 0x7f9080)],
-                                                  center: UnitPoint(x: 0.38, y: 0.32), startRadius: 0, endRadius: c.len(48)))
-                            .frame(width: c.len(96), height: c.len(96))
-                        // Fine crackle (craquelure) on the focused bead and its
-                        // immediate neighbors — the "finely crackled" glaze this
-                        // style is named for.
-                        if ao <= 1 {
-                            CeramicCraquelure()
-                                .stroke(Color(hex: 0x7f9080), lineWidth: c.len(0.6))
+                // Bead-index identity so the next bead visibly rolls into the
+                // light on each tap (a slot-offset identity never moves).
+                let active = count - 1
+                ForEach((active - 3)...(active + 3), id: \.self) { idx in
+                    if idx >= 0 && idx < target {
+                        let o = Double(idx - active)
+                        let ao = abs(o)
+                        let glazeColors: [Color] = idx == target - 1
+                            ? [Color(hex: 0xf3d4cd), Color(hex: 0xd88f80), Color(hex: 0xb04c3a), Color(hex: 0x7c2f22)]
+                            : [Color(hex: 0xeef3ea), Color(hex: 0xcdd8cb), Color(hex: 0xa7b6a6), Color(hex: 0x7f9080)]
+                        ZStack {
+                            Circle()
+                                .fill(RadialGradient(colors: glazeColors,
+                                                      center: UnitPoint(x: 0.38, y: 0.32), startRadius: 0, endRadius: c.len(48)))
                                 .frame(width: c.len(96), height: c.len(96))
-                                .opacity(0.4)
+                            // Fine crackle (craquelure) on the focused bead and its
+                            // immediate neighbors — the "finely crackled" glaze this
+                            // style is named for.
+                            if ao <= 1 {
+                                CeramicCraquelure()
+                                    .stroke(Color(hex: 0x7f9080), lineWidth: c.len(0.6))
+                                    .frame(width: c.len(96), height: c.len(96))
+                                    .opacity(0.4)
+                            }
+                            if idx == active {
+                                Ellipse().fill(Color.white.opacity(0.5)).frame(width: c.len(26), height: c.len(16))
+                                    .offset(x: -c.len(18), y: -c.len(28))
+                                    .blur(radius: c.len(3))
+                                    .malaLoop(duration: 3.4, opacity: 0.5, active: !reduceMotion)
+                            }
                         }
-                        if o == 0 {
-                            Ellipse().fill(Color.white.opacity(0.5)).frame(width: c.len(26), height: c.len(16))
-                                .offset(x: -c.len(18), y: -c.len(28))
-                                .blur(radius: c.len(3))
-                                .malaLoop(duration: 3.4, opacity: 0.5, active: !reduceMotion)
-                        }
+                        .rotationEffect(.degrees(o * 10))
+                        .scaleEffect(1 - ao * 0.14)
+                        .opacity(max(0, 1 - ao * 0.22))
+                        .position(c.pt(139 + CGFloat(o) * 80, 250))
+                        .zIndex(10 - ao)
+                        .malaTapTransition(count, reduceMotion: reduceMotion)
                     }
-                    .rotationEffect(.degrees(Double(o) * 10))
-                    .scaleEffect(sc)
-                    .opacity(op)
-                    .position(c.pt(139 + CGFloat(o) * 80, 250))
-                    .zIndex(10 - ao)
                 }
-                .malaTapTransition(count, reduceMotion: reduceMotion)
 
                 MalaCountBlock(
                     count: count, target: target, topFraction: 0.62,

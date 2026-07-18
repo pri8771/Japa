@@ -23,13 +23,13 @@ A quiet, local-first digital mala for eyes-free mantra repetition: advance by fe
 | ID | Feature | Status | Notes |
 |----|---------|--------|-------|
 | F1 | Repetition engine | implemented | Unit-tested hard gate |
-| F2 | Eyes-free practice screen | implemented | Device feel validation pending |
+| F2 | Eyes-free practice screen | implemented | Now the home screen itself (no Begin step, auto-resume in place, 2026-07-17); device feel validation pending |
 | F3 | Distinct completion haptic + tone | implemented | On-device A/B pending |
 | F4 | Seed + free-text mantras | implemented | Content sign-off pending |
 | F5 | Session completion + quiet history | implemented | No streaks |
 | F6 | Preferences (target / tone / intensity / mala style) | implemented | Settings includes quiet Change Mala entry point |
 | F7 | Local-first persistence + privacy | implemented | PrivacyInfo present |
-| F8 | Mala style picker + 21 visual worlds | implemented | Classic remains default; alternatives are visual-only and preserve the same count contract |
+| F8 | Mala style picker + 21 visual worlds | implemented | Classic remains default; alternatives are visual-only and preserve the same count contract. All styles animate per tap; final/target bead renders red; picker previews full-screen (no device frame) (2026-07-17) |
 | — | Intro (skippable) | implemented | |
 | — | App icon | implemented | |
 
