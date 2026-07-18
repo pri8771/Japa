@@ -24,12 +24,12 @@ supersedes: []
 
 ## Coverage summary (source inventory 2026-07-16)
 
-- **47** unit/flow tests
-- **9** UI tests
+- **52** unit/flow tests
+- **10** UI tests
 - Engine: advance, completion-once, undo floor, boundaries, reconstruct from count
-- Persistence: prefs/sessions/active-session round-trip + flush
-- Practice flow: resume across relaunch, honest partials, no streak fields
-- UI: advance/undo/complete, settings/history, resume after terminate, mantra custom, history delete, mala-style apply, accessibility text-size smoke
+- Persistence: prefs/sessions/active-session round-trip + flush; legacy-snapshot lenient decode (`updatedAt` migration)
+- Practice flow: resume across relaunch, honest partials, no streak fields, stale-round detection/finish/touch
+- UI: advance/undo/complete, settings/history, in-place resume after terminate, mantra custom, history delete, mala-style apply, accessibility text-size smoke, stale-round Finish prompt end-to-end
 
 ## Not automatable (device-only)
 

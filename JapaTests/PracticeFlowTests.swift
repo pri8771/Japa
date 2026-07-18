@@ -223,4 +223,81 @@ final class PracticeFlowTests: XCTestCase {
             XCTAssertFalse(name.contains("chain"), "Found a chain property: \(name)")
         }
     }
+
+    // MARK: Stale-round finish prompt
+
+    func testStalenessSurvivesRelaunchAndTracksInteraction() {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("japa-stale-\(UUID().uuidString)", isDirectory: true)
+        let persistence = Persistence(directory: dir)
+
+        let app = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
+        app.setDefaultTarget(10)
+        let controller = app.newPracticeController()
+        controller.prepare()
+        controller.advance()
+        controller.advance()
+        XCTAssertFalse(controller.isStale(after: 60), "Just interacted — not stale")
+        XCTAssertTrue(controller.isStale(after: 0), "Zero threshold means any counted round is stale")
+        controller.persistNow()
+
+        // Relaunch restores the *interaction* timestamp, not "now" — a round
+        // left overnight is recognized as stale even across a force-quit.
+        let relaunched = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
+        let resumed = relaunched.resumePracticeController()
+        XCTAssertNotNil(resumed)
+        XCTAssertTrue(resumed!.isStale(after: 0))
+        XCTAssertFalse(resumed!.isStale(after: 3600))
+    }
+
+    func testFreshAndCompletedRoundsAreNeverStale() {
+        let app = makeApp()
+        app.setDefaultTarget(2)
+        let controller = app.newPracticeController()
+        controller.prepare()
+        XCTAssertFalse(controller.isStale(after: 0), "A zero-count round is never stale")
+        controller.advance()
+        controller.advance() // completes
+        XCTAssertEqual(controller.phase, .completed)
+        XCTAssertFalse(controller.isStale(after: 0), "A completed round is never stale")
+    }
+
+    func testFinishEarlyRecordsHonestPartialAndStartsFresh() {
+        let app = makeApp()
+        app.setDefaultTarget(10)
+        let controller = app.newPracticeController()
+        controller.prepare()
+        for _ in 0..<3 { controller.advance() }
+
+        controller.finishEarly()
+
+        XCTAssertEqual(app.sessions.count, 1)
+        XCTAssertEqual(app.sessions.first?.completedCount, 3)
+        XCTAssertFalse(app.sessions.first?.reachedTarget ?? true, "Finish records an honest partial")
+        XCTAssertEqual(controller.count, 0, "Finish starts a fresh round in place")
+        XCTAssertEqual(controller.phase, .practicing)
+    }
+
+    func testTouchClearsStalenessAfterKeepGoing() {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("japa-touch-\(UUID().uuidString)", isDirectory: true)
+        let persistence = Persistence(directory: dir)
+
+        // Persist a round whose last interaction was an hour ago.
+        let store = ActiveSessionStore(persistence: persistence)
+        store.save(ActiveSessionState(
+            target: 10, count: 4, mantraTitle: "Om",
+            startedAt: Date(timeIntervalSinceNow: -7200),
+            updatedAt: Date(timeIntervalSinceNow: -3600)
+        ))
+        store.flush()
+
+        let app = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
+        let resumed = app.resumePracticeController()
+        XCTAssertNotNil(resumed)
+        XCTAssertTrue(resumed!.isStale(after: 1800), "An hour-old interaction is stale past 30 min")
+
+        resumed!.touch() // "Keep going"
+        XCTAssertFalse(resumed!.isStale(after: 1800), "Keep going counts as an interaction")
+    }
 }

@@ -119,6 +119,42 @@ final class FeatureAuditUITests: XCTestCase {
         XCTAssertTrue(surfaceShowsMantra(app, "My test mantra"), "Surface reflects the custom mantra")
     }
 
+    // MARK: Stale round → Finish prompt
+
+    func testStaleRoundPromptsFinishAndRecordsPartial() {
+        let dir = NSTemporaryDirectory() + "japa-ui-stale-\(UUID().uuidString)"
+        let app = XCUIApplication()
+        app.launchEnvironment["JAPA_UITEST"] = "1"
+        app.launchEnvironment["JAPA_UITEST_DIR"] = dir
+        app.launchEnvironment["JAPA_UITEST_TARGET"] = "8"
+        app.launchEnvironment["JAPA_UITEST_RESET"] = "1"
+        app.launchEnvironment["JAPA_UITEST_STALE_SECONDS"] = "1"
+        app.launch()
+
+        dismissIntro(app)
+        let ring = app.buttons["advanceRing"]
+        XCTAssertTrue(ring.waitForExistence(timeout: 8))
+        advance(app, ring, to: "3 of 8")
+
+        // Leave the round untouched past the (test-shortened) threshold.
+        XCUIDevice.shared.press(.home)
+        Thread.sleep(forTimeInterval: 1.5)
+        app.terminate()
+        app.launchEnvironment["JAPA_UITEST_RESET"] = "0"
+        app.launch()
+
+        // Returning after the gap asks whether the round is done.
+        let alert = app.alerts["Finish this round?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 8), "Stale round prompts Finish")
+        alert.buttons["Finish"].tap()
+
+        // Finish records the honest partial and starts fresh in place.
+        XCTAssertTrue(ring.waitForExistence(timeout: 8))
+        XCTAssertTrue(waitForRingValue(ring, "0 of 8", timeout: 8), "Fresh round after finishing")
+        app.buttons["historyButton"].tap()
+        XCTAssertTrue(app.staticTexts["3 / 8"].waitForExistence(timeout: 8), "Partial recorded to history")
+    }
+
     /// The practice surface exposes the current mantra through the mantraRow
     /// button's accessibility label ("Mantra: <title>. Change mantra.").
     private func surfaceShowsMantra(_ app: XCUIApplication, _ title: String, timeout: TimeInterval = 8) -> Bool {

@@ -66,7 +66,7 @@ final class PersistenceTests: XCTestCase {
 
     func testActiveSessionSaveFlushLoadReconstructsExactBead() {
         let store = ActiveSessionStore(persistence: Persistence(directory: tempDirectory()))
-        let state = ActiveSessionState(target: 108, count: 57, mantraTitle: "Om Namah Shivaya", startedAt: Date())
+        let state = ActiveSessionState(target: 108, count: 57, mantraTitle: "Om Namah Shivaya", startedAt: Date(), updatedAt: Date())
         store.save(state)
         store.flush()
 
@@ -80,7 +80,7 @@ final class PersistenceTests: XCTestCase {
         // Simulates force-quit + relaunch: a brand-new store reading the same dir.
         let dir = tempDirectory()
         let writer = ActiveSessionStore(persistence: Persistence(directory: dir))
-        writer.save(ActiveSessionState(target: 54, count: 12, mantraTitle: "Om", startedAt: Date()))
+        writer.save(ActiveSessionState(target: 54, count: 12, mantraTitle: "Om", startedAt: Date(), updatedAt: Date()))
         writer.flush()
 
         let reader = ActiveSessionStore(persistence: Persistence(directory: dir))
@@ -91,17 +91,35 @@ final class PersistenceTests: XCTestCase {
 
     func testActiveSessionClearRemovesSnapshot() {
         let store = ActiveSessionStore(persistence: Persistence(directory: tempDirectory()))
-        store.save(ActiveSessionState(target: 108, count: 5, mantraTitle: "Om", startedAt: Date()))
+        store.save(ActiveSessionState(target: 108, count: 5, mantraTitle: "Om", startedAt: Date(), updatedAt: Date()))
         store.flush()
         store.clear()
         XCTAssertNil(store.load())
+    }
+
+    func testLegacyActiveSnapshotWithoutUpdatedAtStillDecodes() throws {
+        // Snapshots saved before `updatedAt` existed must still load, falling
+        // back to `startedAt`, so an in-flight round survives the app update.
+        let json = """
+        {
+          "target": 54,
+          "count": 12,
+          "mantraTitle": "Om",
+          "startedAt": "2026-07-17T10:00:00Z"
+        }
+        """
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let state = try decoder.decode(ActiveSessionState.self, from: Data(json.utf8))
+        XCTAssertEqual(state.count, 12)
+        XCTAssertEqual(state.updatedAt, state.startedAt, "Legacy snapshots treat the start as the last interaction")
     }
 
     func testLatestSnapshotWinsAfterRapidSaves() {
         // Mirrors the hot path: many quick saves, then a flush — the last must win.
         let store = ActiveSessionStore(persistence: Persistence(directory: tempDirectory()))
         for count in 1...20 {
-            store.save(ActiveSessionState(target: 108, count: count, mantraTitle: "Om", startedAt: Date()))
+            store.save(ActiveSessionState(target: 108, count: count, mantraTitle: "Om", startedAt: Date(), updatedAt: Date()))
         }
         store.flush()
         XCTAssertEqual(store.load()?.count, 20)
