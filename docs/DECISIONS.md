@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-07-17
+lastVerified: 2026-07-18
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -52,3 +52,14 @@ supersedes: []
 - **Decision:** Manually reconcile Japa to 0.4.0 now (non-destructive — only added missing files/fields, never overwrote Japa-specific facts); flag the missing "upgrade an already-registered project" bootstrap mode as a global gap candidate for the central repository rather than block this registration on it.
 - **Consequences:** Japa's `.factory/standard-lock.json`, `quality/quality-manifest.json`, and `.factory/project-context.json` now declare `0.4.0`. Future re-onboarding prompts against Japa should treat it as fully registered at 0.4.0, not re-run bootstrap.
 - **Related Files:** `.factory/standard-lock.json`, `.factory/project-context.json`, `.factory/repository-map.json`, `.factory/library-catalog.json`, `quality/quality-manifest.json`, `docs/README.md`, `docs/REUSABLE_COMPONENTS.md`
+
+## DEC-005 — TestFlight deployment via Fastlane + App Store Connect API key, without changing project.yml signing
+
+- **Status:** accepted
+- **Date Recorded:** 2026-07-18
+- **Context:** The user asked for automatic deployment to TestFlight, reusable across apps. Distribution requires real code signing, but DEC (JAPA-9, working agreement) deliberately keeps `project.yml` shipping `CODE_SIGNING_ALLOWED: NO` so the simulator CI (`ios-ci.yml`) stays green and the repo is not tied to an Apple team. The device-install flow already overrides signing at the command line (team `796XH483R4`, automatic provisioning).
+- **Options Considered:** (a) flip `project.yml` to committed signing (rejected — breaks simulator CI, ties repo to the team, contradicts JAPA-9); (b) Xcode Cloud (rejected for now — less portable, not "works for any app" off-GitHub); (c) `fastlane match` with a private certs repo (more reproducible but adds a second repo + `MATCH_PASSWORD` setup — deferred as a hardening option); (d) **Fastlane `beta` lane authenticated by an App Store Connect API key, injecting distribution signing only at archive time via `xcargs` + `-allowProvisioningUpdates`, triggered by a tag/dispatch GitHub Actions workflow.**
+- **Decision:** Option (d). `project.yml` is unchanged; signing is applied only inside the archive step, mirroring the existing device-install override. Authentication uses an ASC API key (no Apple ID/2FA) so runs are unattended. Build number = CI run number (monotonic).
+- **Consequences:** `ios-ci.yml` simulator build/test is unaffected. Public release still waits on Apple App Review and the human launch gates (JAPA-6/8/9). The pipeline is `implemented` but the end-to-end TestFlight upload is `unverified` until the four secrets (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`, `DEVELOPMENT_TEAM`) are configured and one real run is recorded under `quality/evidence/`.
+- **Related Prompt:** Automatic TestFlight deployment + doc reconciliation to App Factory standard
+- **Related Files:** `fastlane/Fastfile`, `fastlane/Appfile`, `Gemfile`, `.github/workflows/release-testflight.yml`, `docs/DEPLOYMENT.md`, `docs/RELEASE_CHECKLIST.md`

@@ -1,0 +1,64 @@
+# Japa — Fastlane lanes
+#
+# Reusable iOS release automation. The `beta` lane archives a signed Release
+# build and uploads it to TestFlight without any human at the keyboard.
+#
+# Authentication uses an App Store Connect API key (not an Apple ID + 2FA), so
+# it runs unattended on CI. project.yml is NEVER modified: it keeps
+# CODE_SIGNING_ALLOWED: NO so the simulator CI job stays green and the repo is
+# not tied to an Apple team. Distribution signing is injected only at archive
+# time via xcargs (see DEVELOPMENT_TEAM below). See docs/DEPLOYMENT.md.
+#
+# Required environment variables (provided as CI secrets):
+#   ASC_KEY_ID        App Store Connect API key ID
+#   ASC_ISSUER_ID     App Store Connect API issuer ID
+#   ASC_KEY_CONTENT   base64-encoded contents of the AuthKey_XXXX.p8 file
+#   DEVELOPMENT_TEAM  Apple Developer team ID (e.g. 796XH483R4)
+# Optional:
+#   BUILD_NUMBER      overrides the TestFlight build number (defaults to the CI run number)
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Archive a signed Release build and upload it to TestFlight."
+  desc "Requires ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT (base64 .p8), DEVELOPMENT_TEAM."
+  lane :beta do
+    api_key = app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_content: ENV.fetch("ASC_KEY_CONTENT"),
+      is_key_content_base64: true
+    )
+
+    # project.yml is the source of truth for the Xcode project; regenerate the
+    # .xcodeproj so the archive matches committed build settings.
+    Dir.chdir("..") { sh("xcodegen", "generate") }
+
+    # TestFlight requires a unique, strictly increasing build number. The CI run
+    # number is monotonic per repository, which satisfies that.
+    build_number = ENV["BUILD_NUMBER"] || ENV["GITHUB_RUN_NUMBER"] || "1"
+
+    build_app(
+      scheme: "Japa",
+      configuration: "Release",
+      export_method: "app-store",
+      clean: true,
+      output_directory: "build",
+      # Override the CI-safe no-signing defaults from project.yml at archive time
+      # only. -allowProvisioningUpdates lets Xcode create/download the App Store
+      # provisioning profile using the API key set above.
+      xcargs: [
+        "-allowProvisioningUpdates",
+        "CODE_SIGNING_ALLOWED=YES",
+        "CODE_SIGN_STYLE=Automatic",
+        "DEVELOPMENT_TEAM=#{ENV.fetch('DEVELOPMENT_TEAM')}",
+        "CURRENT_PROJECT_VERSION=#{build_number}"
+      ].join(" ")
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true
+    )
+  end
+end

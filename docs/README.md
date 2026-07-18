@@ -2,7 +2,7 @@
 id: DOC-INDEX
 canonicalFor: documentation-navigation
 status: active
-lastVerified: 2026-07-17
+lastVerified: 2026-07-18
 readWhen:
   - onboarding
   - locating authoritative project information
@@ -49,6 +49,7 @@ Read in order:
 | Assumptions | `ASSUMPTIONS.md` | Unconfirmed facts |
 | Testing | `TEST_PLAN.md` | Commands, environments, and required scenarios |
 | Release readiness | `RELEASE_CHECKLIST.md` | Release gates |
+| Deployment / release process | `DEPLOYMENT.md` | How builds reach TestFlight/App Store (Fastlane + CI) |
 | Reusable code | `REUSABLE_COMPONENTS.md` | Packages, local candidates, upstream work |
 | Handoff | `HANDOFF.md` | Next-agent context |
 | Prompt/change activity log | `PROMPT_LOG.md` | Working log of App-Factory-governance sessions — **not** a full project history (see gaps) |
@@ -96,7 +97,15 @@ Read:
 3. `RELEASE_CHECKLIST.md`
 4. current bugs, risks, and waivers.
 
-Note: `RELEASE_CHECKLIST.md`'s checkboxes are currently unreconciled against `../LAUNCH_READINESS.md` §9 — see documentation gaps below before trusting either in isolation.
+`RELEASE_CHECKLIST.md`'s checkboxes were reconciled against verified evidence and `../LAUNCH_READINESS.md` §9 (2026-07-17, re-dated 2026-07-18); they reflect real status, not an unstarted template.
+
+### Deploy to TestFlight
+
+Read:
+
+1. `DEPLOYMENT.md` — the pipeline, required secrets, and one-time setup;
+2. `../fastlane/Fastfile` and `../.github/workflows/release-testflight.yml` — the automation;
+3. `DECISIONS.md` DEC-005 — the signing/auth decision.
 
 ## Historical and superseded documents
 
@@ -110,7 +119,7 @@ Note: `RELEASE_CHECKLIST.md`'s checkboxes are currently unreconciled against `..
 - **Resolved 2026-07-17: release-checklist drift.** `RELEASE_CHECKLIST.md` was reconciled against `../LAUNCH_READINESS.md` §9 and the live build/test evidence.
 - **Resolved 2026-07-17: signing blocker missing from launch spec.** `../LAUNCH_READINESS.md` now tracks signing/TestFlight as O5, matching `BUGS.md` B-SIGN and `RISKS.md` R4.
 - **Resolved 2026-07-17: `BUGS.md` B-A11Y understated the accessibility gap.** Source verification showed VoiceOver semantics are coded, but Dynamic Type is **not** implemented; `BUGS.md` and `../LAUNCH_READINESS.md` now state that accurately.
-- **Resolved 2026-07-17: Jira pending queue superseded.** `JIRA_SYNC_PENDING.md` now records actual synced Jira keys (JALA-1..JALA-6) instead of intended future create actions. In this 2026-07-17 session, Atlassian Rovo could not be re-verified because the connector requires reauthentication.
+- **Resolved 2026-07-17/18: canonical Jira project is `JAPA`.** The `JALA-*` keys referenced in earlier notes were a duplicate project that has been **retired** (JALA-1..5 = Deferred/Replaced-By); do not use them. Canonical tracking lives in project `JAPA`; the mapping is in `JIRA_SYNC_PENDING.md`. The `JAPA` board is a Scrum board with no active sprint, so all issues appear under Backlog by design.
 - **Mostly resolved 2026-07-17: two bug-ID schemes.** `BUGS.md` and `../LAUNCH_READINESS.md` now both include content sign-off, signing/TestFlight, accessibility/Dynamic Type, haptics, and CI/documentation status. Keep both lists aligned when adding or closing launch gates.
 - **`PROMPT_LOG.md`** contains exactly one entry (the 2026-07-16 App Factory onboarding session) and does not capture the sessions that built the v1 app itself. Treat it as a factory-governance activity log, not a full project history.
 - **`STATUS.md` "External trackers"** references Notion tasks "JAP-004 Done; JAP-005 Ready" with no explanation in any read document of what those tasks are (unlike JAP-010–015, which `JIRA_SYNC_PENDING.md` explains). Minor traceability gap.

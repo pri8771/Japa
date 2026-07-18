@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-17
+lastVerified: 2026-07-18
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -17,7 +17,15 @@ supersedes: []
 
 ## Lifecycle status
 
-`onboarding_existing`
+Product lifecycle (per `iOS_app_factory_rules/governance/PROJECT_LIFECYCLE.md`
+controlled vocabulary): **`verified`** — automated suite green and on-device
+validated, with open `human_review_required` gates before `released`. Not
+`done`: the standard reserves `done` for when all human gates or an approved
+waiver exist (JAPA-6/8 open). Next state is `beta` once a TestFlight build is
+distributed.
+
+Factory registration is a separate axis and is **complete** (`projectType:
+existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
 
 ## Current objective
 
@@ -25,27 +33,31 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 
 ## Product maturity
 
-- **Implementation:** v1 feature set built (~90% production-ready per `LAUNCH_READINESS.md`; mala-style picker, Dynamic Type, CI, and completion evidence updated 2026-07-17)
+- **Implementation:** v1 feature set built and on-device validated (2026-07-18, iPhone 16 Pro Max); mala-style picker, Dynamic Type, merged practice surface, stale-round Finish, CI, and TestFlight deployment automation in place
 - **Factory registration:** existing project, standard `0.4.0` (upgraded from `0.2.0` on 2026-07-17), registered 2026-07-16
-- **Ship blockers remaining:** content sign-off, on-device haptic validation, VoiceOver/accessibility user validation, App Store prep / signing for device builds
+- **Ship blockers remaining (human gates):** seed-mantra content sign-off (JAPA-6), VoiceOver user validation (JAPA-8), App Store metadata + first real signed TestFlight upload (JAPA-9). Deployment *automation* now exists (`docs/DEPLOYMENT.md`); it needs App Store Connect secrets + one verified run.
 
 ## Verified
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- Automated suite exists: 47 unit/flow + 9 UI tests in source
+- **Current automated suite: 62 tests (52 unit/flow + 10 UI), all passing** — canonical count; see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
-- Baseline `xcodebuild test` on iPhone 17 (OS 26.5) exited 0 (2026-07-16)
-- Re-verified `xcodebuild build` and `xcodebuild test` on iPhone 17 Pro (OS 26.5): build succeeded, 53/53 tests passed, 0 failures (2026-07-17, App Factory registration-upgrade pass)
-- Re-verified mala-style + Dynamic Type + CI implementation on 2026-07-17: `xcodegen generate`, Release simulator build, full `xcodebuild test` on iPhone 17 Pro (OS 26.5) passed 56/56 tests (47 unit/flow + 9 UI). Compact-phone accessibility text-size smoke passed on iPhone 17e.
-- Full suite grew to **62 tests (52 unit/flow + 10 UI), all passing** after the merged-surface, animation, red-final-bead, and stale-round-Finish work (2026-07-17/18).
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
+- TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
+
+### Test-count history (superseded — do not treat as current)
+
+- 2026-07-16: baseline `xcodebuild test` on iPhone 17 (OS 26.5) exited 0.
+- 2026-07-17: 53/53 on iPhone 17 Pro (registration-upgrade pass).
+- 2026-07-17: 56/56 (47 unit/flow + 9 UI) after mala-style + Dynamic Type + CI; compact-phone text-size smoke on iPhone 17e.
+- 2026-07-17/18: grew to the current 62 (52 unit/flow + 10 UI) after the merged-surface, animation, red-final-bead, and stale-round-Finish work.
 
 ## Verification pending
 
 - VoiceOver validation with a real assistive-tech user on device (Dynamic Type portion is implemented + smoke-tested; JAPA-8)
 - Seed mantra human content sign-off (`docs/CONTENT_REVIEW.md`; JAPA-6)
-- Code signing in `project.yml` + App Store / TestFlight distribution prep (JAPA-9)
+- First real TestFlight upload (JAPA-9): automation is committed (`docs/DEPLOYMENT.md`, DEC-005) but needs the four App Store Connect secrets and one verified run recorded under `quality/evidence/`. `project.yml` signing stays as-is by decision (JAPA-9); signing is injected at archive time only.
 
 ## External trackers
 
@@ -56,7 +68,7 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 ## Blockers
 
 - Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JAPA-6)
-- `project.yml` still ships `CODE_SIGNING_ALLOWED: NO` (device installs used a command-line override); enabling committed signing + a real team is required for TestFlight/App Store distribution (tracked: JAPA-9)
+- TestFlight/App Store distribution not yet exercised: `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by decision (DEC-005/JAPA-9); the CD pipeline injects signing at archive time but needs App Store Connect secrets and one verified run (tracked: JAPA-9; process in `docs/DEPLOYMENT.md`)
 - VoiceOver human validation on device still required (tracked: JAPA-8)
 
 ## Documentation reconciliation (2026-07-17)
@@ -74,7 +86,16 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 - Jira connector reauthenticated; corrected `JALA-4`'s stale "Dynamic Type not implemented" description and posted a progress comment to the `JALA-1` epic
 - **Jira tracker consolidation:** discovered the pre-existing `JAPA` project (12 tickets from a 2026-06-30 Codex audit) duplicated by `JALA`; per user decision JAPA is now canonical — JALA-1..5 retired as Deferred/Replaced-By, JAPA-10/11 closed Done with evidence, JAPA-1/8 updated with current state
 
+## Documentation reconciliation (2026-07-18)
+
+- Reconciled docs to the App Factory standard (`iOS_app_factory_rules` @ 0.4.0, verified equal to the local lock):
+  - Lifecycle field now uses the controlled `PROJECT_LIFECYCLE.md` vocabulary: product state is `verified` (was `onboarding_existing`, a registration mode) in `STATUS.md` and `.factory/project-context.json`. Clarified the app is not `done` while human gates are open.
+  - Removed the in-doc test-count contradiction (a "47+9" summary line alongside "62"); current canonical count (62) now leads and older counts are marked superseded history.
+  - `lastVerified` metadata advanced 2026-07-17 → 2026-07-18 across the docs whose current truth changed.
+- Added the TestFlight deployment pipeline (DEC-005): `fastlane/` + `.github/workflows/release-testflight.yml`, canonical process doc `docs/DEPLOYMENT.md`, wired into `.factory/repository-map.json`. `project.yml` signing unchanged; simulator CI unaffected.
+
 ## Next action
 
-1. Close launch gates: content, device haptics, VoiceOver user validation, signing/TestFlight.
-2. Decide whether to add the spy-based haptic/tone tests FEAT-001 calls for.
+1. Close launch gates: content sign-off (JAPA-6), VoiceOver user validation (JAPA-8).
+2. Configure the four App Store Connect secrets and run the TestFlight workflow once; record evidence and flip `docs/DEPLOYMENT.md`'s end-to-end row to `verified` (JAPA-9).
+3. Decide whether to add the spy-based haptic/tone tests FEAT-001 calls for.

@@ -22,6 +22,7 @@
     "assumptions": "docs/ASSUMPTIONS.md",
     "testPlan": "docs/TEST_PLAN.md",
     "releaseReadiness": "docs/RELEASE_CHECKLIST.md",
+    "deploymentProcess": "docs/DEPLOYMENT.md",
     "handoff": "docs/HANDOFF.md",
     "reusableComponents": "docs/REUSABLE_COMPONENTS.md",
     "productOverview": "README.md",
@@ -52,7 +53,14 @@
       "Japa.xcodeproj"
     ],
     "ciConfiguration": [
-      ".github/workflows/ios-ci.yml"
+      ".github/workflows/ios-ci.yml",
+      ".github/workflows/release-testflight.yml"
+    ],
+    "deploymentConfiguration": [
+      "fastlane/Fastfile",
+      "fastlane/Appfile",
+      "Gemfile",
+      ".github/workflows/release-testflight.yml"
     ],
     "featureContracts": "quality/feature-contracts",
     "completionReports": "quality/completion-reports",
@@ -122,6 +130,12 @@
       "docs/RELEASE_CHECKLIST.md",
       "LAUNCH_READINESS.md"
     ],
+    "deploy-testflight": [
+      "docs/DEPLOYMENT.md",
+      "fastlane/Fastfile",
+      ".github/workflows/release-testflight.yml",
+      "docs/RELEASE_CHECKLIST.md"
+    ],
     "evaluate-reuse": [
       ".factory/library-catalog.json",
       "docs/REUSABLE_COMPONENTS.md",
@@ -137,6 +151,7 @@
   "notes": [
     "Populated from the actual Japa source tree during the 2026-07-17 registration-upgrade pass (standard 0.2.0 -> 0.4.0).",
     "CI configuration added 2026-07-17: .github/workflows/ios-ci.yml runs XcodeGen, Release simulator build, and tests.",
+    "TestFlight deployment added 2026-07-18: fastlane/ + .github/workflows/release-testflight.yml archive and upload to TestFlight (tag- or dispatch-triggered). Canonical process doc: docs/DEPLOYMENT.md. project.yml signing is unchanged (DEC-005); pipeline is implemented but end-to-end upload is unverified until App Store Connect secrets are configured.",
     "docs/PROMPT_LOG.md and docs/JIRA_SYNC_PENDING.md are working logs, not canonical product documentation — see docs/README.md's documentation-gaps section.",
     "Do not treat templates or examples as implemented product facts."
   ]
