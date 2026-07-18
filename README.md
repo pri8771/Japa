@@ -2,13 +2,13 @@
 
 A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iOS.
 
-> **Status: v1 implemented (~90% production-ready).** The app is built: a tested
-> repetition engine (47 unit/flow tests passing; 9 UI tests passing), the eyes-free
+> **Status: v1 built and device-validated.** The app is built and running: a tested
+> repetition engine, the eyes-free
 > haptic practice screen, a distinct completion signal, mantra selection (reviewed
-> seed set + free-text), quiet history, settings, Dynamic Type support, CI, and a 21-style Change Mala picker — all local-first. Remaining
-> work is human content sign-off, on-device haptic tuning across iPhone classes,
-> VoiceOver/accessibility user validation, code signing, and App Store prep
-> (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §8–9).
+> seed set + free-text), quiet history, settings, Dynamic Type support, CI + TestFlight deployment automation, and a 21-style Change Mala picker — all local-first. Current
+> status, test counts, and readiness live in [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md). Remaining
+> work is human content sign-off, VoiceOver/accessibility user validation, code signing, and App Store prep
+> (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §9 and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
 
 ## What it is
 
@@ -43,7 +43,7 @@ From the command line:
 ```bash
 # Build
 xcodebuild build -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
-# Test (47 unit/flow tests + 9 UI tests)
+# Test (full suite; current counts in docs/TEST_PLAN.md)
 xcodebuild test  -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 

@@ -111,11 +111,12 @@ Read:
 
 | Document | Status | Superseded by | Reason retained |
 |---|---|---|---|
-| — | — | — | No document is currently historical or superseded. All documents listed above are live and current as of 2026-07-17 (verified during the App Factory registration-upgrade pass). |
+| — | — | — | No document is currently historical or superseded. All documents listed above are live and current as of 2026-07-18. `LAUNCH_READINESS.md` and `PROJECT_DOCUMENTATION.md` now defer to `STATUS.md`/`TEST_PLAN.md` for volatile status, counts, and dates rather than restating them. |
 
 ## Documentation gaps
 
-- **Resolved 2026-07-17: test-count contradiction.** `../README.md`, `PROJECT_DOCUMENTATION.md`, and `../LAUNCH_READINESS.md` were reconciled to the verified baseline. After the mala-style + Dynamic Type implementation, source contains **47 unit/flow + 9 UI tests**; latest full verification is recorded in `TEST_PLAN.md` and `STATUS.md`.
+- **Resolved 2026-07-18: dual-PRD / duplicated-status overlap.** `../LAUNCH_READINESS.md` (PRD/launch scope) and `PROJECT_DOCUMENTATION.md` (cross-functional overview, mirrored to Notion) previously restated test counts, production-readiness, and verification dates, and had drifted (56/56 vs. the current 62). Both now carry metadata blocks and **defer to `STATUS.md` (current status) and `TEST_PLAN.md` (counts)** instead of restating them. Single source of truth for the suite count is `TEST_PLAN.md`.
+- **Resolved 2026-07-17 (count re-based 2026-07-18): test-count contradiction.** Earlier docs disagreed on the suite size. Canonical current count lives in `TEST_PLAN.md` (**52 unit/flow + 10 UI = 62**), with the latest verified run recorded in `STATUS.md`. Other docs link to those rather than hardcoding numbers.
 - **Resolved 2026-07-17: release-checklist drift.** `RELEASE_CHECKLIST.md` was reconciled against `../LAUNCH_READINESS.md` §9 and the live build/test evidence.
 - **Resolved 2026-07-17: signing blocker missing from launch spec.** `../LAUNCH_READINESS.md` now tracks signing/TestFlight as O5, matching `BUGS.md` B-SIGN and `RISKS.md` R4.
 - **Resolved 2026-07-17: `BUGS.md` B-A11Y understated the accessibility gap.** Source verification showed VoiceOver semantics are coded, but Dynamic Type is **not** implemented; `BUGS.md` and `../LAUNCH_READINESS.md` now state that accurately.
