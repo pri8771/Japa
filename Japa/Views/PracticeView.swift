@@ -24,6 +24,10 @@ struct PracticeView: View {
     var body: some View {
         ZStack {
             if !isClassic {
+                // No tap-press scale here: shrinking full-bleed art exposes the
+                // black backing as letterbox bars (visible on light styles like
+                // Sculptural Monument). Each style's own bead motion is the tap
+                // response; the press scale is Classic's centered-ring gesture.
                 MalaStyleView(
                     style: style,
                     count: controller.count,
@@ -33,7 +37,6 @@ struct PracticeView: View {
                 )
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
-                .scaleEffect(tapScale)
             }
 
             // Whole-screen advance layer.
@@ -155,7 +158,8 @@ struct PracticeView: View {
 
     private func advance() {
         controller.advance()
-        guard !reduceMotion else { return }
+        // The press scale only drives Classic's centered ring.
+        guard isClassic, !reduceMotion else { return }
         withAnimation(.easeOut(duration: 0.07)) { tapScale = 0.985 }
         withAnimation(.easeOut(duration: 0.18).delay(0.07)) { tapScale = 1 }
     }
