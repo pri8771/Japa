@@ -2,12 +2,12 @@
 
 A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iOS.
 
-> **Status: v1 implemented (~86% production-ready).** The app is built: a tested
-> repetition engine (47 unit/flow tests passing; 7 UI tests present), the eyes-free
+> **Status: v1 implemented (~90% production-ready).** The app is built: a tested
+> repetition engine (47 unit/flow tests passing; 9 UI tests passing), the eyes-free
 > haptic practice screen, a distinct completion signal, mantra selection (reviewed
-> seed set + free-text), quiet history, settings, and a 21-style Change Mala picker — all local-first. Remaining
+> seed set + free-text), quiet history, settings, Dynamic Type support, CI, and a 21-style Change Mala picker — all local-first. Remaining
 > work is human content sign-off, on-device haptic tuning across iPhone classes,
-> an accessibility pass, code signing, and App Store prep
+> VoiceOver/accessibility user validation, code signing, and App Store prep
 > (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §8–9).
 
 ## What it is
@@ -43,7 +43,7 @@ From the command line:
 ```bash
 # Build
 xcodebuild build -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
-# Test (47 unit/flow tests + 7 UI tests)
+# Test (47 unit/flow tests + 9 UI tests)
 xcodebuild test  -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
@@ -66,7 +66,7 @@ Japa/
   Design/        Theme + native mala-style renderers
   Resources/     Assets.xcassets (app icon, accent), PrivacyInfo.xcprivacy
 JapaTests/       engine, persistence, and end-to-end flow tests
-JapaUITests/     core-flow UI tests (advance, undo, completion, navigation)
+JapaUITests/     core-flow UI tests (advance, undo, completion, navigation, Dynamic Type smoke)
 ```
 
 ## Architecture notes

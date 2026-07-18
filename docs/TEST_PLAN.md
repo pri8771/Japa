@@ -25,11 +25,11 @@ supersedes: []
 ## Coverage summary (source inventory 2026-07-16)
 
 - **47** unit/flow tests
-- **7** UI tests
+- **9** UI tests
 - Engine: advance, completion-once, undo floor, boundaries, reconstruct from count
 - Persistence: prefs/sessions/active-session round-trip + flush
 - Practice flow: resume across relaunch, honest partials, no streak fields
-- UI: advance/undo/complete, settings/history, resume after terminate, mantra custom, history delete
+- UI: advance/undo/complete, settings/history, resume after terminate, mantra custom, history delete, mala-style apply, accessibility text-size smoke
 
 ## Not automatable (device-only)
 
@@ -44,8 +44,8 @@ supersedes: []
 - [x] Source inventory of tests and modules
 - [x] Registration verify script
 - [x] Re-verified 2026-07-17 (registration-upgrade pass): `xcodegen generate`, `xcodebuild build`, and `xcodebuild test` on iPhone 17 Pro (OS 26.5) — build succeeded, 53/53 tests passed (0 failures), confirming the then-current 46+7 count
-- [x] Re-verified 2026-07-17 (mala-style implementation): `xcodegen generate`; `xcodebuild build`; `xcodebuild -only-testing:JapaTests test` on iPhone 17 Pro (OS 26.5) — 47/47 unit+flow tests passed; focused UI smoke `JapaUITests/JapaUITests/testNavigateSettingsAndHistory` passed. Full UI suite was attempted but the Simulator test runner was repeatedly killed before several tests established a session, so the full UI suite remains unverified for this change.
+- [x] Re-verified 2026-07-17 (mala-style + Dynamic Type + CI pass): `xcodegen generate`; Release simulator build; full `xcodebuild test` on iPhone 17 Pro (OS 26.5) — 56/56 tests passed (47 unit/flow + 9 UI); compact-phone accessibility text-size smoke passed on iPhone 17e.
 
 ## Quality manifest alignment
 
-`quality/quality-manifest.json` requires accessibility, dark mode, persistence relaunch tests, fake-data isolation, and completion evidence. UITests isolate via `JAPA_UITEST*` env; persistence relaunch covered in flow + FeatureAudit UI tests. Accessibility remains **verification pending** (code present, user validation not done). Responsive layout tests are **not** a v1 iPad requirement after DEC-003 (iPhone only).
+`quality/quality-manifest.json` requires accessibility, dark mode, persistence relaunch tests, fake-data isolation, and completion evidence. UITests isolate via `JAPA_UITEST*` env; persistence relaunch covered in flow + FeatureAudit UI tests. Dynamic Type has implementation + smoke coverage; VoiceOver/accessibility still needs human/user validation on device. Responsive layout tests are **not** a v1 iPad requirement after DEC-003 (iPhone only).

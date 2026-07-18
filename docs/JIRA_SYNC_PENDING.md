@@ -24,7 +24,7 @@ All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo 
 
 ## Live update attempt — 2026-07-17
 
-The Change Mala implementation status was written to Notion and local docs on 2026-07-17. A live Jira read/update was attempted against `project = JALA`, but Atlassian Rovo returned `UNAUTHORIZED` / `oauth_token_invalid_grant`; Jira still requires connector reauthentication before adding the Change Mala verification note to JALA.
+The Change Mala implementation status was written to Notion and local docs on 2026-07-17. A live Jira read/update was attempted against `project = JALA`, but Atlassian Rovo returned `UNAUTHORIZED` / `oauth_token_invalid_grant`; Jira still requires connector reauthentication before adding the Change Mala verification note to JALA. A second attempt after the Dynamic Type + CI + full-suite verification follow-up returned the same reauthentication error, so Jira is not live-updated with the final 56/56 verification note.
 
 ---
 
@@ -33,7 +33,7 @@ The Change Mala implementation status was written to Notion and local docs on 20
 - **Jira Key:** [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1)
 - **Jira Project:** JALA
 - **Summary:** Japa existing-project App Factory registration and remaining launch gates
-- **Description:** Register and govern `pri8771/Japa` under `pri8771/iOS_app_factory_rules` as an existing iOS app. v1 is implemented (~85%). Remaining work is content sign-off, device haptics, a11y validation (incl. implementing Dynamic Type), and TestFlight/signing.
+- **Description:** Register and govern `pri8771/Japa` under `pri8771/iOS_app_factory_rules` as an existing iOS app. v1 is implemented (~90%). Remaining work is content sign-off, device haptics, VoiceOver/accessibility user validation, and TestFlight/signing.
 - **Acceptance Criteria:**
   - Registered existing project verified
   - Factory docs + FEAT-001/002/003 contracts present

@@ -128,4 +128,25 @@ final class JapaUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Your sessions appear here"].waitForExistence(timeout: 8))
         attach(app, "07-History-empty")
     }
+
+    func testPrimaryFlowAtAccessibilityTextSize() {
+        let app = makeApp()
+        app.launchArguments += [
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+        app.launch()
+
+        let introBegin = app.buttons["introBegin"]
+        XCTAssertTrue(introBegin.waitForExistence(timeout: 8))
+        XCTAssertTrue(introBegin.isHittable)
+        introBegin.tap()
+
+        let homeBegin = app.buttons["homeBegin"]
+        XCTAssertTrue(homeBegin.waitForExistence(timeout: 8))
+        XCTAssertTrue(homeBegin.isHittable)
+
+        XCTAssertTrue(app.buttons["settingsButton"].exists)
+        XCTAssertTrue(app.buttons["historyButton"].exists)
+    }
 }

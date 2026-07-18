@@ -93,7 +93,7 @@ struct MalaStylePickerView: View {
 
             VStack {
                 Text("Change Mala")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(Theme.ui(10, weight: .semibold))
                     .tracking(3)
                     .textCase(.uppercase)
                     .foregroundStyle(.white.opacity(0.55))
@@ -131,10 +131,10 @@ struct MalaStylePickerView: View {
         VStack(spacing: 14) {
             VStack(spacing: 3) {
                 Text(style.info.name)
-                    .font(.system(size: 22, weight: .regular, design: .serif))
+                    .font(Theme.serif(22))
                     .foregroundStyle(.white)
                 Text("\(style.info.tag) · \(String(format: "%02d", pickerIndex + 1)) / \(styles.count)")
-                    .font(.system(size: 9, weight: .semibold))
+                    .font(Theme.ui(9, weight: .semibold))
                     .tracking(2)
                     .textCase(.uppercase)
                     .foregroundStyle(.white.opacity(0.5))
@@ -170,7 +170,7 @@ struct MalaStylePickerView: View {
     private func applyButton(for style: MalaStyle) -> some View {
         Button(action: { apply(style) }) {
             Text(justApplied ? "Applied ✓" : (style == appliedStyle ? "Current mala" : "Apply this mala"))
-                .font(.system(size: 12, weight: .semibold))
+                .font(Theme.ui(12, weight: .semibold))
                 .tracking(0.5)
                 .foregroundStyle(Color(hex: 0x1c140a))
                 .frame(maxWidth: .infinity)

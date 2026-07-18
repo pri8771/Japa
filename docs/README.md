@@ -106,7 +106,7 @@ Note: `RELEASE_CHECKLIST.md`'s checkboxes are currently unreconciled against `..
 
 ## Documentation gaps
 
-- **Resolved 2026-07-17: test-count contradiction.** `../README.md`, `PROJECT_DOCUMENTATION.md`, and `../LAUNCH_READINESS.md` were reconciled to the verified baseline. After the mala-style implementation, source contains **47 unit/flow + 7 UI tests**; latest focused verification is recorded in `TEST_PLAN.md` and `STATUS.md`.
+- **Resolved 2026-07-17: test-count contradiction.** `../README.md`, `PROJECT_DOCUMENTATION.md`, and `../LAUNCH_READINESS.md` were reconciled to the verified baseline. After the mala-style + Dynamic Type implementation, source contains **47 unit/flow + 9 UI tests**; latest full verification is recorded in `TEST_PLAN.md` and `STATUS.md`.
 - **Resolved 2026-07-17: release-checklist drift.** `RELEASE_CHECKLIST.md` was reconciled against `../LAUNCH_READINESS.md` §9 and the live build/test evidence.
 - **Resolved 2026-07-17: signing blocker missing from launch spec.** `../LAUNCH_READINESS.md` now tracks signing/TestFlight as O5, matching `BUGS.md` B-SIGN and `RISKS.md` R4.
 - **Resolved 2026-07-17: `BUGS.md` B-A11Y understated the accessibility gap.** Source verification showed VoiceOver semantics are coded, but Dynamic Type is **not** implemented; `BUGS.md` and `../LAUNCH_READINESS.md` now state that accurately.

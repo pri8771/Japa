@@ -53,7 +53,7 @@ struct MalaCountBlock: View {
                     .contentTransition(reduceMotion ? .identity : .numericText(value: Double(count)))
                     .shadow(color: glowColor ?? .clear, radius: glowColor == nil ? 0 : glowRadius)
                 Text("of \(target)")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(Theme.ui(11, weight: .semibold))
                     .tracking(labelTracking)
                     .textCase(.uppercase)
                     .foregroundStyle(labelColor)
@@ -74,7 +74,7 @@ struct MalaTapHint: View {
     var body: some View {
         GeometryReader { geo in
             Text("tap to advance")
-                .font(.system(size: 10, weight: .semibold))
+                .font(Theme.ui(10, weight: .semibold))
                 .tracking(2.6)
                 .textCase(.uppercase)
                 .foregroundStyle(color)

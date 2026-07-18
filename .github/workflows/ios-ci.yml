@@ -1,0 +1,56 @@
+name: iOS CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Select available iPhone simulator
+        id: simulator
+        run: |
+          udid="$(python3 <<'PY'
+          import json
+          import subprocess
+
+          output = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          devices = json.loads(output)["devices"]
+          candidates = []
+          for runtime, values in devices.items():
+              if "iOS" not in runtime:
+                  continue
+              for device in values:
+                  name = device.get("name", "")
+                  if device.get("isAvailable") and name.startswith("iPhone"):
+                      score = (0 if "SE" in name else 1) + (1 if "Pro" in name else 0)
+                      candidates.append((score, runtime, name, device["udid"]))
+          if not candidates:
+              raise SystemExit("No available iPhone simulator found")
+          candidates.sort(reverse=True)
+          print(candidates[0][3])
+          PY
+          )"
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+
+      - name: Build Release
+        run: xcodebuild -scheme Japa -configuration Release -destination "id=${{ steps.simulator.outputs.udid }}" CODE_SIGNING_ALLOWED=NO build
+
+      - name: Run tests
+        run: xcodebuild -scheme Japa -destination "id=${{ steps.simulator.outputs.udid }}" CODE_SIGNING_ALLOWED=NO test

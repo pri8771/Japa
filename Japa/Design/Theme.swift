@@ -54,11 +54,32 @@ enum Theme {
 
     // Typography
     static func serif(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .serif)
+        .system(textStyle(for: size), design: .serif, weight: weight)
     }
 
     static func ui(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .default)
+        .system(textStyle(for: size), design: .default, weight: weight)
+    }
+
+    private static func textStyle(for size: CGFloat) -> Font.TextStyle {
+        switch size {
+        case 34...:
+            return .largeTitle
+        case 28..<34:
+            return .title
+        case 22..<28:
+            return .title2
+        case 18..<22:
+            return .title3
+        case 16..<18:
+            return .body
+        case 14..<16:
+            return .callout
+        case 12..<14:
+            return .footnote
+        default:
+            return .caption2
+        }
     }
 
     // Layout

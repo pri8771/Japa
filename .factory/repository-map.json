@@ -51,7 +51,9 @@
       "project.yml",
       "Japa.xcodeproj"
     ],
-    "ciConfiguration": [],
+    "ciConfiguration": [
+      ".github/workflows/ios-ci.yml"
+    ],
     "featureContracts": "quality/feature-contracts",
     "completionReports": "quality/completion-reports",
     "qualityEvidence": "quality/evidence",
@@ -134,7 +136,7 @@
   ],
   "notes": [
     "Populated from the actual Japa source tree during the 2026-07-17 registration-upgrade pass (standard 0.2.0 -> 0.4.0).",
-    "ciConfiguration is intentionally empty: no .github/workflows exist yet (tracked as docs/BUGS.md B-CI).",
+    "CI configuration added 2026-07-17: .github/workflows/ios-ci.yml runs XcodeGen, Release simulator build, and tests.",
     "docs/PROMPT_LOG.md and docs/JIRA_SYNC_PENDING.md are working logs, not canonical product documentation — see docs/README.md's documentation-gaps section.",
     "Do not treat templates or examples as implemented product facts."
   ]
