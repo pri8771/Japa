@@ -199,14 +199,44 @@ struct MalaRender_SculpturalMonument: View {
                     .rotationEffect(.degrees(-90))
                     .frame(width: c.len((R + 16) * 2), height: c.len((R + 16) * 2))
                     .position(c.pt(cx, cy))
-                Circle()
-                    .fill(RadialGradient(colors: [Color(hex: 0xfbf8f2), Color(hex: 0xe0d7c9), Color(hex: 0xbcb2a1), Color(hex: 0x8c8171)],
-                                          center: UnitPoint(x: 0.38, y: 0.30), startRadius: 0, endRadius: c.len(R)))
-                    .overlay(Circle().stroke(Color.white.opacity(0.28), lineWidth: c.len(1)))
+                ZStack {
+                    Circle()
+                        .fill(RadialGradient(colors: [Color(hex: 0xfbf8f2), Color(hex: 0xe0d7c9), Color(hex: 0xbcb2a1), Color(hex: 0x8c8171)],
+                                              center: UnitPoint(x: 0.38, y: 0.30), startRadius: 0, endRadius: c.len(R)))
+                    // Engraved surface: 12 radial tick marks + a soft off-center
+                    // highlight, clipped to the disc and rotated together so the
+                    // *texture* turns while the base lighting stays fixed — the
+                    // "turning stone" cue the design's renderC10 relies on. Drawn
+                    // in the disc's own local frame (radius c.len(R) around its
+                    // center), not the outer design canvas.
+                    ZStack {
+                        Canvas { ctx, size in
+                            let localCenter = CGPoint(x: size.width / 2, y: size.height / 2)
+                            let localR = size.width / 2
+                            for i in 0..<12 {
+                                let a = (Double(i) * 30 - 90) * .pi / 180
+                                let inner = CGPoint(x: localCenter.x + localR * 0.30 * cos(a), y: localCenter.y + localR * 0.30 * sin(a))
+                                let outer = CGPoint(x: localCenter.x + localR * 0.92 * cos(a), y: localCenter.y + localR * 0.92 * sin(a))
+                                var path = Path()
+                                path.move(to: inner)
+                                path.addLine(to: outer)
+                                ctx.stroke(path, with: .color(Color(hex: 0x8f8676).opacity(0.26)), lineWidth: c.len(0.8))
+                            }
+                        }
+                        Ellipse()
+                            .fill(Color.white.opacity(0.42))
+                            .frame(width: c.len(56), height: c.len(40))
+                            .position(x: c.len(R) - c.len(24), y: c.len(R) - c.len(30))
+                    }
                     .frame(width: c.len(R * 2), height: c.len(R * 2))
-                    .position(c.pt(cx, cy))
+                    .clipShape(Circle())
                     .rotationEffect(.degrees(prog * 360))
                     .malaTapTransition(count, reduceMotion: reduceMotion)
+
+                    Circle().stroke(Color.white.opacity(0.28), lineWidth: c.len(1))
+                }
+                .frame(width: c.len(R * 2), height: c.len(R * 2))
+                .position(c.pt(cx, cy))
 
                 MalaCountBlock(
                     count: count, target: target, topFraction: 0.63,
@@ -328,14 +358,16 @@ struct MalaRender_Celestial: View {
             let step = 360.0 / Double(target)
             ZStack {
                 RadialGradient(colors: [Color(hex: 0x1c2148), Color(hex: 0x0a0d20), Color(hex: 0x05060f)], center: UnitPoint(x: 0.5, y: 0.26), startRadius: 0, endRadius: c.len(380))
-                Canvas { ctx, size in
-                    for i in 0..<46 {
-                        let x = CGFloat((i * 53) % 278) / 278 * size.width
-                        let y = CGFloat((i * 97) % 604) / 604 * size.height
-                        let s: CGFloat = i % 3 == 0 ? c.len(1.3) : c.len(0.8)
-                        ctx.fill(Path(ellipseIn: CGRect(x: x - s, y: y - s, width: s * 2, height: s * 2)),
-                                 with: .color(Color(hex: 0xdfe6ff).opacity(0.3 + Double((i * 13) % 5) / 10)))
-                    }
+                // Starfield: individually animated (not Canvas) so each star can
+                // twinkle on its own staggered loop, matching the design's j-twinkle.
+                ForEach(0..<46, id: \.self) { i in
+                    MalaTwinklingStar(
+                        x: c.x(CGFloat((i * 53) % 278)), y: c.y(CGFloat((i * 97) % 604)),
+                        radius: i % 3 == 0 ? c.len(1.3) : c.len(0.8),
+                        baseOpacity: 0.3 + Double((i * 13) % 5) / 10,
+                        duration: Double(3 + i % 4), delay: Double(i % 5) * 0.3,
+                        active: !reduceMotion
+                    )
                 }
                 Circle().stroke(Color(hex: 0x4a5a9a).opacity(0.4), style: StrokeStyle(lineWidth: c.len(0.6), dash: [c.len(1), c.len(4)]))
                     .frame(width: c.len(R * 2), height: c.len(R * 2)).position(c.pt(cx, cy))

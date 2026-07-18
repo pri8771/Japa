@@ -212,3 +212,32 @@ struct MalaFogBlob: View {
             }
     }
 }
+
+/// A single star that twinkles between its own dim base opacity and a bright
+/// peak — the design's j-twinkle keyframe (used by Celestial's starfield).
+/// Positioned directly in the parent's coordinate space via `x`/`y`.
+struct MalaTwinklingStar: View {
+    var x: CGFloat
+    var y: CGFloat
+    var radius: CGFloat
+    var baseOpacity: Double
+    var duration: Double
+    var delay: Double = 0
+    var active: Bool
+
+    @State private var bright = false
+
+    var body: some View {
+        Circle()
+            .fill(Color(hex: 0xdfe6ff))
+            .frame(width: radius * 2, height: radius * 2)
+            .position(x: x, y: y)
+            .opacity(bright ? 0.9 : baseOpacity)
+            .onAppear {
+                guard active else { return }
+                withAnimation(.easeInOut(duration: duration).repeatForever(autoreverses: true).delay(delay)) {
+                    bright = true
+                }
+            }
+    }
+}

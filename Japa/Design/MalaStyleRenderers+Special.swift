@@ -152,6 +152,15 @@ struct MalaRender_CeramicGlaze: View {
                             .fill(RadialGradient(colors: [Color(hex: 0xeef3ea), Color(hex: 0xcdd8cb), Color(hex: 0xa7b6a6), Color(hex: 0x7f9080)],
                                                   center: UnitPoint(x: 0.38, y: 0.32), startRadius: 0, endRadius: c.len(48)))
                             .frame(width: c.len(96), height: c.len(96))
+                        // Fine crackle (craquelure) on the focused bead and its
+                        // immediate neighbors — the "finely crackled" glaze this
+                        // style is named for.
+                        if ao <= 1 {
+                            CeramicCraquelure()
+                                .stroke(Color(hex: 0x7f9080), lineWidth: c.len(0.6))
+                                .frame(width: c.len(96), height: c.len(96))
+                                .opacity(0.4)
+                        }
                         if o == 0 {
                             Ellipse().fill(Color.white.opacity(0.5)).frame(width: c.len(26), height: c.len(16))
                                 .offset(x: -c.len(18), y: -c.len(28))
@@ -175,5 +184,23 @@ struct MalaRender_CeramicGlaze: View {
                 )
             }
         }
+    }
+}
+
+/// A fine crack-line, drawn in a 96×96 local frame — matches the design's
+/// literal craquelure path (`M20 30 L46 40 L38 62 M46 40 L70 34 M46 40 L52 66`).
+private struct CeramicCraquelure: Shape {
+    func path(in rect: CGRect) -> Path {
+        let s = rect.width / 96
+        func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: rect.minX + x * s, y: rect.minY + y * s) }
+        var p = Path()
+        p.move(to: pt(20, 30))
+        p.addLine(to: pt(46, 40))
+        p.addLine(to: pt(38, 62))
+        p.move(to: pt(46, 40))
+        p.addLine(to: pt(70, 34))
+        p.move(to: pt(46, 40))
+        p.addLine(to: pt(52, 66))
+        return p
     }
 }

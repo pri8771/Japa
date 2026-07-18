@@ -22,9 +22,14 @@ All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo 
 
 ---
 
-## Live update attempt — 2026-07-17
+## Live update history — 2026-07-17
 
-The Change Mala implementation status was written to Notion and local docs on 2026-07-17. A live Jira read/update was attempted against `project = JALA`, but Atlassian Rovo returned `UNAUTHORIZED` / `oauth_token_invalid_grant`; Jira still requires connector reauthentication before adding the Change Mala verification note to JALA. A second attempt after the Dynamic Type + CI + full-suite verification follow-up returned the same reauthentication error, so Jira is not live-updated with the final 56/56 verification note.
+Two earlier attempts this same day to read/update `project = JALA` returned `UNAUTHORIZED` / `oauth_token_invalid_grant` (connector needed reauthentication at the time). **Reauthentication has since completed.** A later session confirmed live read access (`project = JALA` returns all 6 issues) and successfully pushed the Change Mala / Dynamic Type / CI / design-audit verification update:
+
+- `JALA-4` description and Current State field updated: Dynamic Type is now implemented and smoke-tested (was previously described as not implemented); VoiceOver human validation remains the open item.
+- `JALA-1` (epic) received a progress comment covering the Change Mala picker ship, Dynamic Type, CI workflow, and the 3 design-audit fixes, with the 56/56 test result.
+
+Local docs below were already accurate; this section is the connector-status log, kept for traceability rather than because the sync itself was blocked.
 
 ---
 

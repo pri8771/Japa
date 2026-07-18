@@ -42,15 +42,14 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 ## Verification pending
 
 - On-device haptic feel across ≥2 iPhone classes
-- VoiceOver/accessibility validation with users on physical devices
+- VoiceOver validation with users on physical devices (Dynamic Type portion is now implemented, see below)
 - Seed mantra human content sign-off (`docs/CONTENT_REVIEW.md`)
-- Jira connector re-verification from this session (`docs/JIRA_SYNC_PENDING.md` records synced JALA keys, but Atlassian Rovo currently requires reauthentication before live reads/updates)
 
 ## External trackers
 
 - **Notion Projects:** updated to MVP Ready, reviewed 2026-07-17 — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
 - **Notion Tasks:** JAP-004 Done; JAP-005 Ready; JAP-010 Done; JAP-011..014 Ready; JAP-015 Done (re-checked/updated 2026-07-17)
-- **Jira:** recorded as synced 2026-07-17 — project `JALA`: [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1) (Epic) with [JALA-2](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-2)..[JALA-5](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-5) (launch-gate stories) and [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) (sync task, Done) — see `docs/JIRA_SYNC_PENDING.md`. Live Jira re-verification/update could not run in this session because Atlassian Rovo returned `UNAUTHORIZED` / reauthentication required.
+- **Jira:** live and synced as of 2026-07-17 (reauthenticated after two earlier `UNAUTHORIZED` attempts — see `docs/JIRA_SYNC_PENDING.md`) — project `JALA`: [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1) (Epic, updated with a Change Mala/Dynamic Type/CI/design-audit progress comment) with [JALA-2](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-2)..[JALA-5](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-5) (launch-gate stories — JALA-4 description corrected to reflect Dynamic Type now implemented) and [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) (sync task, Done).
 
 ## Blockers
 
@@ -66,8 +65,13 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 - BUGS.md B-A11Y updated: Dynamic Type is now implemented and smoke-tested; VoiceOver/accessibility user validation remains open. New O5/signing-blocker row added to LAUNCH_READINESS.md §7/§9
 - FEAT-001 extended with explicit completion-signal-distinctness requirements; verification gap (no spy-based test) documented rather than silently left implied-covered
 
+## Documentation reconciliation (2026-07-17, later session)
+
+- Independent design-fidelity audit of the mala style picker against the source Claude Design spec (`Japa Concepts.dc.html`); found high overall fidelity with 3 confirmed cosmetic gaps, all fixed: Sculptural Monument's rotating engraved-surface texture, Celestial's twinkling starfield, Ceramic Glaze's craquelure detail
+- Verified full suite still green after fixes: 56/56 (47 unit/flow + 9 UI)
+- Jira connector reauthenticated; corrected `JALA-4`'s stale "Dynamic Type not implemented" description and posted a progress comment to the `JALA-1` epic
+
 ## Next action
 
-1. Reauthenticate Atlassian Rovo before the next live Jira update; local docs already record the synced JALA issue keys.
-2. Close launch gates: content, device haptics, VoiceOver/accessibility user validation, signing/TestFlight.
-3. Decide whether to add the spy-based haptic/tone tests FEAT-001 now calls for.
+1. Close launch gates: content, device haptics, VoiceOver user validation, signing/TestFlight.
+2. Decide whether to add the spy-based haptic/tone tests FEAT-001 calls for.
