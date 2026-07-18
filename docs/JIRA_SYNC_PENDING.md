@@ -22,6 +22,12 @@ All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo 
 
 ---
 
+## Live update attempt — 2026-07-17
+
+The Change Mala implementation status was written to Notion and local docs on 2026-07-17. A live Jira read/update was attempted against `project = JALA`, but Atlassian Rovo returned `UNAUTHORIZED` / `oauth_token_invalid_grant`; Jira still requires connector reauthentication before adding the Change Mala verification note to JALA.
+
+---
+
 ### EPIC — Japa App Factory onboarding / launch gates
 
 - **Jira Key:** [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1)
@@ -155,12 +161,12 @@ All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo 
 
 ---
 
-### TASK — Sync pending items once Atlassian auth works
+### TASK — Sync Jira issues and write keys back
 
 - **Jira Key:** [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) — status **Done**
 - **Jira Project:** JALA
 - **Summary:** Create the above Jira issues and write keys back to docs
-- **Description:** Execute sync after MCP auth completes; mark this file entries synced with keys.
+- **Description:** Execute Jira sync and mark this file entries synced with keys. Completed 2026-07-17; future live Jira updates require a valid Atlassian Rovo connection.
 - **Acceptance Criteria:** Jira keys present; pending entries marked synced
 - **Priority:** P2
 - **Status:** blocked

@@ -165,4 +165,47 @@ final class FeatureAuditUITests: XCTestCase {
             timeout: 3) == .completed
         XCTAssertTrue(changed, "Completion-tone toggle flips")
     }
+
+    // MARK: Mala style picker
+
+    func testMalaStylePickerNavigateAndApply() {
+        let app = ephemeralApp()
+        app.launch()
+        dismissIntro(app)
+
+        app.buttons["settingsButton"].tap()
+        let styleRow = app.buttons["malaStyleRow"]
+        XCTAssertTrue(styleRow.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["Classic"].exists, "Classic is the default style shown in Settings")
+        styleRow.tap()
+
+        // The picker opens live on Classic (the currently applied style).
+        XCTAssertTrue(app.staticTexts["Classic"].waitForExistence(timeout: 8))
+        let applyButton = app.buttons["malaApplyButton"]
+        XCTAssertTrue(applyButton.waitForExistence(timeout: 8))
+        XCTAssertEqual(applyButton.label, "Current mala", "Classic starts as the current mala")
+
+        // Step to the next style and confirm the name/apply-state update live.
+        app.buttons["Next style"].tap()
+        XCTAssertTrue(app.staticTexts["Ultra Minimal"].waitForExistence(timeout: 8), "Picker advances to the next style")
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label == %@", "Apply this mala"), object: applyButton)], timeout: 3) == .completed,
+            "A not-yet-applied style offers Apply"
+        )
+
+        // Live-preview tap: the bead area is tappable and doesn't crash the style.
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).tap()
+
+        // Apply it, then confirm Settings reflects the change.
+        applyButton.tap()
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label == %@", "Applied ✓"), object: applyButton)], timeout: 3) == .completed,
+            "Apply confirms with 'Applied ✓'"
+        )
+
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.staticTexts["Ultra Minimal"].waitForExistence(timeout: 8), "Settings shows the newly applied style")
+    }
 }

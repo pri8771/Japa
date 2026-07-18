@@ -2,7 +2,7 @@
 
 > Japa is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
 >
-> **Implementation maturity: v1 BUILT (~85% production-ready).** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release for iOS 17+; **46 unit/flow tests + 7 UI tests pass** (53 total — reconfirmed by a live `xcodebuild test` run on 2026-07-17). What remains before public launch is in §8/§9: human content sign-off, on-device haptic-feel validation across iPhone classes, an accessibility pass with VoiceOver users, code signing, and App Store metadata/TestFlight. Verified against the repo on 2026-06-30 and against the product-definition thread in `pri8771/conversation` (`Japa.md`). Test counts and the App Factory registration status were re-verified 2026-07-17 — see `docs/STATUS.md` and `docs/DECISIONS.md` DEC-004.
+> **Implementation maturity: v1 BUILT (~86% production-ready).** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; a 21-style Change Mala visual picker with Classic as the default; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release for iOS 17+; latest focused verification on 2026-07-17 passed `xcodebuild build`, 47/47 unit+flow tests, and a Settings/History UI smoke; a full UI-suite rerun remains pending after Simulator runner kills during the mala-style verification attempt. What remains before public launch is in §8/§9: human content sign-off, on-device haptic-feel validation across iPhone classes, an accessibility pass with VoiceOver users, code signing, and App Store metadata/TestFlight. Verified against the repo on 2026-06-30 and against the product-definition thread in `pri8771/conversation` (`Japa.md`). Test counts and the App Factory registration status were re-verified 2026-07-17 — see `docs/STATUS.md` and `docs/DECISIONS.md` DEC-004.
 
 ---
 
@@ -92,6 +92,7 @@ The pure, UI-independent core in [`Japa/Engine/JapaEngine.swift`](Japa/Engine/Ja
 ### F6. Practice preferences — **Built**
 [`Preferences`](Japa/Models/Preferences.swift) + [`SettingsView`](Japa/Views/SettingsView.swift).
 - ✅ **Given** settings, **then** the user sets a target (27/54/108/216/1080) that persists and is used by subsequent sessions.
+- ✅ **Given** settings, **then** the user can open **Mala Style**, preview all 21 visual worlds, and apply one without changing the underlying count behavior.
 - ✅ **Given** settings, **then** toggling the completion tone off suppresses F3's tone while the completion haptic remains.
 - ✅ **Given** a haptic-strength slider, **then** the per-bead intensity respects it (honored where hardware supports variable intensity; ignored gracefully elsewhere).
 - ✅ **Given** any preference change, **then** it persists locally and applies without a restart.
@@ -112,7 +113,7 @@ Unchanged from the locked product decision, and honored by the build:
 - **Streaks / "don't break the chain" / loss-aversion mechanics — forbidden for v1.** History is gentle; a test structurally asserts no streak/chain concept exists in the models.
 - **Reminders / push notifications.** None requested; no notification permission is triggered.
 - **Audio / guided chanting / per-bead recited audio.** Out. v1 ships at most one gentle completion tone.
-- **Literal photoreal bead-string / 3D mala.** Out. v1 is abstract-tactile (a thin progress ring + haptic rhythm).
+- **External 3D/photoreal asset pipeline.** Out. v1 visual styles are native SwiftUI/Canvas renderers plus the haptic rhythm.
 - **Content library / large curated catalog, translations, meanings, pronunciation audio.** Out. Tiny reviewed seed set + user free-text only.
 - **Accounts, cloud sync, cross-device, sharing, social, leaderboards.** Out. Local-first, single-device.
 - **Analytics, telemetry, ads, third-party SDKs.** Out (would break F7).
@@ -173,7 +174,7 @@ Unchanged from the locked product decision, and honored by the build:
 - **Haptic feel is device-dependent and validated only in code/Simulator so far.** Crispness, latency, and the distinctness of the completion pattern vary across Taptic Engine generations and degrade on devices without Core Haptics (a fallback path exists). The "eyes-free distinct completion" claim must be confirmed per-device class on hardware — the single highest-risk product assumption. The Simulator has no Taptic Engine, so feel cannot be auto-tested.
 - **Silent-switch / tone split is nuanced.** Haptics ignore the mute switch; the tone (`.ambient`) follows it. This is documented in Settings copy but should be watched in beta for "why no sound?" confusion.
 - **Seed mantra content correctness is a human-review dependency** (`docs/CONTENT_REVIEW.md`). Text/transliteration is drafted but not yet signed off; this is outside what code can self-verify.
-- **Accessibility is implemented but not yet validated with users.** VoiceOver labels/values/actions, an advance action on the ring, reduced-motion handling, and Dynamic Type via system fonts are in place; a real VoiceOver/Dynamic-Type pass is still required for an eyes-free app.
+- **Accessibility is partially implemented and not yet validated with users.** VoiceOver labels/values/actions, an advance action on the ring, and reduced-motion handling are in place. Dynamic Type is **not yet implemented** because the current theme uses fixed-point fonts; implement and validate Dynamic Type before public launch.
 - **The generated `.xcodeproj` is committed for convenience** but `project.yml` is the source of truth — regenerate with `xcodegen generate` rather than hand-editing the project.
 
 ---
@@ -221,8 +222,8 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 
 ## 8. Production-Readiness Assessment
 
-### Current estimated readiness: **~85%**
-Justification: the product is **built and tested**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, an app icon, and a verified privacy posture, all building in Debug and Release with 53 passing automated tests (46 unit/flow + 7 UI). The remaining ~15% is genuinely off-keyboard: human content sign-off, on-device haptic-feel validation (impossible in Simulator), an accessibility pass with real assistive-tech users, code signing, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
+### Current estimated readiness: **~86%**
+Justification: the product is **built and tested**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, the 21-style Change Mala picker, an app icon, and a verified privacy posture. Latest verification passed Debug build, 47/47 unit+flow tests, and a focused Settings/History UI smoke; a full UI-suite rerun is pending after Simulator runner instability. The remaining ~14% is genuinely off-keyboard or release-gate work: human content sign-off, on-device haptic-feel validation (impossible in Simulator), an accessibility pass with real assistive-tech users, code signing, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
 
 ### Remaining work to reach launch (ordered)
 1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
@@ -232,11 +233,12 @@ Justification: the product is **built and tested**, not specified — a pure tes
 5. ✅ Local persistence (F7) + interruption-resume (B8).
 6. ✅ Mantra selection (F4) — reviewed seed + free-text, never affects counting.
 7. ✅ History (F5) — calm reverse-chron, delete/clear, no streak UI.
-8. ✅ Settings (F6) — target, tone, intensity, clear history.
-9. ✅ Privacy/no-network audit (F7) + `PrivacyInfo.xcprivacy`.
-10. ⏳ **Content sign-off (O1).**
-11. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion are coded; validate on device.
-12. ⏳ **On-device haptic validation (O2)** and **App Store prep + TestFlight (O3)**.
+8. ✅ Settings (F6) — target, tone, intensity, mala style, clear history.
+9. ✅ Change Mala visual picker — 21 native SwiftUI/Canvas styles; Classic remains default.
+10. ✅ Privacy/no-network audit (F7) + `PrivacyInfo.xcprivacy`.
+11. ⏳ **Content sign-off (O1).**
+12. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion are coded; validate on device.
+13. ⏳ **On-device haptic validation (O2)** and **App Store prep + TestFlight (O3)**.
 
 ### Audit (2026-07-01)
 A full audit was run against the built app. Findings fixed:
@@ -246,10 +248,10 @@ A full audit was run against the built app. Findings fixed:
 The flagship interruption-safety flow was verified **end-to-end in the running app** (advance → background → terminate → relaunch → resume card → exact bead restored), along with mantra selection/creation, history record + delete, and settings.
 
 ### Test coverage summary
-- **Now:** 46 unit/flow tests + 7 UI tests, all passing (fresh-simulator run).
+- **Now:** 47 unit/flow tests + 7 UI tests in source. Latest focused verification passed 47/47 unit+flow and a Settings/History UI smoke on iPhone 17 Pro, iOS 26.5; full UI-suite rerun remains pending after Simulator runner kills during the mala-style verification attempt. Baseline full UI run passed 53/53 before the mala-style change on 2026-07-17.
   - *Unit (hard gate):* engine — advance, completion exactly once at N, advance-past-target, target-config incl. boundary/invalid, undo/decrement floor, reset/new-round, reconstruction from persisted count.
   - *Persistence:* preferences/sessions round-trips, active-session save/flush/load, survival across a new store instance (force-quit sim), latest-write-wins, clear.
-  - *Flow:* completion→history + resumable cleared, interruption-resume across a simulated relaunch, honest partial, zero-count discard, undo, explicit new round, custom-mantra + selection persistence, structural no-streak assertion.
+  - *Flow:* completion→history + resumable cleared, interruption-resume across a simulated relaunch, honest partial, zero-count discard, undo, explicit new round, custom-mantra + selection persistence, mala-style preference persistence, structural no-streak assertion.
   - *UI:* tap→advance, undo→decrement, target→completion + new round, settings/history navigation, **resume after interruption (background → terminate → relaunch → exact bead)**, mantra selection + custom authoring, history record + swipe-delete, settings tone toggle.
 - **Cannot be automated (manual/device):** per-bead haptic crispness/latency; per-bead vs. completion distinctness eyes-free; haptics-in-silent-mode; eyes-closed/screen-off full round; per-device fallback.
 

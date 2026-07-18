@@ -24,7 +24,7 @@ supersedes: []
 
 ## Coverage summary (source inventory 2026-07-16)
 
-- **46** unit/flow tests
+- **47** unit/flow tests
 - **7** UI tests
 - Engine: advance, completion-once, undo floor, boundaries, reconstruct from count
 - Persistence: prefs/sessions/active-session round-trip + flush
@@ -43,7 +43,8 @@ supersedes: []
 - [x] `xcodebuild -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' test` — exit 0 on 2026-07-16 (~380s; DebuggerLLDB version-store warnings observed, non-blocking)
 - [x] Source inventory of tests and modules
 - [x] Registration verify script
-- [x] Re-verified 2026-07-17 (registration-upgrade pass): `xcodegen generate`, `xcodebuild build`, and `xcodebuild test` on iPhone 17 Pro (OS 26.5) — build succeeded, 53/53 tests passed (0 failures), confirming the 46+7 count above
+- [x] Re-verified 2026-07-17 (registration-upgrade pass): `xcodegen generate`, `xcodebuild build`, and `xcodebuild test` on iPhone 17 Pro (OS 26.5) — build succeeded, 53/53 tests passed (0 failures), confirming the then-current 46+7 count
+- [x] Re-verified 2026-07-17 (mala-style implementation): `xcodegen generate`; `xcodebuild build`; `xcodebuild -only-testing:JapaTests test` on iPhone 17 Pro (OS 26.5) — 47/47 unit+flow tests passed; focused UI smoke `JapaUITests/JapaUITests/testNavigateSettingsAndHistory` passed. Full UI suite was attempted but the Simulator test runner was repeatedly killed before several tests established a session, so the full UI suite remains unverified for this change.
 
 ## Quality manifest alignment
 

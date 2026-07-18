@@ -16,10 +16,28 @@ final class PersistenceTests: XCTestCase {
         prefs.defaultTarget = 27
         prefs.completionToneEnabled = false
         prefs.hapticIntensity = 0.4
+        prefs.malaStyle = .templeBrass
         store.save(prefs, "preferences")
 
         let loaded = store.load(Preferences.self, "preferences")
         XCTAssertEqual(loaded, prefs)
+    }
+
+    func testOldPreferencesWithoutMalaStyleDecodeToClassic() throws {
+        let json = """
+        {
+          "defaultTarget": 54,
+          "completionToneEnabled": false,
+          "hapticIntensity": 0.35,
+          "hasSeenIntro": true
+        }
+        """
+        let prefs = try JSONDecoder().decode(Preferences.self, from: Data(json.utf8))
+        XCTAssertEqual(prefs.defaultTarget, 54)
+        XCTAssertFalse(prefs.completionToneEnabled)
+        XCTAssertEqual(prefs.hapticIntensity, 0.35, accuracy: 0.0001)
+        XCTAssertTrue(prefs.hasSeenIntro)
+        XCTAssertEqual(prefs.malaStyle, .classic)
     }
 
     func testSessionsRoundTrip() {

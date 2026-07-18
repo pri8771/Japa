@@ -14,6 +14,7 @@ struct RootView: View {
         case mantraSelect
         case history
         case settings
+        case malaStylePicker
     }
 
     var body: some View {
@@ -27,6 +28,7 @@ struct RootView: View {
                 case .mantraSelect: MantraSelectView()
                 case .history: HistoryView()
                 case .settings: SettingsView()
+                case .malaStylePicker: MalaStylePickerView()
                 }
             }
         }

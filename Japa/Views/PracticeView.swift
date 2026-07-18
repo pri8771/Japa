@@ -10,6 +10,7 @@ struct PracticeView: View {
     let controller: PracticeController
     var onClose: () -> Void
 
+    @Environment(AppModel.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var tapScale: CGFloat = 1
 
@@ -28,53 +29,113 @@ struct PracticeView: View {
                 )
                 .accessibilityHidden(true)
 
+            practiceContent
+        }
+        .background(background)
+    }
+
+    @ViewBuilder
+    private var practiceContent: some View {
+        if app.preferences.malaStyle == .classic {
             VStack(spacing: 0) {
                 topBar
                     .padding(.horizontal, 20)
                     .padding(.top, 8)
-
                 Spacer()
-
-                BeadRingView(
-                    progress: controller.progress,
+                classicAdvanceRing
+                Spacer()
+                bottomBar
+                    .padding(.bottom, 30)
+            }
+        } else {
+            ZStack {
+                MalaStyleView(
+                    style: app.preferences.malaStyle,
                     count: controller.count,
                     target: controller.target,
                     isComplete: false,
                     breathing: true
                 )
-                .frame(width: 268, height: 268)
-                .scaleEffect(tapScale)
+                .ignoresSafeArea()
                 .allowsHitTesting(false)
-                // Accessibility: the ring is the advance affordance for VoiceOver.
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel("Advance one bead")
-                .accessibilityValue("\(controller.count) of \(controller.target)")
-                .accessibilityHint("Double-tap to count a bead")
-                .accessibilityAction { advance() }
-                .accessibilityIdentifier("advanceRing")
 
-                Spacer()
-
-                bottomBar
-                    .padding(.bottom, 30)
+                VStack(spacing: 0) {
+                    topBar
+                        .padding(.horizontal, 20)
+                        .padding(.top, 8)
+                    Spacer()
+                    fullScreenAdvanceAccessibility
+                    Spacer()
+                    bottomBar
+                        .padding(.bottom, 30)
+                }
             }
         }
-        .background(Theme.background)
     }
+
+    private var background: some View {
+        Group {
+            if app.preferences.malaStyle == .classic {
+                Theme.background
+            } else {
+                Color.black
+            }
+        }
+    }
+
+    private var classicAdvanceRing: some View {
+        BeadRingView(
+            progress: controller.progress,
+            count: controller.count,
+            target: controller.target,
+            isComplete: false,
+            breathing: true
+        )
+        .frame(width: 268, height: 268)
+        .scaleEffect(tapScale)
+        .allowsHitTesting(false)
+        // Accessibility: the ring is the advance affordance for VoiceOver.
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel("Advance one bead")
+        .accessibilityValue("\(controller.count) of \(controller.target)")
+        .accessibilityHint("Double-tap to count a bead")
+        .accessibilityAction { advance() }
+        .accessibilityIdentifier("advanceRing")
+    }
+
+    private var fullScreenAdvanceAccessibility: some View {
+        Color.clear
+            .frame(width: 1, height: 1)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("Advance one bead")
+            .accessibilityValue("\(controller.count) of \(controller.target)")
+            .accessibilityHint("Double-tap to count a bead")
+            .accessibilityAction { advance() }
+            .accessibilityIdentifier("advanceRing")
+    }
+
+    /// Non-classic styles fill the whole screen with their own art, so the
+    /// chrome sitting on top needs contrast that holds regardless of what's
+    /// underneath — a light scrim plus a shadow, rather than Theme's fixed
+    /// light/dark colors which assume Theme.background.
+    private var isClassic: Bool { app.preferences.malaStyle == .classic }
 
     private var topBar: some View {
         ZStack {
             Text(controller.mantra.title)
                 .font(Theme.serif(15))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(isClassic ? Theme.textSecondary : .white.opacity(0.78))
+                .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
                 .allowsHitTesting(false)
 
             HStack {
                 Button(action: endAndClose) {
                     Image(systemName: "xmark")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundStyle(Theme.textMuted)
+                        .foregroundStyle(isClassic ? Theme.textMuted : .white.opacity(0.85))
+                        .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
@@ -89,18 +150,20 @@ struct PracticeView: View {
             Button(action: { controller.undo() }) {
                 Label("Undo", systemImage: "arrow.uturn.left")
                     .font(Theme.ui(14, weight: .medium))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(isClassic ? Theme.textSecondary : .white.opacity(0.88))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 9)
+                    .background(Capsule().fill(.black.opacity(isClassic ? 0 : 0.26)))
                     .overlay(
-                        Capsule().stroke(Theme.hairline, lineWidth: 1)
+                        Capsule().stroke(isClassic ? Theme.hairline : .white.opacity(0.32), lineWidth: 1)
                     )
             }
             .accessibilityHint("Steps back one bead")
 
             Text("Tap anywhere to advance")
                 .font(Theme.ui(12))
-                .foregroundStyle(Theme.textMuted)
+                .foregroundStyle(isClassic ? Theme.textMuted : .white.opacity(0.72))
+                .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
                 .allowsHitTesting(false)
         }
     }

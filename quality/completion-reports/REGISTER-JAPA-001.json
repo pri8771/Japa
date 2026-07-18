@@ -28,7 +28,7 @@
     { "check": "xcodegen generate", "result": "success", "notes": "Regenerated Japa.xcodeproj from project.yml, exit 0" },
     { "check": "xcodebuild -list", "result": "success", "notes": "Confirms Japa/JapaTests/JapaUITests targets and Japa scheme" },
     { "check": "xcodebuild build (iPhone 17 Pro, iOS 26.5 simulator)", "result": "success", "notes": "BUILD SUCCEEDED" },
-    { "check": "xcodebuild test (iPhone 17 Pro, iOS 26.5 simulator)", "result": "success", "notes": "53/53 tests passed, 0 failures (46 unit/flow + 7 UI, confirmed by xcresulttool summary) — matches docs/STATUS.md and docs/TEST_PLAN.md, contradicts stale counts in README.md/docs/PROJECT_DOCUMENTATION.md (B-DOC, not corrected in this pass — see humanReviewRequired)" },
+    { "check": "xcodebuild test (iPhone 17 Pro, iOS 26.5 simulator)", "result": "success", "notes": "53/53 tests passed, 0 failures (46 unit/flow + 7 UI, confirmed by xcresulttool summary). Stale 41+3 counts were later corrected in README.md, docs/PROJECT_DOCUMENTATION.md, and LAUNCH_READINESS.md on 2026-07-17." },
     { "check": "verify-project-registration.sh (read-only)", "result": "success", "notes": "All required files present; all cross-file version/name/type consistency checks pass; 0 registered libraries (central registry is empty)" },
     { "check": "JSON validity of all created/edited .factory and quality files", "result": "success", "notes": "python3 json.load on repository-map.json, library-catalog.json, standard-lock.json, project-context.json, quality-manifest.json, FEAT-001 contract" }
   ],
@@ -41,7 +41,7 @@
   ],
   "placeholdersRemaining": [
     "docs/CONTENT_REVIEW.md sign-off checklist is unchecked (B6) — mantra content is implemented in code but not human-approved",
-    "docs/RELEASE_CHECKLIST.md boxes are almost entirely unchecked and not yet reconciled against LAUNCH_READINESS.md §9's more accurate, already-checked state (flagged in docs/README.md documentation gaps, not resolved in this pass)"
+    "Completion evidence under quality/evidence/ has not yet been recorded beyond the template README.md"
   ],
   "fakeDataUsedInProduction": false,
   "knownIssues": [
@@ -49,10 +49,10 @@
     "B-SIGN (high): code signing disabled, blocks device/TestFlight builds",
     "B-A11Y (medium, corrected this pass): VoiceOver coded but unvalidated; Dynamic Type not implemented at all",
     "B-HAPT (high): eyes-free completion distinctness unvalidated on hardware; also now lacks any automated spy-based test (see FEAT-001 verificationGaps)",
-    "B-DOC (low): README.md and docs/PROJECT_DOCUMENTATION.md still state stale 41+3 test counts; actual and now twice-confirmed count is 46+7=53. Deliberately not edited in this pass — see humanReviewRequired",
+    "B-DOC (low): resolved 2026-07-17; README.md, docs/PROJECT_DOCUMENTATION.md, and LAUNCH_READINESS.md now state the verified 46+7=53 test count",
     "B-CI (medium): no GitHub Actions workflows exist",
     "Two non-reconciled bug-tracking schemes exist (docs/BUGS.md vs LAUNCH_READINESS.md §7) with no 1:1 mapping",
-    "docs/RELEASE_CHECKLIST.md is unreconciled against LAUNCH_READINESS.md §9"
+    "docs/RELEASE_CHECKLIST.md is reconciled as of 2026-07-17; keep it aligned with LAUNCH_READINESS.md §9 when launch gates change"
   ],
   "documentationUpdated": [
     "docs/README.md (created)",
@@ -68,13 +68,12 @@
     "AGENTS.md, CLAUDE.md, GEMINI.md, .github/copilot-instructions.md, .cursor/rules/app-factory.mdc, .factory/AGENTS.factory.md (replaced with 0.4.0 template content)"
   ],
   "humanReviewRequired": [
-    "Correct the stale 41+3 test-count claims in README.md, docs/PROJECT_DOCUMENTATION.md, and the inconsistent instances within LAUNCH_READINESS.md — deliberately left untouched in this pass since it's product-facing prose outside App Factory scaffolding scope; docs/README.md's documentation-gaps section now flags it explicitly with the correct number and evidence",
     "Decide whether to add spy-based tests for FEAT-001's new completion-signaling requirements (HapticFeedback/TonePlaying call verification) — a real product-code change, not attempted in this registration pass",
     "Human sign-off on docs/CONTENT_REVIEW.md (B6)",
     "Enable code signing / DEVELOPMENT_TEAM for device and TestFlight builds (B-SIGN)",
     "On-device haptic and accessibility (VoiceOver + Dynamic Type) validation across >=2 iPhone classes (B-HAPT, B-A11Y)",
-    "Reconcile docs/RELEASE_CHECKLIST.md against LAUNCH_READINESS.md §9",
-    "Reconcile the two parallel bug-ID schemes (docs/BUGS.md vs LAUNCH_READINESS.md §7)",
+    "Keep docs/RELEASE_CHECKLIST.md aligned with LAUNCH_READINESS.md §9 as launch gates close",
+    "Keep the two parallel bug-ID schemes (docs/BUGS.md vs LAUNCH_READINESS.md §7) aligned as issues are added or closed",
     "Decide whether to pursue any of the reusable-code candidates in docs/REUSABLE_COMPONENTS.md now, or wait for a second consumer app as recommended"
   ],
   "existingFilesPreserved": [

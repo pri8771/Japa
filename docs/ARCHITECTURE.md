@@ -36,7 +36,7 @@ JapaApp
         │     ├── JapaEngine (pure value type — count/completion contract)
         │     ├── HapticPlayer / HapticFeedback
         │     └── CompletionTone (AVFoundation ambient)
-        └── Views (Root → Home / Practice / Completion / MantraSelect / History / Settings / Intro)
+        └── Views (Root → Home / Practice / Completion / MantraSelect / History / Settings / MalaStylePicker / Intro)
 ```
 
 ### Modules
@@ -44,14 +44,14 @@ JapaApp
 | Folder | Responsibility |
 |--------|----------------|
 | `Engine/` | Pure `JapaEngine` + `AdvanceResult` — frozen count/completion/undo contract |
-| `Models/` | `Mantra`, `PracticeSession`, `Preferences`, `ActiveSessionState` |
+| `Models/` | `Mantra`, `MalaStyle`, `PracticeSession`, `Preferences`, `ActiveSessionState` |
 | `Persistence/` | Codable JSON sandbox store + async active-session flush |
 | `Haptics/` | Core Haptics player with UIKit fallback |
 | `Audio/` | Single completion tone |
 | `Content/` | Bundled seed mantras |
 | `ViewModels/` | `AppModel`, `PracticeController` |
-| `Views/` | SwiftUI screens |
-| `Design/` | Theme |
+| `Views/` | SwiftUI screens, including the 21-style Change Mala picker |
+| `Design/` | Theme and mala-style renderers |
 | `Resources/` | Assets + `PrivacyInfo.xcprivacy` |
 
 ### Targets

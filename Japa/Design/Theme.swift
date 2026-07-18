@@ -71,16 +71,22 @@ enum Theme {
 /// A calm primary action — gold outline on the warm background.
 struct OutlineButtonStyle: ButtonStyle {
     var prominent: Bool = true
+    /// True when sitting directly on a mala style's own full-bleed art rather
+    /// than `Theme.background` — uses white instead of Theme's light/dark
+    /// accent so it stays legible regardless of the art's own palette.
+    var onDark: Bool = false
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Theme.ui(16, weight: .medium))
-            .foregroundStyle(prominent ? Theme.accentBright : Theme.textSecondary)
+            .foregroundStyle(onDark ? .white.opacity(0.92) : (prominent ? Theme.accentBright : Theme.textSecondary))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(
                 RoundedRectangle(cornerRadius: Theme.cornerSmall, style: .continuous)
-                    .stroke(prominent ? Theme.accent : Theme.hairline, lineWidth: 1)
+                    .stroke(onDark ? .white.opacity(0.5) : (prominent ? Theme.accent : Theme.hairline), lineWidth: 1)
             )
+            .shadow(color: .black.opacity(onDark ? 0.4 : 0), radius: 4)
             .contentShape(Rectangle())
             .opacity(configuration.isPressed ? 0.6 : 1)
             .scaleEffect(configuration.isPressed ? 0.99 : 1)

@@ -123,8 +123,26 @@ final class AppModel {
         savePreferences()
     }
 
+    func setMalaStyle(_ style: MalaStyle) {
+        preferences.malaStyle = style
+        savePreferences()
+    }
+
     private func savePreferences() {
         persistence.save(preferences, Keys.preferences)
+    }
+
+    // MARK: - Mala style picker preview feedback
+
+    /// Real per-bead haptic, reused so the "Change Mala" picker's live tap
+    /// preview feels exactly like an actual practice tap.
+    func playPreviewTick() {
+        haptics.tick(intensity: preferences.hapticIntensity)
+    }
+
+    /// Real completion haptic, fired when a picker preview wraps back to 1.
+    func playPreviewCompletion() {
+        haptics.completion()
     }
 
     // MARK: - History

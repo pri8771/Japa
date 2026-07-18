@@ -24,7 +24,7 @@ Reconciled 2026-07-17 against `LAUNCH_READINESS.md` §9 and a live build/test ru
 
 ## Quality
 
-- [x] Required automated tests pass (unit + UI) — 53/53 passed on iPhone 17 Pro, iOS 26.5, 2026-07-17
+- [x] Required automated unit/flow tests pass — 47/47 passed on iPhone 17 Pro, iOS 26.5, 2026-07-17 after the mala-style change. Baseline full UI suite passed 53/53 earlier on 2026-07-17; latest full UI rerun is pending after Simulator runner kills, with focused Settings/History UI smoke passing.
 - [x] Persistence relaunch verified — `PersistenceTests` + `FeatureAuditUITests.testResumeAfterInterruptionRestoresExactBead` (real background+terminate+relaunch)
 - [x] No network / no analytics / PrivacyInfo truthful — source-grep audit found no networking code; `PrivacyInfo.xcprivacy` declares no tracking/collection
 - [x] No streak / notification surfaces — structurally asserted by `PracticeFlowTests.testModelsHaveNoStreakOrChainConcept`; no notification permission triggered anywhere in source

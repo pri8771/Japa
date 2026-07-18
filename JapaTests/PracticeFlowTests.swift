@@ -145,11 +145,13 @@ final class PracticeFlowTests: XCTestCase {
         app.setDefaultTarget(27)
         app.setCompletionToneEnabled(false)
         app.setHapticIntensity(0.3)
+        app.setMalaStyle(.zenInk)
 
         let relaunched = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
         XCTAssertEqual(relaunched.preferences.defaultTarget, 27)
         XCTAssertFalse(relaunched.preferences.completionToneEnabled)
         XCTAssertEqual(relaunched.preferences.hapticIntensity, 0.3, accuracy: 0.0001)
+        XCTAssertEqual(relaunched.preferences.malaStyle, .zenInk)
     }
 
     func testSetDefaultTargetClampsOutOfRange() {

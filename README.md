@@ -2,10 +2,10 @@
 
 A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iOS.
 
-> **Status: v1 implemented (~85% production-ready).** The app is built: a tested
-> repetition engine (46 unit/flow tests + 7 UI tests, all passing), the eyes-free
+> **Status: v1 implemented (~86% production-ready).** The app is built: a tested
+> repetition engine (47 unit/flow tests passing; 7 UI tests present), the eyes-free
 > haptic practice screen, a distinct completion signal, mantra selection (reviewed
-> seed set + free-text), quiet history, and settings — all local-first. Remaining
+> seed set + free-text), quiet history, settings, and a 21-style Change Mala picker — all local-first. Remaining
 > work is human content sign-off, on-device haptic tuning across iPhone classes,
 > an accessibility pass, code signing, and App Store prep
 > (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §8–9).
@@ -24,9 +24,9 @@ If it can't deliver that eyes-free, look-down-free feel, it's a skinned counter 
 
 ## v1 scope (and non-goals)
 
-**In:** repetition engine, eyes-free tactile practice screen, distinct completion haptic + tone, a tiny **reviewed** seed mantra set **plus** user free-text, session completion, and a simple quiet history. Local-first; no backend, accounts, or analytics.
+**In:** repetition engine, eyes-free tactile practice screen, distinct completion haptic + tone, a tiny **reviewed** seed mantra set **plus** user free-text, session completion, simple quiet history, and 21 visual mala styles with Classic as the default. Local-first; no backend, accounts, or analytics.
 
-**Out (v1):** streaks / loss-aversion mechanics, reminders/notifications, audio/chanting, literal bead rendering, content library, sync, IAP. (Streaks and reminders are deliberately excluded — gamifying a devotional practice is a tone failure.)
+**Out (v1):** streaks / loss-aversion mechanics, reminders/notifications, audio/chanting, content library, sync, IAP. (Streaks and reminders are deliberately excluded — gamifying a devotional practice is a tone failure.)
 
 ## Build & run
 
@@ -43,7 +43,7 @@ From the command line:
 ```bash
 # Build
 xcodebuild build -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
-# Test (46 unit/flow tests + 7 UI tests)
+# Test (47 unit/flow tests + 7 UI tests)
 xcodebuild test  -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
@@ -56,14 +56,14 @@ xcodebuild test  -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 1
 ```
 Japa/
   Engine/        JapaEngine (pure, frozen contract) + AdvanceResult
-  Models/        Mantra, PracticeSession, Preferences, ActiveSessionState
+  Models/        Mantra, MalaStyle, PracticeSession, Preferences, ActiveSessionState
   Persistence/   Codable-to-disk store + interruption-safe ActiveSessionStore
   Haptics/       CoreHaptics player (+ UIFeedbackGenerator fallback)
   Audio/         synthesized gentle completion tone (respects silent switch)
   Content/       reviewed seed mantras
   ViewModels/    AppModel, PracticeController
-  Views/         Home, Practice, Completion, MantraSelect, History, Settings, Intro
-  Design/        Theme (warm, dark-first design system)
+  Views/         Home, Practice, Completion, MantraSelect, History, Settings, MalaStylePicker, Intro
+  Design/        Theme + native mala-style renderers
   Resources/     Assets.xcassets (app icon, accent), PrivacyInfo.xcprivacy
 JapaTests/       engine, persistence, and end-to-end flow tests
 JapaUITests/     core-flow UI tests (advance, undo, completion, navigation)
