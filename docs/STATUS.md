@@ -38,24 +38,26 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 - Baseline `xcodebuild test` on iPhone 17 (OS 26.5) exited 0 (2026-07-16)
 - Re-verified `xcodebuild build` and `xcodebuild test` on iPhone 17 Pro (OS 26.5): build succeeded, 53/53 tests passed, 0 failures (2026-07-17, App Factory registration-upgrade pass)
 - Re-verified mala-style + Dynamic Type + CI implementation on 2026-07-17: `xcodegen generate`, Release simulator build, full `xcodebuild test` on iPhone 17 Pro (OS 26.5) passed 56/56 tests (47 unit/flow + 9 UI). Compact-phone accessibility text-size smoke passed on iPhone 17e.
+- Full suite grew to **62 tests (52 unit/flow + 10 UI), all passing** after the merged-surface, animation, red-final-bead, and stale-round-Finish work (2026-07-17/18).
+- **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 
 ## Verification pending
 
-- On-device haptic feel across ≥2 iPhone classes
-- VoiceOver validation with users on physical devices (Dynamic Type portion is now implemented, see below)
-- Seed mantra human content sign-off (`docs/CONTENT_REVIEW.md`)
+- VoiceOver validation with a real assistive-tech user on device (Dynamic Type portion is implemented + smoke-tested; JAPA-8)
+- Seed mantra human content sign-off (`docs/CONTENT_REVIEW.md`; JAPA-6)
+- Code signing in `project.yml` + App Store / TestFlight distribution prep (JAPA-9)
 
 ## External trackers
 
 - **Notion Projects:** updated to MVP Ready, reviewed 2026-07-17 — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
 - **Notion Tasks:** JAP-004 Done; JAP-005 Ready; JAP-010 Done; JAP-011..014 Ready; JAP-015 Done (re-checked/updated 2026-07-17)
-- **Jira (canonical): project `JAPA`** — consolidated 2026-07-17 after discovering it pre-dated the `JALA` project (JALA was retired as Deferred/Replaced-By; mapping in `docs/JIRA_SYNC_PENDING.md`). Current JAPA state: [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) epic In Progress (updated with 2026-07-17 progress comment); JAPA-2/3 In Review; JAPA-4 In Progress; JAPA-5 Done; JAPA-10 (Notion reconcile) and JAPA-11 (test rerun) **closed Done 2026-07-17 with evidence**; open launch gates: JAPA-6 (content), JAPA-7 (device haptics), JAPA-8 (VoiceOver — Dynamic Type portion done), JAPA-9 (signing/App Store), JAPA-12 (device smoke test).
+- **Jira (canonical): project `JAPA`** — consolidated 2026-07-17 after discovering it pre-dated the `JALA` project (JALA was retired as Deferred/Replaced-By; mapping in `docs/JIRA_SYNC_PENDING.md`). Current JAPA state: [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) epic In Progress; JAPA-2/3 In Review; JAPA-4 In Progress; JAPA-5 Done; JAPA-10, JAPA-11 Done (2026-07-17); **JAPA-7 (device haptics) and JAPA-12 (device smoke) Done 2026-07-18 with on-device evidence**. Remaining open launch gates: JAPA-6 (content sign-off), JAPA-8 (VoiceOver human validation — Dynamic Type done), JAPA-9 (signing / App Store / TestFlight).
 
 ## Blockers
 
-- `CODE_SIGNING_ALLOWED: NO` and empty `DEVELOPMENT_TEAM` in `project.yml` block device/TestFlight evidence until release signing is enabled (tracked: JAPA-9)
 - Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JAPA-6)
-- On-device haptic and VoiceOver validation still required (tracked: JAPA-7, JAPA-8, JAPA-12)
+- `project.yml` still ships `CODE_SIGNING_ALLOWED: NO` (device installs used a command-line override); enabling committed signing + a real team is required for TestFlight/App Store distribution (tracked: JAPA-9)
+- VoiceOver human validation on device still required (tracked: JAPA-8)
 
 ## Documentation reconciliation (2026-07-17)
 
