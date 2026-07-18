@@ -10,14 +10,27 @@ related:
 supersedes: []
 ---
 
-# Jira Sync — Complete
+# Jira Sync — Consolidated into JAPA
 
-All 6 items below were **synced to Jira on 2026-07-17** once the Atlassian Rovo connector was reconnected. This file is retained as a record of the sync, not a pending queue.
+> **CANONICAL TRACKER: project `JAPA`** (id 10145, created 2026-06-30 by a prior Codex audit session), cloud `priyanshchordia-1779372280524.atlassian.net`.
+>
+> The `JALA` project documented below (id 10248) was created on 2026-07-17 without knowledge of the pre-existing `JAPA` project and duplicated its launch gates. On 2026-07-17 the user chose **JAPA as the single canonical tracker**; all JALA issues were retired as **Deferred / Replaced By** with pointers to their JAPA counterparts:
+>
+> | Retired | Replaced by | Topic |
+> |---|---|---|
+> | JALA-1 (epic) | [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) | Japa tactile repetition MVP epic |
+> | JALA-2 | [JAPA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-6) | Seed mantra content sign-off |
+> | JALA-3 | [JAPA-7](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-7) (+ JAPA-12 device smoke) | On-device haptic validation |
+> | JALA-4 | [JAPA-8](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-8) | VoiceOver/Dynamic Type validation |
+> | JALA-5 | [JAPA-9](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-9) | Signing / App Store / TestFlight |
+> | JALA-6 | — (was genuinely Done; historical) | Sync bookkeeping task |
+>
+> JAPA also carries: JAPA-2/3 (engine + eyes-free session, In Review), JAPA-4 (seed mantras, In Progress), JAPA-5 (no-streaks guard, Done), JAPA-10 (Notion reconcile, **closed Done 2026-07-17** — completed by the Notion updates recorded in this repo), JAPA-11 (test rerun, **closed Done 2026-07-17** — 56/56 passing + CI), JAPA-12 (device smoke test, To Do).
 
-**Jira project:** `JALA` (project id 10248, cloud `priyanshchordia-1779372280524.atlassian.net`)
+The historical JALA sync record below is retained for traceability only — do not work launch gates from JALA.
 
-**Date Recorded:** 2026-07-16 (synced 2026-07-17)  
-**Related Prompt:** App Factory existing registration + onboarding; documentation/Notion/Jira update pass  
+**Date Recorded:** 2026-07-16 (JALA synced 2026-07-17; consolidated into JAPA 2026-07-17)  
+**Related Prompt:** App Factory existing registration + onboarding; Codex-handoff reconciliation  
 **Notion sync:** completed (Projects row + Tasks JAP-010..015)
 
 ---

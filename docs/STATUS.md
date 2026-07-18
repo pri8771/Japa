@@ -49,13 +49,13 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 
 - **Notion Projects:** updated to MVP Ready, reviewed 2026-07-17 — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
 - **Notion Tasks:** JAP-004 Done; JAP-005 Ready; JAP-010 Done; JAP-011..014 Ready; JAP-015 Done (re-checked/updated 2026-07-17)
-- **Jira:** live and synced as of 2026-07-17 (reauthenticated after two earlier `UNAUTHORIZED` attempts — see `docs/JIRA_SYNC_PENDING.md`) — project `JALA`: [JALA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-1) (Epic, updated with a Change Mala/Dynamic Type/CI/design-audit progress comment) with [JALA-2](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-2)..[JALA-5](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-5) (launch-gate stories — JALA-4 description corrected to reflect Dynamic Type now implemented) and [JALA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JALA-6) (sync task, Done).
+- **Jira (canonical): project `JAPA`** — consolidated 2026-07-17 after discovering it pre-dated the `JALA` project (JALA was retired as Deferred/Replaced-By; mapping in `docs/JIRA_SYNC_PENDING.md`). Current JAPA state: [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) epic In Progress (updated with 2026-07-17 progress comment); JAPA-2/3 In Review; JAPA-4 In Progress; JAPA-5 Done; JAPA-10 (Notion reconcile) and JAPA-11 (test rerun) **closed Done 2026-07-17 with evidence**; open launch gates: JAPA-6 (content), JAPA-7 (device haptics), JAPA-8 (VoiceOver — Dynamic Type portion done), JAPA-9 (signing/App Store), JAPA-12 (device smoke test).
 
 ## Blockers
 
-- `CODE_SIGNING_ALLOWED: NO` and empty `DEVELOPMENT_TEAM` in `project.yml` block device/TestFlight evidence until release signing is enabled (tracked: JALA-5)
-- Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JALA-2)
-- On-device haptic and VoiceOver/accessibility validation still required (tracked: JALA-3, JALA-4)
+- `CODE_SIGNING_ALLOWED: NO` and empty `DEVELOPMENT_TEAM` in `project.yml` block device/TestFlight evidence until release signing is enabled (tracked: JAPA-9)
+- Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JAPA-6)
+- On-device haptic and VoiceOver validation still required (tracked: JAPA-7, JAPA-8, JAPA-12)
 
 ## Documentation reconciliation (2026-07-17)
 
@@ -70,6 +70,7 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 - Independent design-fidelity audit of the mala style picker against the source Claude Design spec (`Japa Concepts.dc.html`); found high overall fidelity with 3 confirmed cosmetic gaps, all fixed: Sculptural Monument's rotating engraved-surface texture, Celestial's twinkling starfield, Ceramic Glaze's craquelure detail
 - Verified full suite still green after fixes: 56/56 (47 unit/flow + 9 UI)
 - Jira connector reauthenticated; corrected `JALA-4`'s stale "Dynamic Type not implemented" description and posted a progress comment to the `JALA-1` epic
+- **Jira tracker consolidation:** discovered the pre-existing `JAPA` project (12 tickets from a 2026-06-30 Codex audit) duplicated by `JALA`; per user decision JAPA is now canonical — JALA-1..5 retired as Deferred/Replaced-By, JAPA-10/11 closed Done with evidence, JAPA-1/8 updated with current state
 
 ## Next action
 
