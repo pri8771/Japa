@@ -55,6 +55,13 @@ struct Preferences: Codable, Equatable {
         self.hapticIntensity = try container.decodeIfPresent(Double.self, forKey: .hapticIntensity) ?? fallback.hapticIntensity
         self.lastMantraID = try container.decodeIfPresent(UUID.self, forKey: .lastMantraID)
         self.hasSeenIntro = try container.decodeIfPresent(Bool.self, forKey: .hasSeenIntro) ?? fallback.hasSeenIntro
-        self.malaStyle = try container.decodeIfPresent(MalaStyle.self, forKey: .malaStyle) ?? fallback.malaStyle
+        // Decode the mala style by its raw value and fall back to the default for
+        // an unknown/removed style, rather than letting the enum's throwing decode
+        // discard the entire preferences file (target, haptic strength, intro flag).
+        if let rawStyle = try container.decodeIfPresent(Int.self, forKey: .malaStyle) {
+            self.malaStyle = MalaStyle(rawValue: rawStyle) ?? fallback.malaStyle
+        } else {
+            self.malaStyle = fallback.malaStyle
+        }
     }
 }
