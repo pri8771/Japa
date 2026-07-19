@@ -1,0 +1,13 @@
+appId: com.priyansh.japa
+---
+- launchApp
+- assertVisible:
+    id: advanceRing
+- assertVisible:
+    id: advanceRing
+- assertVisible:
+    id: mantraRow
+- assertVisible:
+    id: historyButton
+- assertVisible:
+    id: settingsButton

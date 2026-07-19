@@ -94,6 +94,24 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
   - `lastVerified` metadata advanced 2026-07-17 → 2026-07-18 across the docs whose current truth changed.
 - Added the TestFlight deployment pipeline (DEC-005): `fastlane/` + `.github/workflows/release-testflight.yml`, canonical process doc `docs/DEPLOYMENT.md`, wired into `.factory/repository-map.json`. `project.yml` signing unchanged; simulator CI unaffected.
 
+## Documentation reconciliation (2026-07-19)
+
+- **Studio OS enrollment.** Linked this repo to Studio OS product `PROD-JAPA`
+  (`pri8771/studio-ios`): product-side pointer `.factory/studio-link.json`,
+  authoritative `products/japa/` record proposed via studio-ios PR. Registered in
+  `.factory/repository-map.json` (`studioLink`, `studio-os-linkage` route).
+- **Automated UI-testing foundation.** Added `quality/ui/{screens,journeys,safe-actions}.yaml`
+  + generated Maestro flows (`quality/ui/generated/`) per App Factory standard
+  0.4.0. `Japa/JapaApp.swift` now honors the standard `UI_TEST_MODE`/`UI_FIXTURE`/
+  `UI_RESET_STATE`/`UI_DISABLE_ANIMATIONS` contract alongside the original
+  `JAPA_UITEST` hooks; added one `historyRoot` accessibility identifier and a
+  contract test. Maestro simulator execution is pending (CLI unavailable at
+  enrollment; tracked in the Studio OS Atlas task ATLAS-JAPA-LAUNCH-001).
+- **Test count.** Canonical automated suite is now **64 (53 unit/flow + 11 UI)**
+  after adding a `Preferences` unknown-mala-style regression test and the
+  `UI_TEST_MODE` contract test; verified green on iOS simulator 2026-07-19. The
+  "62 (52 + 10)" figure elsewhere in this doc is prior history.
+
 ## Next action
 
 1. Close launch gates: content sign-off (JAPA-6), VoiceOver user validation (JAPA-8).

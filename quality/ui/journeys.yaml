@@ -1,0 +1,63 @@
+schemaVersion: 1
+product: japa
+
+# Critical user journeys for generated Maestro coverage. Every journey is
+# non-destructive and touches no external service (Japa is local-first with no
+# network, accounts, purchases, or permission prompts). Launch arguments use the
+# App Factory deterministic test-mode contract (UI_TEST_MODE / UI_FIXTURE /
+# UI_RESET_STATE / UI_DISABLE_ANIMATIONS), bridged in Japa/JapaApp.swift.
+
+journeys:
+  - id: JOURNEY-LAUNCH-PRACTICE
+    name: Launch straight into a live practice round
+    fixture: empty
+    launchArguments:
+      - UI_TEST_MODE=1
+      - UI_FIXTURE=empty
+      - UI_RESET_STATE=1
+      - UI_DISABLE_ANIMATIONS=1
+    steps:
+      - launchApp: true
+      - assertVisible: advanceRing
+      - assertVisible: mantraRow
+      - assertVisible: settingsButton
+      - assertVisible: historyButton
+    persistenceCheck: false
+    destructive: false
+    externalAction: false
+
+  - id: JOURNEY-OPEN-SETTINGS-MALA
+    name: Open settings and reach the mala style picker
+    fixture: empty
+    launchArguments:
+      - UI_TEST_MODE=1
+      - UI_FIXTURE=empty
+      - UI_RESET_STATE=1
+      - UI_DISABLE_ANIMATIONS=1
+    steps:
+      - launchApp: true
+      - assertVisible: settingsButton
+      - tapOn: settingsButton
+      - assertVisible: malaStyleRow
+      - tapOn: malaStyleRow
+      - assertVisible: malaApplyButton
+    persistenceCheck: false
+    destructive: false
+    externalAction: false
+
+  - id: JOURNEY-OPEN-HISTORY
+    name: Open a populated history log (read-only, no deletion)
+    fixture: one-record
+    launchArguments:
+      - UI_TEST_MODE=1
+      - UI_FIXTURE=one-record
+      - UI_RESET_STATE=1
+      - UI_DISABLE_ANIMATIONS=1
+    steps:
+      - launchApp: true
+      - assertVisible: historyButton
+      - tapOn: historyButton
+      - assertVisible: historyRoot
+    persistenceCheck: false
+    destructive: false
+    externalAction: false
