@@ -1,0 +1,14 @@
+appId: com.priyansh.japa
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: introBegin
+- assertVisible:
+    id: advanceRing
+- assertVisible:
+    id: mantraRow
+- assertVisible:
+    id: settingsButton
+- assertVisible:
+    id: historyButton

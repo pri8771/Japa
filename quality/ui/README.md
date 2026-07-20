@@ -50,6 +50,10 @@ no OS permission prompts, so those states cannot occur.
 2. **Full SwiftUI animation suppression.** `UI_DISABLE_ANIMATIONS` currently
    disables UIKit-level animations; a couple of SwiftUI `withAnimation` sites are
    not yet routed through a test-mode flag.
-3. **Maestro simulator execution.** Flows are generated and schema-valid but were
-   not run here (Maestro CLI not installed in the enrollment environment). See
-   the Atlas task for a macOS runner.
+3. **Maestro simulator execution.** DONE (2026-07-19). Executed on Maestro 2.6.1
+   against an iPhone 17 Pro simulator: **4/4 flows passed**. The raw generated
+   flows need one intro-dismiss step on this app (first-run gate + env-only test
+   mode); the executable copies live in `runnable/` and evidence is in
+   `../evidence/2026-07-19-maestro-ui-flows.md`. Remaining upstream improvement
+   (generator emits `launchApp: arguments:` + app reads launch-arg test mode) is
+   tracked in the Studio OS Atlas task.
