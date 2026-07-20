@@ -8,11 +8,14 @@ on:
       - Dev
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
     name: Build and Test
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - name: Check out repository
@@ -49,9 +52,39 @@ jobs:
           PY
           )"
           echo "udid=$udid" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$udid" || true
+          xcrun simctl bootstatus "$udid" -b
 
       - name: Build Release
         run: xcodebuild -scheme Japa -configuration Release -destination "id=${{ steps.simulator.outputs.udid }}" CODE_SIGNING_ALLOWED=NO build
 
-      - name: Run tests
-        run: xcodebuild -scheme Japa -destination "id=${{ steps.simulator.outputs.udid }}" CODE_SIGNING_ALLOWED=NO test
+      - name: Run unit tests
+        run: |
+          mkdir -p TestResults
+          xcodebuild \
+            -scheme Japa \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
+            -resultBundlePath TestResults/UnitTests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            test \
+            -only-testing:JapaTests
+
+      - name: Run UI tests
+        run: |
+          mkdir -p TestResults
+          xcodebuild \
+            -scheme Japa \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
+            -resultBundlePath TestResults/UITests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            test \
+            -only-testing:JapaUITests
+
+      - name: Upload test result bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: japa-xcresults-${{ github.sha }}
+          path: TestResults/
+          if-no-files-found: warn
+          retention-days: 14
