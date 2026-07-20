@@ -14,5 +14,13 @@ xcuserdata/
 .build/
 .swiftpm/
 
+# Fastlane
+*.ipa
+*.dSYM.zip
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
 # The .xcodeproj is generated from project.yml by XcodeGen.
 # It is committed for one-step opening; regenerate with `xcodegen generate`.

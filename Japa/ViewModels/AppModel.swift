@@ -123,8 +123,26 @@ final class AppModel {
         savePreferences()
     }
 
+    func setMalaStyle(_ style: MalaStyle) {
+        preferences.malaStyle = style
+        savePreferences()
+    }
+
     private func savePreferences() {
         persistence.save(preferences, Keys.preferences)
+    }
+
+    // MARK: - Mala style picker preview feedback
+
+    /// Real per-bead haptic, reused so the "Change Mala" picker's live tap
+    /// preview feels exactly like an actual practice tap.
+    func playPreviewTick() {
+        haptics.tick(intensity: preferences.hapticIntensity)
+    }
+
+    /// Real completion haptic, fired when a picker preview wraps back to 1.
+    func playPreviewCompletion() {
+        haptics.completion()
     }
 
     // MARK: - History
@@ -147,7 +165,7 @@ final class AppModel {
     // MARK: - Practice controllers
 
     func newPracticeController() -> PracticeController {
-        makeController(mantra: selectedMantra, target: preferences.defaultTarget, restoredCount: nil, startedAt: Date())
+        makeController(mantra: selectedMantra, target: preferences.defaultTarget, restoredCount: nil, startedAt: Date(), restoredUpdatedAt: nil)
     }
 
     func resumePracticeController() -> PracticeController? {
@@ -155,7 +173,7 @@ final class AppModel {
         // restores the exact persisted bead.
         guard let state = activeStore.load(), state.count > 0, !state.makeEngine().isComplete else { return nil }
         let mantra = allMantras.first { $0.title == state.mantraTitle } ?? Mantra(title: state.mantraTitle)
-        return makeController(mantra: mantra, target: state.target, restoredCount: state.count, startedAt: state.startedAt)
+        return makeController(mantra: mantra, target: state.target, restoredCount: state.count, startedAt: state.startedAt, restoredUpdatedAt: state.updatedAt)
     }
 
     func discardResumable() {
@@ -163,12 +181,13 @@ final class AppModel {
         resumableState = nil
     }
 
-    private func makeController(mantra: Mantra, target: Int, restoredCount: Int?, startedAt: Date) -> PracticeController {
+    private func makeController(mantra: Mantra, target: Int, restoredCount: Int?, startedAt: Date, restoredUpdatedAt: Date?) -> PracticeController {
         PracticeController(
             mantra: mantra,
             target: target,
             restoredCount: restoredCount,
             startedAt: startedAt,
+            restoredUpdatedAt: restoredUpdatedAt,
             preferences: { [weak self] in self?.preferences ?? Preferences() },
             haptics: haptics,
             tone: tone,

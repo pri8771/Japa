@@ -1,0 +1,19 @@
+{
+  "standardRepository": "pri8771/iOS_app_factory_rules",
+  "standardRepositoryUrl": "https://github.com/pri8771/iOS_app_factory_rules",
+  "standardVersion": "0.4.0",
+  "standardRef": "main",
+  "profiles": [
+    "common",
+    "ios"
+  ],
+  "repositoryMapVersion": "1.0.0",
+  "repositoryMapPath": ".factory/repository-map.json",
+  "libraryCatalogVersion": "0.1.0",
+  "libraryCatalogPath": ".factory/library-catalog.json",
+  "installedAt": "2026-07-16",
+  "upgradedAt": "2026-07-17",
+  "upgradeHistory": [
+    { "from": "0.2.0", "to": "0.4.0", "date": "2026-07-17", "note": "Closed repository-map/library-catalog/docs-README registration gap; installed 0.3.0 and 0.4.0 layers." }
+  ]
+}

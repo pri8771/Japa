@@ -64,7 +64,6 @@ final class FeatureAuditUITests: XCTestCase {
         app.launch()
 
         dismissIntro(app)
-        app.buttons["homeBegin"].tap()
         let ring = app.buttons["advanceRing"]
         XCTAssertTrue(ring.waitForExistence(timeout: 8))
         advance(app, ring, to: "3 of 8")
@@ -74,17 +73,14 @@ final class FeatureAuditUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 1.0)
         app.terminate()
 
-        // Relaunch against the same store, without resetting it.
+        // Relaunch against the same store, without resetting it. The surface
+        // auto-resumes in place — no resume card, no Begin step.
         app.launchEnvironment["JAPA_UITEST_RESET"] = "0"
         app.launch()
 
-        let resume = app.buttons["resumeCard"]
-        XCTAssertTrue(resume.waitForExistence(timeout: 8), "Resume card appears after an interruption")
-        resume.tap()
-
         let ring2 = app.buttons["advanceRing"]
         XCTAssertTrue(ring2.waitForExistence(timeout: 8))
-        XCTAssertTrue(waitForRingValue(ring2, "3 of 8"), "Exact bead restored — the flagship promise")
+        XCTAssertTrue(waitForRingValue(ring2, "3 of 8", timeout: 8), "Exact bead restored in place — the flagship promise")
     }
 
     // MARK: Mantra selection + custom authoring
@@ -99,7 +95,7 @@ final class FeatureAuditUITests: XCTestCase {
         let seed = app.buttons["mantra-Om Mani Padme Hum"]
         XCTAssertTrue(seed.waitForExistence(timeout: 8))
         seed.tap()
-        XCTAssertTrue(app.staticTexts["Om Mani Padme Hum"].waitForExistence(timeout: 8), "Home reflects the chosen mantra")
+        XCTAssertTrue(surfaceShowsMantra(app, "Om Mani Padme Hum"), "Surface reflects the chosen mantra")
 
         // Create a custom free-text mantra.
         app.buttons["mantraRow"].tap()
@@ -120,7 +116,52 @@ final class FeatureAuditUITests: XCTestCase {
         let customRow = app.buttons["mantra-My test mantra"]
         XCTAssertTrue(customRow.waitForExistence(timeout: 8), "Custom mantra is saved and listed")
         customRow.tap()
-        XCTAssertTrue(app.staticTexts["My test mantra"].waitForExistence(timeout: 8), "Home reflects the custom mantra")
+        XCTAssertTrue(surfaceShowsMantra(app, "My test mantra"), "Surface reflects the custom mantra")
+    }
+
+    // MARK: Stale round → Finish prompt
+
+    func testStaleRoundPromptsFinishAndRecordsPartial() {
+        let dir = NSTemporaryDirectory() + "japa-ui-stale-\(UUID().uuidString)"
+        let app = XCUIApplication()
+        app.launchEnvironment["JAPA_UITEST"] = "1"
+        app.launchEnvironment["JAPA_UITEST_DIR"] = dir
+        app.launchEnvironment["JAPA_UITEST_TARGET"] = "8"
+        app.launchEnvironment["JAPA_UITEST_RESET"] = "1"
+        app.launchEnvironment["JAPA_UITEST_STALE_SECONDS"] = "1"
+        app.launch()
+
+        dismissIntro(app)
+        let ring = app.buttons["advanceRing"]
+        XCTAssertTrue(ring.waitForExistence(timeout: 8))
+        advance(app, ring, to: "3 of 8")
+
+        // Leave the round untouched past the (test-shortened) threshold.
+        XCUIDevice.shared.press(.home)
+        Thread.sleep(forTimeInterval: 1.5)
+        app.terminate()
+        app.launchEnvironment["JAPA_UITEST_RESET"] = "0"
+        app.launch()
+
+        // Returning after the gap asks whether the round is done.
+        let alert = app.alerts["Finish this round?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 8), "Stale round prompts Finish")
+        alert.buttons["Finish"].tap()
+
+        // Finish records the honest partial and starts fresh in place.
+        XCTAssertTrue(ring.waitForExistence(timeout: 8))
+        XCTAssertTrue(waitForRingValue(ring, "0 of 8", timeout: 8), "Fresh round after finishing")
+        app.buttons["historyButton"].tap()
+        XCTAssertTrue(app.staticTexts["3 / 8"].waitForExistence(timeout: 8), "Partial recorded to history")
+    }
+
+    /// The practice surface exposes the current mantra through the mantraRow
+    /// button's accessibility label ("Mantra: <title>. Change mantra.").
+    private func surfaceShowsMantra(_ app: XCUIApplication, _ title: String, timeout: TimeInterval = 8) -> Bool {
+        let row = app.buttons["mantraRow"]
+        guard row.waitForExistence(timeout: timeout) else { return false }
+        let predicate = NSPredicate(format: "label CONTAINS %@", title)
+        return XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: row)], timeout: timeout) == .completed
     }
 
     // MARK: History records + deletes
@@ -130,11 +171,11 @@ final class FeatureAuditUITests: XCTestCase {
         app.launch()
         dismissIntro(app)
 
-        app.buttons["homeBegin"].tap()
         XCTAssertTrue(app.buttons["advanceRing"].waitForExistence(timeout: 8))
         completeRound(app)
         app.buttons["Rest"].tap()
 
+        XCTAssertTrue(app.buttons["historyButton"].waitForExistence(timeout: 8))
         app.buttons["historyButton"].tap()
         XCTAssertTrue(app.staticTexts["5 / 5"].waitForExistence(timeout: 8), "Completed round is recorded")
         XCTAssertTrue(app.staticTexts["Om Namah Shivaya"].exists)
@@ -164,5 +205,56 @@ final class FeatureAuditUITests: XCTestCase {
                 object: toggle)],
             timeout: 3) == .completed
         XCTAssertTrue(changed, "Completion-tone toggle flips")
+    }
+
+    // MARK: Mala style picker
+
+    func testMalaStylePickerNavigateAndApply() {
+        let app = ephemeralApp()
+        app.launch()
+        dismissIntro(app)
+
+        app.buttons["settingsButton"].tap()
+        let styleRow = app.buttons["malaStyleRow"]
+        XCTAssertTrue(styleRow.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["Classic"].exists, "Classic is the default style shown in Settings")
+        styleRow.tap()
+
+        // The picker opens live on Classic (the currently applied style).
+        XCTAssertTrue(app.staticTexts["Classic"].waitForExistence(timeout: 8))
+        let applyButton = app.buttons["malaApplyButton"]
+        XCTAssertTrue(applyButton.waitForExistence(timeout: 8))
+        XCTAssertEqual(applyButton.label, "Current mala", "Classic starts as the current mala")
+
+        // Step to the next style and confirm the name/apply-state update live.
+        // A tap can drop during a first-launch hitch, so retry — but only while
+        // the overlay still shows Classic, so a registered tap never overshoots.
+        let nextStyleTitle = app.staticTexts["Ultra Minimal"]
+        var stepAttempts = 0
+        while !nextStyleTitle.exists && stepAttempts < 4 {
+            app.buttons["Next style"].tap()
+            stepAttempts += 1
+            _ = nextStyleTitle.waitForExistence(timeout: 3)
+        }
+        XCTAssertTrue(nextStyleTitle.exists, "Picker advances to the next style")
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label == %@", "Apply this mala"), object: applyButton)], timeout: 3) == .completed,
+            "A not-yet-applied style offers Apply"
+        )
+
+        // Live-preview tap: the bead area is tappable and doesn't crash the style.
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).tap()
+
+        // Apply it, then confirm Settings reflects the change.
+        applyButton.tap()
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label == %@", "Applied ✓"), object: applyButton)], timeout: 3) == .completed,
+            "Apply confirms with 'Applied ✓'"
+        )
+
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.staticTexts["Ultra Minimal"].waitForExistence(timeout: 8), "Settings shows the newly applied style")
     }
 }

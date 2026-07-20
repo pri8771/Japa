@@ -1,0 +1,61 @@
+schemaVersion: 1
+product: japa
+
+# Declares which UI actions automated exploration may and may not perform.
+# Enforced intent: generated exploratory navigation must never trigger the
+# prohibited actions below. Japa has no purchases, accounts, network calls,
+# external communication, or OS permission prompts, so most standard hazards do
+# not exist here; the real risks are local data-destroying controls.
+
+allowed:
+  - id: advance-bead
+    identifier: advanceRing
+    note: Counts a bead. Fully reversible via Undo; no external effect.
+  - id: navigate-mantra
+    identifier: mantraRow
+    note: Opens mantra select. Navigation only.
+  - id: navigate-history
+    identifier: historyButton
+    note: Opens the history log. Read-only.
+  - id: navigate-settings
+    identifier: settingsButton
+    note: Opens settings. Navigation only.
+  - id: open-mala-picker
+    identifier: malaStyleRow
+    note: Opens the mala style picker. Navigation only.
+  - id: apply-mala-style
+    identifier: malaApplyButton
+    note: Changes the visual mala style. A reversible local preference.
+  - id: begin-intro
+    identifier: introBegin
+    note: Dismisses the first-run intro. Reversible local flag.
+  - id: start-new-round
+    identifier: newRoundButton
+    note: Starts a fresh round from the completion overlay.
+  - id: add-mantra
+    identifier: addMantraButton
+    note: >
+      Opens the add-mantra form. Creating a custom mantra writes local data
+      only; allowed, but exploration should prefer non-writing paths.
+
+prohibited:
+  # Local data destruction — irreversible for the user's own records.
+  - id: clear-history
+    identifier: clearHistory
+    reason: Permanently deletes every saved session on the device.
+  - id: delete-session
+    identifier: deleteSession
+    reason: Permanently deletes an individual session (swipe-to-delete).
+  - id: delete-custom-mantra
+    identifier: deleteCustomMantra
+    reason: Permanently deletes a user-authored mantra.
+
+# Standard hazard classes that DO NOT EXIST in this app (declared for the
+# generator's safety contract, so their absence is explicit, not assumed):
+notApplicable:
+  purchases: No in-app purchases or paywall.
+  accountDeletion: No accounts.
+  emailOrSocialPublishing: No sharing, email, or social integration.
+  externalCommunication: No outbound messaging of any kind.
+  productionDataDeletion: No server-side or shared data; all data is local.
+  permissionChanges: No camera/location/mic/notification/contacts prompts.

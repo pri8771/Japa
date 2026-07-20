@@ -1,5 +1,8 @@
 # Seed Mantra Content Review (B6)
 
+**Date Recorded:** 2026-06-30
+**Last Verified:** 2026-07-17
+
 The bundled seed mantra set is **spiritual content** and must be human-reviewed
 for accuracy and respectfulness before App Store submission. This file is the
 review record.

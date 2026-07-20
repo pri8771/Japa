@@ -21,6 +21,12 @@ final class PracticeController {
 
     let mantra: Mantra
     let startedAt: Date
+    /// The last accepted interaction (advance/undo/new round). Restored from
+    /// the persisted snapshot on resume so a round left untouched for a long
+    /// time can be recognized as stale across relaunches. Not refreshed by
+    /// launches or persistence flushes — only by real interactions (or an
+    /// explicit "keep going" answer to the stale prompt via `touch()`).
+    private(set) var lastInteractionAt: Date
 
     private let haptics: HapticFeedback
     private let tone: TonePlaying
@@ -41,6 +47,7 @@ final class PracticeController {
         target: Int,
         restoredCount: Int? = nil,
         startedAt: Date = Date(),
+        restoredUpdatedAt: Date? = nil,
         preferences: @escaping () -> Preferences,
         haptics: HapticFeedback,
         tone: TonePlaying,
@@ -49,6 +56,7 @@ final class PracticeController {
     ) {
         self.mantra = mantra
         self.startedAt = startedAt
+        self.lastInteractionAt = restoredUpdatedAt ?? Date()
         self.engine = JapaEngine(target: target, count: restoredCount ?? 0)
         self.preferences = preferences
         self.haptics = haptics
@@ -70,9 +78,11 @@ final class PracticeController {
         guard phase == .practicing else { return }
         switch engine.advance() {
         case .advanced:
+            lastInteractionAt = Date()
             haptics.tick(intensity: preferences().hapticIntensity)
             persistActive()
         case .completed:
+            lastInteractionAt = Date()
             haptics.completion()
             if preferences().completionToneEnabled { tone.play() }
             complete()
@@ -85,6 +95,7 @@ final class PracticeController {
     func undo() {
         guard phase == .practicing else { return }
         if engine.undo() {
+            lastInteractionAt = Date()
             haptics.back()
             persistActive()
         }
@@ -94,7 +105,37 @@ final class PracticeController {
     func startNewRound() {
         engine.startNewRound()
         phase = .practicing
+        lastInteractionAt = Date()
         persistActive()
+    }
+
+    // MARK: - Stale-round handling
+
+    /// Whether the round has been sitting untouched long enough to ask the
+    /// practitioner whether they're done with it. Only a real in-progress
+    /// round can be stale — a fresh (zero-count) or completed round never is.
+    func isStale(after threshold: TimeInterval) -> Bool {
+        phase == .practicing
+            && engine.count > 0
+            && !engine.isComplete
+            && Date().timeIntervalSince(lastInteractionAt) >= threshold
+    }
+
+    /// The practitioner answered "keep going" to the stale prompt — treat that
+    /// as an interaction so the prompt doesn't immediately re-fire.
+    func touch() {
+        lastInteractionAt = Date()
+        persistActive()
+    }
+
+    /// The practitioner answered "finish" — record the honest partial to
+    /// history and start a fresh round in place.
+    func finishEarly() {
+        guard phase == .practicing else { return }
+        if engine.count > 0 {
+            onFinish(makeSession(reached: false))
+        }
+        startNewRound()
     }
 
     /// Leave before reaching the target. Records an honest partial session if any
@@ -128,7 +169,10 @@ final class PracticeController {
                 target: engine.target,
                 count: engine.count,
                 mantraTitle: mantra.title,
-                startedAt: startedAt
+                startedAt: startedAt,
+                // Deliberately the last *interaction*, not "now": launches and
+                // flushes must not mask how long the round has sat untouched.
+                updatedAt: lastInteractionAt
             )
         )
     }

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "description": "Local reference linking this product repository to Studio OS (pri8771/studio-ios). The authoritative product record lives in Studio OS at the studioProductRecord path below; this file is the product-side pointer.",
+  "product": {
+    "id": "PROD-JAPA",
+    "slug": "japa",
+    "name": "Japa",
+    "repository": "pri8771/Japa",
+    "owner": "priyansh"
+  },
+  "standards": [
+    {
+      "id": "STD-STUDIO-OS",
+      "repository": "pri8771/studio-ios",
+      "version": "0.1.0",
+      "commit": "df0792e26976dcc384b2fccc702fac7ed5e0ce43",
+      "entrypoint": "AGENTS.md"
+    },
+    {
+      "id": "STD-IOS-APP-FACTORY",
+      "repository": "pri8771/iOS_app_factory_rules",
+      "version": "0.4.0",
+      "commit": "4b8b12ea87d78d392485ea8a73440a17ee50bba9",
+      "entrypoint": "LLM_START_HERE.md"
+    }
+  ],
+  "studioProductRecord": {
+    "registryEntry": "registry/products.yaml#PROD-JAPA",
+    "recordDirectory": "products/japa/",
+    "status": "registry-entry-exists; product-record directory proposed via PR",
+    "note": "PROD-JAPA already present in registry/products.yaml (stage: building). The products/japa/{manifest,status,standard-lock,context} record is proposed in a separate studio-ios branch/PR, not yet merged."
+  },
+  "state": {
+    "stage": "building",
+    "health": "yellow",
+    "priority": "p3",
+    "lifecycleStatus": "verified",
+    "currentMilestone": "Close v1 launch gates (content sign-off, VoiceOver validation, first signed TestFlight upload)",
+    "currentBlocker": "Human-only launch gates open: seed-mantra content sign-off (JAPA-6), VoiceOver user validation (JAPA-8), App Store Connect secrets + first verified TestFlight upload (JAPA-9)",
+    "lastVerification": "2026-07-19"
+  },
+  "verificationNotes": {
+    "factoryRegistration": "verified — .factory/ present, standard 0.4.0 pinned",
+    "automatedTests": "verified 2026-07-19 — 53 unit + UI suite green on iOS simulator",
+    "deviceValidation": "2026-07-18 — iPhone 16 Pro Max (quality/evidence/2026-07-18-device-validation-iphone16promax.md)",
+    "uiTestingManifests": "established 2026-07-19 — quality/ui/{screens,journeys,safe-actions}.yaml + generated Maestro flows; Maestro simulator run pending"
+  }
+}

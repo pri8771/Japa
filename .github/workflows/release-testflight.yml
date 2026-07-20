@@ -1,0 +1,58 @@
+name: Release to TestFlight
+
+# Archives a signed Release build and uploads it to TestFlight.
+# Triggers:
+#   - pushing a version tag (v1.0.0, v1.2.3, ...)
+#   - manual run from the Actions tab (optionally with a build-number override)
+#
+# This workflow will FAIL until the four repository secrets below are configured
+# (Settings -> Secrets and variables -> Actions). It does not touch project.yml,
+# so the simulator build/test workflow (ios-ci.yml) is unaffected.
+#
+# Required secrets:
+#   ASC_KEY_ID        App Store Connect API key ID
+#   ASC_ISSUER_ID     App Store Connect API issuer ID
+#   ASC_KEY_CONTENT   base64 of the AuthKey_XXXX.p8  (base64 -i AuthKey_XXXX.p8 | pbcopy)
+#   DEVELOPMENT_TEAM  Apple Developer team ID (e.g. 796XH483R4)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Build number override (defaults to the run number)"
+        required: false
+
+concurrency:
+  group: testflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: Archive and upload to TestFlight
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Set up Ruby and fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
+          BUILD_NUMBER: ${{ github.event.inputs.build_number || github.run_number }}
+        run: bundle exec fastlane beta

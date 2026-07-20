@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/pri8771/iOS_app_factory_rules/main/schemas/feature-contract.schema.json",
+  "id": "FEAT-002",
+  "name": "Interruption-safe resume",
+  "status": "implemented",
+  "userOutcome": "If the app is backgrounded or terminated mid-round, the user can resume at the exact bead count without losing place.",
+  "entryPoints": [
+    "PracticeController advance persistence",
+    "ActiveSessionStore flush on resign/background",
+    "HomeView resume card",
+    "App relaunch restore"
+  ],
+  "productionDataSource": "Application Support active-session.json via ActiveSessionStore; reconstructed with JapaEngine(target:count:).",
+  "states": [
+    "no_active_session",
+    "active_in_progress",
+    "resumable_on_home",
+    "restored_into_practice",
+    "cleared_on_completion"
+  ],
+  "errorBehavior": "Missing or corrupt active session yields no resume card (safe empty). Latest write wins. Zero-count or completed snapshots must not present false progress.",
+  "duplicateProtectionRequired": false,
+  "persistenceRequired": true,
+  "layoutScenarios": [
+    "iPhone portrait"
+  ],
+  "accessibilityRequirements": [
+    "Resume affordance is labeled and discoverable via VoiceOver"
+  ],
+  "prohibitedBehavior": [
+    "Do not invent bead progress",
+    "Do not claim sync/cloud resume",
+    "Do not clear active session on ordinary backgrounding"
+  ],
+  "acceptanceTests": [
+    "PersistenceTests — active save/flush/load across store instances",
+    "PracticeFlowTests — interruption resume across relaunch",
+    "FeatureAuditUITests — resume after background+terminate+relaunch"
+  ]
+}

@@ -1,20 +1,44 @@
 import SwiftUI
 
-/// The eyes-free practice surface.
+/// The app's single main surface: the selected mala fills the screen and the
+/// round is always live — the first tap after opening the app counts a bead.
 ///
-/// The entire screen advances — any tap anywhere counts a bead, so practice
-/// works without aiming and without looking. A swipe-down or the small undo
-/// control steps back one bead. Only the two controls (close, undo) capture
-/// touches; everything else passes through to the whole-screen advance layer.
+/// There is no separate home screen or Begin step. The entire screen advances
+/// (any tap anywhere counts), a swipe-down or the Undo control steps back one
+/// bead, and completion overlays this same surface in place. Mantra, History,
+/// and Settings hide behind quiet chrome at the top.
+///
+/// The selected mala style renders full-bleed behind the chrome — except
+/// Classic, which keeps its original centered-ring-on-`Theme.background` look
+/// unchanged, since it's the pre-existing shipped default.
 struct PracticeView: View {
     let controller: PracticeController
-    var onClose: () -> Void
 
+    @Environment(AppModel.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var tapScale: CGFloat = 1
 
+    private var style: MalaStyle { app.preferences.malaStyle }
+    private var isClassic: Bool { style == .classic }
+
     var body: some View {
         ZStack {
+            if !isClassic {
+                // No tap-press scale here: shrinking full-bleed art exposes the
+                // black backing as letterbox bars (visible on light styles like
+                // Sculptural Monument). Each style's own bead motion is the tap
+                // response; the press scale is Classic's centered-ring gesture.
+                MalaStyleView(
+                    style: style,
+                    count: controller.count,
+                    target: controller.target,
+                    isComplete: controller.isComplete,
+                    breathing: true
+                )
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+            }
+
             // Whole-screen advance layer.
             Color.clear
                 .contentShape(Rectangle())
@@ -35,51 +59,76 @@ struct PracticeView: View {
 
                 Spacer()
 
-                BeadRingView(
-                    progress: controller.progress,
-                    count: controller.count,
-                    target: controller.target,
-                    isComplete: false,
-                    breathing: true
-                )
-                .frame(width: 268, height: 268)
-                .scaleEffect(tapScale)
-                .allowsHitTesting(false)
-                // Accessibility: the ring is the advance affordance for VoiceOver.
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel("Advance one bead")
-                .accessibilityValue("\(controller.count) of \(controller.target)")
-                .accessibilityHint("Double-tap to count a bead")
-                .accessibilityAction { advance() }
-                .accessibilityIdentifier("advanceRing")
+                if isClassic {
+                    classicRing
+                } else {
+                    // The style's own art fills the screen; this is just the
+                    // VoiceOver advance affordance in the same central spot.
+                    Color.clear
+                        .frame(width: 268, height: 268)
+                        .advanceAccessibility(controller: controller, action: advance)
+                }
 
                 Spacer()
 
                 bottomBar
                     .padding(.bottom, 30)
             }
+
+            if controller.phase == .completed {
+                CompletionView(controller: controller, onClose: { controller.startNewRound() })
+                    .transition(.opacity)
+            }
         }
-        .background(Theme.background)
+        .background(isClassic ? Theme.background : Color.black)
+        .animation(.easeInOut(duration: 0.4), value: controller.phase)
+        .toolbar(.hidden, for: .navigationBar)
+        .onAppear { controller.prepare() }
+    }
+
+    private var classicRing: some View {
+        BeadRingView(
+            progress: controller.progress,
+            count: controller.count,
+            target: controller.target,
+            isComplete: false,
+            breathing: true
+        )
+        .frame(width: 268, height: 268)
+        .scaleEffect(tapScale)
+        .allowsHitTesting(false)
+        .advanceAccessibility(controller: controller, action: advance)
     }
 
     private var topBar: some View {
         ZStack {
-            Text(controller.mantra.title)
-                .font(Theme.serif(15))
-                .foregroundStyle(Theme.textSecondary)
-                .allowsHitTesting(false)
+            NavigationLink(value: RootView.Route.mantraSelect) {
+                Text(controller.mantra.title)
+                    .font(Theme.serif(15))
+                    .foregroundStyle(isClassic ? Theme.textSecondary : .white.opacity(0.78))
+                    .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
+            }
+            .accessibilityLabel("Mantra: \(controller.mantra.title). Change mantra.")
+            .accessibilityIdentifier("mantraRow")
 
-            HStack {
-                Button(action: endAndClose) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 17, weight: .medium))
-                        .foregroundStyle(Theme.textMuted)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .accessibilityLabel("End round")
+            HStack(spacing: 18) {
                 Spacer()
+                NavigationLink(value: RootView.Route.history) {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 18))
+                        .foregroundStyle(isClassic ? Theme.textMuted : .white.opacity(0.62))
+                        .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
+                }
+                .accessibilityLabel("History")
+                .accessibilityIdentifier("historyButton")
+                NavigationLink(value: RootView.Route.settings) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 18))
+                        .foregroundStyle(isClassic ? Theme.textMuted : .white.opacity(0.62))
+                        .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
+                }
+                .accessibilityLabel("Settings")
+                .accessibilityIdentifier("settingsButton")
             }
         }
     }
@@ -89,31 +138,42 @@ struct PracticeView: View {
             Button(action: { controller.undo() }) {
                 Label("Undo", systemImage: "arrow.uturn.left")
                     .font(Theme.ui(14, weight: .medium))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(isClassic ? Theme.textSecondary : .white.opacity(0.88))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 9)
+                    .background(Capsule().fill(.black.opacity(isClassic ? 0 : 0.26)))
                     .overlay(
-                        Capsule().stroke(Theme.hairline, lineWidth: 1)
+                        Capsule().stroke(isClassic ? Theme.hairline : .white.opacity(0.32), lineWidth: 1)
                     )
             }
             .accessibilityHint("Steps back one bead")
 
             Text("Tap anywhere to advance")
                 .font(Theme.ui(12))
-                .foregroundStyle(Theme.textMuted)
+                .foregroundStyle(isClassic ? Theme.textMuted : .white.opacity(0.72))
+                .shadow(color: .black.opacity(isClassic ? 0 : 0.4), radius: 4)
                 .allowsHitTesting(false)
         }
     }
 
     private func advance() {
         controller.advance()
-        guard !reduceMotion else { return }
+        // The press scale only drives Classic's centered ring.
+        guard isClassic, !reduceMotion else { return }
         withAnimation(.easeOut(duration: 0.07)) { tapScale = 0.985 }
         withAnimation(.easeOut(duration: 0.18).delay(0.07)) { tapScale = 1 }
     }
+}
 
-    private func endAndClose() {
-        controller.endEarly()
-        onClose()
+private extension View {
+    /// The shared VoiceOver affordance for the advance ring/area.
+    func advanceAccessibility(controller: PracticeController, action: @escaping () -> Void) -> some View {
+        accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("Advance one bead")
+            .accessibilityValue("\(controller.count) of \(controller.target)")
+            .accessibilityHint("Double-tap to count a bead")
+            .accessibilityAction { action() }
+            .accessibilityIdentifier("advanceRing")
     }
 }

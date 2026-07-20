@@ -1,0 +1,90 @@
+name: iOS CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - Dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: macos-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Select available iPhone simulator
+        id: simulator
+        run: |
+          udid="$(python3 <<'PY'
+          import json
+          import subprocess
+
+          output = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          devices = json.loads(output)["devices"]
+          candidates = []
+          for runtime, values in devices.items():
+              if "iOS" not in runtime:
+                  continue
+              for device in values:
+                  name = device.get("name", "")
+                  if device.get("isAvailable") and name.startswith("iPhone"):
+                      score = (0 if "SE" in name else 1) + (1 if "Pro" in name else 0)
+                      candidates.append((score, runtime, name, device["udid"]))
+          if not candidates:
+              raise SystemExit("No available iPhone simulator found")
+          candidates.sort(reverse=True)
+          print(candidates[0][3])
+          PY
+          )"
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$udid" || true
+          xcrun simctl bootstatus "$udid" -b
+
+      - name: Build Release
+        run: xcodebuild -scheme Japa -configuration Release -destination "id=${{ steps.simulator.outputs.udid }}" CODE_SIGNING_ALLOWED=NO build
+
+      - name: Run unit tests
+        run: |
+          mkdir -p TestResults
+          xcodebuild \
+            -scheme Japa \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
+            -resultBundlePath TestResults/UnitTests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            test \
+            -only-testing:JapaTests
+
+      - name: Run UI tests
+        run: |
+          mkdir -p TestResults
+          xcodebuild \
+            -scheme Japa \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
+            -resultBundlePath TestResults/UITests.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            test \
+            -only-testing:JapaUITests
+
+      - name: Upload test result bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: japa-xcresults-${{ github.sha }}
+          path: TestResults/
+          if-no-files-found: warn
+          retention-days: 14

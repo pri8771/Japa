@@ -9,12 +9,17 @@
 /* Begin PBXBuildFile section */
 		0327F239B0DC2607EDA2BA20 /* HapticPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3C41A38D48049E9EE6F32 /* HapticPlayer.swift */; };
 		0551F0AAFB244FADA94E38DC /* SeedMantras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419010C5C0377493AD93A9F /* SeedMantras.swift */; };
+		07FE29C2DECC65A15D063DB7 /* UITestModeContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */; };
 		12A730E0CDE654C7981FDA56 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745051048833680674B1BA35 /* Persistence.swift */; };
+		12E20AE3F4AC49063953125D /* MalaStyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BCE54D06E36959BD424560 /* MalaStyleKit.swift */; };
+		176665FFEC02242598789E8E /* MalaStylePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF9C87EAA349A7974500150 /* MalaStylePickerView.swift */; };
+		19F0AC1C387B86C3C1CCF4C5 /* MalaStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4D8F2F8473556715933675 /* MalaStyle.swift */; };
 		213728C0BAAA850383E9E9F9 /* FeatureAuditUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */; };
 		290AC85EF7C14E3C5A5EDB77 /* Mantra.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942EF61A653CDA2EEAA3E97D /* Mantra.swift */; };
 		2CD195B6ACB41134E9ECC3AF /* ActiveSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802D380AA515DBF28EC369CC /* ActiveSessionStore.swift */; };
 		300947FADE278268B7B3AC59 /* JapaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8588D4BB7D8002BF1F66F04 /* JapaApp.swift */; };
 		328B4DF7B3AE333A3CCB9EA5 /* PracticeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027C79CB45152B5E8FDA05AE /* PracticeController.swift */; };
+		32F935BED59203D34B8C1CD5 /* MalaStyleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3A893ADD218AD19674676C /* MalaStyleView.swift */; };
 		3BE7452B4413C4F53A67A6D7 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801FD23D07837E4CDD46C9AE /* IntroView.swift */; };
 		5662DCC108A5A7898E0B7236 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E18EA05ECC73F595B26A732 /* AppModel.swift */; };
 		6E0DA784DC88FA9871F83852 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5638F5EADB6AC5C23D9E08 /* PersistenceTests.swift */; };
@@ -22,16 +27,16 @@
 		7682CE3A6375B26F671C8941 /* JapaEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 417D2DBDEE07D83D9833C12F /* JapaEngine.swift */; };
 		7E49680BD7F39903202E0AE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4A673A33C6212E2048747DE4 /* PrivacyInfo.xcprivacy */; };
 		7FE66D36142285BC86B4CF4F /* PracticeFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05494C0D1F2A5C5D0CD22BB /* PracticeFlowTests.swift */; };
-		80A6B837BDA84E5F07085FE4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C78E0A800C04F902A93671 /* HomeView.swift */; };
 		837D014E69E0E403A820D3BB /* PracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB715269385419EFB087465 /* PracticeSession.swift */; };
 		83C52BF15D6E1EFEC60120F3 /* AdvanceResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8093C8683EB3B627262A012 /* AdvanceResult.swift */; };
 		942337FE3A3D9391AF02684D /* ActiveSessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5926A2B2C1C3E540E6F46D28 /* ActiveSessionState.swift */; };
-		99B751D7B03C69907EB10E06 /* PracticeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71CE5A3B2AAE495F136EEA32 /* PracticeContainerView.swift */; };
 		9A18C528F28BC6D0AE93AC9B /* MantraSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103758024231FADFF332818B /* MantraSelectView.swift */; };
 		9F98B22CBE734AB9C3038BE8 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179D79EC10D231E281CB70FE /* HapticFeedback.swift */; };
 		AB88FDB79FCEBB8BD134E251 /* BeadRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31432E70C1CAD330E8D8C928 /* BeadRingView.swift */; };
+		AC074041D0C5F9A1C8EE1728 /* MalaStyleRenderers+Rings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9495C72BD642429293CF538C /* MalaStyleRenderers+Rings.swift */; };
 		AE3D906EBA07C9964365CEDE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FCDF158BAF5105716503AF /* Theme.swift */; };
 		B1DD306DA8A0115C15E40E35 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6D989D90B165210CB8F17 /* RootView.swift */; };
+		B439D8E50AAD513E24E1FC9F /* MalaStyleRenderers+Strands.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B5D7375D742AB3C0BE2F4D /* MalaStyleRenderers+Strands.swift */; };
 		BC291C7D001752A52E28276F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 392ED404738BF9A7FB1A5277 /* Assets.xcassets */; };
 		C30F898DAEEC3494EFB260B3 /* CompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375326757C51EBF96A756ED /* CompletionView.swift */; };
 		CDA4815E217FDAE226E07D48 /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA10D7649BA71369172BBF38 /* PracticeView.swift */; };
@@ -40,6 +45,7 @@
 		F2A857C7AB1CDB5298D8301F /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B221D875B8D32102ED8125D /* HistoryView.swift */; };
 		F9DC95FDDA0C128B662A7108 /* CompletionTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1443E2F5A4521DB9617A584B /* CompletionTone.swift */; };
 		FBC8F8C8B1152F7638A70827 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890402970A3821FBAE661CC1 /* SettingsView.swift */; };
+		FC5159A5169AEC3944E257E5 /* MalaStyleRenderers+Special.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283ACD90287A1DC23498C9B1 /* MalaStyleRenderers+Special.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +71,9 @@
 		1443E2F5A4521DB9617A584B /* CompletionTone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionTone.swift; sourceTree = "<group>"; };
 		179D79EC10D231E281CB70FE /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		21E3D32E6069C78DF6A15B8B /* JapaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JapaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		283ACD90287A1DC23498C9B1 /* MalaStyleRenderers+Special.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MalaStyleRenderers+Special.swift"; sourceTree = "<group>"; };
 		31432E70C1CAD330E8D8C928 /* BeadRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeadRingView.swift; sourceTree = "<group>"; };
+		32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestModeContractTests.swift; sourceTree = "<group>"; };
 		3448922228099A1C41CB3ACE /* Japa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Japa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		392ED404738BF9A7FB1A5277 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		417D2DBDEE07D83D9833C12F /* JapaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaEngine.swift; sourceTree = "<group>"; };
@@ -73,24 +81,28 @@
 		4A673A33C6212E2048747DE4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAuditUITests.swift; sourceTree = "<group>"; };
 		5926A2B2C1C3E540E6F46D28 /* ActiveSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSessionState.swift; sourceTree = "<group>"; };
+		5BF9C87EAA349A7974500150 /* MalaStylePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalaStylePickerView.swift; sourceTree = "<group>"; };
+		65BCE54D06E36959BD424560 /* MalaStyleKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalaStyleKit.swift; sourceTree = "<group>"; };
 		6EA7323AFAFABE38BB3F814C /* JapaEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaEngineTests.swift; sourceTree = "<group>"; };
 		70B3C41A38D48049E9EE6F32 /* HapticPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticPlayer.swift; sourceTree = "<group>"; };
-		71CE5A3B2AAE495F136EEA32 /* PracticeContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeContainerView.swift; sourceTree = "<group>"; };
 		745051048833680674B1BA35 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		79C78E0A800C04F902A93671 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		7B4D8F2F8473556715933675 /* MalaStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalaStyle.swift; sourceTree = "<group>"; };
 		801FD23D07837E4CDD46C9AE /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
 		802D380AA515DBF28EC369CC /* ActiveSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSessionStore.swift; sourceTree = "<group>"; };
 		83E8AA37B58D028629368DB8 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8419010C5C0377493AD93A9F /* SeedMantras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedMantras.swift; sourceTree = "<group>"; };
 		890402970A3821FBAE661CC1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8D3A893ADD218AD19674676C /* MalaStyleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalaStyleView.swift; sourceTree = "<group>"; };
 		8DB715269385419EFB087465 /* PracticeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeSession.swift; sourceTree = "<group>"; };
 		8E18EA05ECC73F595B26A732 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		9375326757C51EBF96A756ED /* CompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionView.swift; sourceTree = "<group>"; };
 		942EF61A653CDA2EEAA3E97D /* Mantra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mantra.swift; sourceTree = "<group>"; };
+		9495C72BD642429293CF538C /* MalaStyleRenderers+Rings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MalaStyleRenderers+Rings.swift"; sourceTree = "<group>"; };
 		966FF5AA15A66D625C309384 /* JapaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaUITests.swift; sourceTree = "<group>"; };
 		9B221D875B8D32102ED8125D /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		A8588D4BB7D8002BF1F66F04 /* JapaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaApp.swift; sourceTree = "<group>"; };
 		B0C6D989D90B165210CB8F17 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		B2B5D7375D742AB3C0BE2F4D /* MalaStyleRenderers+Strands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MalaStyleRenderers+Strands.swift"; sourceTree = "<group>"; };
 		C8093C8683EB3B627262A012 /* AdvanceResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvanceResult.swift; sourceTree = "<group>"; };
 		D05494C0D1F2A5C5D0CD22BB /* PracticeFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeFlowTests.swift; sourceTree = "<group>"; };
 		DA5638F5EADB6AC5C23D9E08 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
@@ -142,10 +154,10 @@
 				31432E70C1CAD330E8D8C928 /* BeadRingView.swift */,
 				9375326757C51EBF96A756ED /* CompletionView.swift */,
 				9B221D875B8D32102ED8125D /* HistoryView.swift */,
-				79C78E0A800C04F902A93671 /* HomeView.swift */,
 				801FD23D07837E4CDD46C9AE /* IntroView.swift */,
+				5BF9C87EAA349A7974500150 /* MalaStylePickerView.swift */,
+				8D3A893ADD218AD19674676C /* MalaStyleView.swift */,
 				103758024231FADFF332818B /* MantraSelectView.swift */,
-				71CE5A3B2AAE495F136EEA32 /* PracticeContainerView.swift */,
 				EA10D7649BA71369172BBF38 /* PracticeView.swift */,
 				B0C6D989D90B165210CB8F17 /* RootView.swift */,
 				890402970A3821FBAE661CC1 /* SettingsView.swift */,
@@ -184,6 +196,7 @@
 			children = (
 				4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */,
 				966FF5AA15A66D625C309384 /* JapaUITests.swift */,
+				32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */,
 			);
 			path = JapaUITests;
 			sourceTree = "<group>";
@@ -192,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				5926A2B2C1C3E540E6F46D28 /* ActiveSessionState.swift */,
+				7B4D8F2F8473556715933675 /* MalaStyle.swift */,
 				942EF61A653CDA2EEAA3E97D /* Mantra.swift */,
 				8DB715269385419EFB087465 /* PracticeSession.swift */,
 				83E8AA37B58D028629368DB8 /* Preferences.swift */,
@@ -211,6 +225,10 @@
 		C3E64BE6113967868C36D811 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				65BCE54D06E36959BD424560 /* MalaStyleKit.swift */,
+				9495C72BD642429293CF538C /* MalaStyleRenderers+Rings.swift */,
+				283ACD90287A1DC23498C9B1 /* MalaStyleRenderers+Special.swift */,
+				B2B5D7375D742AB3C0BE2F4D /* MalaStyleRenderers+Strands.swift */,
 				46FCDF158BAF5105716503AF /* Theme.swift */,
 			);
 			path = Design;
@@ -382,14 +400,19 @@
 				9F98B22CBE734AB9C3038BE8 /* HapticFeedback.swift in Sources */,
 				0327F239B0DC2607EDA2BA20 /* HapticPlayer.swift in Sources */,
 				F2A857C7AB1CDB5298D8301F /* HistoryView.swift in Sources */,
-				80A6B837BDA84E5F07085FE4 /* HomeView.swift in Sources */,
 				3BE7452B4413C4F53A67A6D7 /* IntroView.swift in Sources */,
 				300947FADE278268B7B3AC59 /* JapaApp.swift in Sources */,
 				7682CE3A6375B26F671C8941 /* JapaEngine.swift in Sources */,
+				19F0AC1C387B86C3C1CCF4C5 /* MalaStyle.swift in Sources */,
+				12E20AE3F4AC49063953125D /* MalaStyleKit.swift in Sources */,
+				176665FFEC02242598789E8E /* MalaStylePickerView.swift in Sources */,
+				AC074041D0C5F9A1C8EE1728 /* MalaStyleRenderers+Rings.swift in Sources */,
+				FC5159A5169AEC3944E257E5 /* MalaStyleRenderers+Special.swift in Sources */,
+				B439D8E50AAD513E24E1FC9F /* MalaStyleRenderers+Strands.swift in Sources */,
+				32F935BED59203D34B8C1CD5 /* MalaStyleView.swift in Sources */,
 				290AC85EF7C14E3C5A5EDB77 /* Mantra.swift in Sources */,
 				9A18C528F28BC6D0AE93AC9B /* MantraSelectView.swift in Sources */,
 				12A730E0CDE654C7981FDA56 /* Persistence.swift in Sources */,
-				99B751D7B03C69907EB10E06 /* PracticeContainerView.swift in Sources */,
 				328B4DF7B3AE333A3CCB9EA5 /* PracticeController.swift in Sources */,
 				837D014E69E0E403A820D3BB /* PracticeSession.swift in Sources */,
 				CDA4815E217FDAE226E07D48 /* PracticeView.swift in Sources */,
@@ -407,6 +430,7 @@
 			files = (
 				213728C0BAAA850383E9E9F9 /* FeatureAuditUITests.swift in Sources */,
 				EB56029EF211FA0096ABD5C9 /* JapaUITests.swift in Sources */,
+				07FE29C2DECC65A15D063DB7 /* UITestModeContractTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

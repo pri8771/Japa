@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/pri8771/iOS_app_factory_rules/main/schemas/feature-contract.schema.json",
+  "id": "FEAT-003",
+  "name": "Engine round contract",
+  "status": "implemented",
+  "userOutcome": "Counting behavior is deterministic: advance increments until target, completion fires once at N, undo never goes below 0, invalid targets are clamped.",
+  "entryPoints": [
+    "JapaEngine.advance",
+    "JapaEngine.undo",
+    "JapaEngine reconstruction from persisted count"
+  ],
+  "productionDataSource": "Pure in-memory JapaEngine value type; no I/O.",
+  "states": [
+    "counting",
+    "complete",
+    "already_complete"
+  ],
+  "errorBehavior": "Out-of-range targets clamp to 1...1080. Advances after completion return alreadyComplete without mutating count. Undo at 0 is a no-op floor.",
+  "duplicateProtectionRequired": true,
+  "persistenceRequired": false,
+  "layoutScenarios": [],
+  "accessibilityRequirements": [],
+  "prohibitedBehavior": [
+    "Do not couple mantra text into count logic",
+    "Do not add streak/chain fields to engine state",
+    "Do not change completion-once semantics without a decision + contract update"
+  ],
+  "acceptanceTests": [
+    "JapaEngineTests — full suite (defaults, boundaries, undo, completion-once, reconstruct)"
+  ]
+}

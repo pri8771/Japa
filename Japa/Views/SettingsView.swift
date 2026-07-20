@@ -12,6 +12,15 @@ struct SettingsView: View {
                         Text(label(for: value)).tag(value)
                     }
                 }
+                NavigationLink(value: RootView.Route.malaStylePicker) {
+                    HStack {
+                        Text("Mala Style")
+                        Spacer()
+                        Text(app.preferences.malaStyle.info.name)
+                            .foregroundStyle(Theme.textMuted)
+                    }
+                }
+                .accessibilityIdentifier("malaStyleRow")
             } header: {
                 sectionHeader("Round")
             } footer: {
