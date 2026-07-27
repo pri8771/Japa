@@ -1,0 +1,13 @@
+appId: com.priyansh.japa
+---
+- launchApp
+- assertVisible:
+    id: settingsButton
+- tapOn:
+    id: settingsButton
+- assertVisible:
+    id: malaStyleRow
+- tapOn:
+    id: malaStyleRow
+- assertVisible:
+    id: malaApplyButton

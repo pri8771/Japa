@@ -45,15 +45,6 @@
 - **Outcome:** Reauthenticated Atlassian; confirmed JAPA board statuses already matched docs; refreshed open gate descriptions/priorities; posted epic sync comment. No new issues created.
 - **Follow-Up Required:** Close JAPA-6 / JAPA-8 / JAPA-9.
 
-## P-001 — Register Japa as existing App Factory project + onboard
-
-- **Prompt ID:** P-001
-- **Date:** 2026-07-16
-- **Time:** ~14:35–17:20 ET
-- **User Prompt Summary:** Register Japa with `iOS_app_factory_rules` as existing (`ios,ipados`), then run existing-project onboarding and update Jira + Notion.
-- **Full Prompt or Reference:** Conversation: register existing via bootstrap; confirm factory repo URL; continue onboarding with Jira/Notion sync.
-- **Project Area:** App Factory registration, docs, launch planning, external trackers
-- **Status:** done
 - **Date Recorded:** 2026-07-16
 - **Estimated Start Date:** 2026-07-16
 - **Actual Start Date:** 2026-07-16

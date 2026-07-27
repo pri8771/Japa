@@ -40,6 +40,28 @@ final class PersistenceTests: XCTestCase {
         XCTAssertEqual(prefs.malaStyle, .classic)
     }
 
+    func testUnknownMalaStyleFallsBackWithoutDiscardingPreferences() throws {
+        // An unrecognized malaStyle raw value (e.g. an app downgrade, or a style
+        // removed/renumbered in a future build) must fall back to the default
+        // style while preserving every other saved preference — it must NOT throw
+        // and wipe the whole file back to fresh defaults.
+        let json = """
+        {
+          "defaultTarget": 216,
+          "completionToneEnabled": false,
+          "hapticIntensity": 0.42,
+          "hasSeenIntro": true,
+          "malaStyle": 9999
+        }
+        """
+        let prefs = try JSONDecoder().decode(Preferences.self, from: Data(json.utf8))
+        XCTAssertEqual(prefs.defaultTarget, 216)
+        XCTAssertFalse(prefs.completionToneEnabled)
+        XCTAssertEqual(prefs.hapticIntensity, 0.42, accuracy: 0.0001)
+        XCTAssertTrue(prefs.hasSeenIntro)
+        XCTAssertEqual(prefs.malaStyle, Preferences().malaStyle)
+    }
+
     func testSessionsRoundTrip() {
         let store = Persistence(directory: tempDirectory())
         let sessions = [

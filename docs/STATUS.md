@@ -42,12 +42,14 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 - Local-first, no networking, no third-party SDKs (source inventory)
 - **Current automated suite: 62 tests (52 unit/flow + 10 UI), all passing** — canonical count; see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
-- **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
+- **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 - Public product identity is **Mala**. The internal Xcode target/scheme, bundle ID, engine symbols, and persistence path retain `Japa` for compatibility.
 - Bundled spiritual seed content was removed; v1 ships neutral Counting plus private user-created labels.
 - Five App Store screenshots were captured from the iPhone 17 Pro Max simulator at 1320 × 2868 with no alpha and stored under `AppStoreAssets/Screenshots/en-US/6.9-inch/`.
 - A 6.9-inch UI-test run exposed top-chrome taps being intercepted by the practice gesture; the counting hit area now excludes the control bands and the history flow passes.
 - TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
+- Enrolled in Studio OS as `PROD-JAPA` (`pri8771/studio-ios`, 2026-07-19); `.factory/studio-link.json` is the product-side pointer. Automated-UI-testing manifests (`quality/ui/`) and generated Maestro flows were added the same day; Maestro simulator execution is still pending (CLI unavailable at enrollment time).
+- `Gemfile.lock` is committed (regenerated via `bundle install` 2026-07-27) so the TestFlight CD workflow's `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before it can run.
 
 ### Test-count history (superseded — do not treat as current)
 
@@ -97,8 +99,43 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
   - `lastVerified` metadata advanced 2026-07-17 → 2026-07-18 across the docs whose current truth changed.
 - Added the TestFlight deployment pipeline (DEC-005): `fastlane/` + `.github/workflows/release-testflight.yml`, canonical process doc `docs/DEPLOYMENT.md`, wired into `.factory/repository-map.json`. `project.yml` signing unchanged; simulator CI unaffected.
 
+## Documentation reconciliation (2026-07-19)
+
+- **Studio OS enrollment.** Linked this repo to Studio OS product `PROD-JAPA`
+  (`pri8771/studio-ios`): product-side pointer `.factory/studio-link.json`,
+  authoritative `products/japa/` record proposed via studio-ios PR. Registered in
+  `.factory/repository-map.json` (`studioLink`, `studio-os-linkage` route).
+- **Automated UI-testing foundation.** Added `quality/ui/{screens,journeys,safe-actions}.yaml`
+  + generated Maestro flows (`quality/ui/generated/`) per App Factory standard
+  0.4.0. `Japa/JapaApp.swift` now honors the standard `UI_TEST_MODE`/`UI_FIXTURE`/
+  `UI_RESET_STATE`/`UI_DISABLE_ANIMATIONS` contract alongside the original
+  `JAPA_UITEST` hooks; added one `historyRoot` accessibility identifier and a
+  contract test. Maestro simulator execution is pending (CLI unavailable at
+  enrollment; tracked in the Studio OS Atlas task ATLAS-JAPA-LAUNCH-001).
+- **Test count (superseded by the 2026-07-27 merge below).** Suite was **64
+  (53 unit/flow + 11 UI)** on this branch of history, after adding a
+  `Preferences` unknown-mala-style regression test and the `UI_TEST_MODE`
+  contract test; verified green on iOS simulator 2026-07-19.
+
+## Documentation reconciliation (2026-07-27, branch merge)
+
+- Merged local branch `agent/fix-app-icon` (Mala rebrand, seed-content removal,
+  App Store screenshot assets, chrome hit-testing fix, tag-driven Fastfile
+  marketing version) with `origin/main` (Studio OS enrollment, Maestro
+  UI-testing manifests) to unblock release — the two branches had diverged
+  from a common ancestor and neither included the other's work. All
+  non-conflicting additions from both sides are preserved; true conflicts were
+  resolved file-by-file favoring whichever side reflected the more current,
+  accurate state (see `docs/HANDOFF.md`).
+- Added a real `Gemfile.lock` (via `bundle install`) so `release-testflight.yml`'s
+  `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before
+  reaching the (still-unconfigured) signing step.
+- Post-merge canonical test count and full-suite/build verification are
+  recorded once re-run; see the top of this document and `TEST_PLAN.md`.
+
 ## Next action
 
 1. Publish and verify the public privacy/support pages.
 2. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
 3. Run release-candidate device QA and finalize App Store Connect fields/assets.
+4. Decide whether to pursue Maestro simulator execution for the `quality/ui/` manifests now that the CLI can be installed.

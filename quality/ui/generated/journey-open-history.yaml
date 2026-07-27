@@ -1,0 +1,9 @@
+appId: com.priyansh.japa
+---
+- launchApp
+- assertVisible:
+    id: historyButton
+- tapOn:
+    id: historyButton
+- assertVisible:
+    id: historyRoot

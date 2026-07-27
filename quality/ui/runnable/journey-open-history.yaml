@@ -1,0 +1,10 @@
+appId: com.priyansh.japa
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: introBegin
+- tapOn:
+    id: historyButton
+- assertVisible:
+    id: historyRoot

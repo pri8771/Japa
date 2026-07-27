@@ -1,0 +1,137 @@
+schemaVersion: 1
+product: japa
+
+# Screen manifest for App Factory automated UI testing (standard 0.4.0,
+# standards/testing/AUTOMATED_UI_TESTING_STANDARD.md).
+#
+# Identifiers below are the app's ACTUAL, already-shipped accessibility
+# identifiers (verified present in Japa/Views and exercised by JapaUITests).
+# The factory selector convention is `<product>.<screen>.<element>.<role>`;
+# Japa predates that convention and uses short camelCase identifiers project
+# wide. Renaming them would break the existing XCUITest suite, so this manifest
+# documents current truth and the convention alignment is tracked as a scoped
+# follow-up (see quality/ui/README.md), not performed during enrollment.
+#
+# Only SCREEN-PRACTICE declares `navigation.enterFrom` (app-launch): it is the
+# launch surface, so the generator's shallow launch+assert screen-contract flow
+# is valid for it. Deeper screens are reached by navigation and are covered by
+# quality/ui/journeys.yaml (which carry explicit tap steps) rather than by a
+# bare launch-and-assert flow that would never reach them.
+
+screens:
+  - id: SCREEN-PRACTICE
+    name: Practice (home surface)
+    rootIdentifier: advanceRing
+    fixtures: [empty, one-record, many-records, long-text]
+    requiredElements:
+      - identifier: advanceRing
+        role: button
+        states: [enabled]
+      - identifier: mantraRow
+        role: button
+        states: [enabled]
+      - identifier: historyButton
+        role: button
+        states: [enabled]
+      - identifier: settingsButton
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: [app-launch]
+      exits:
+        - action: settingsButton
+          destination: SCREEN-SETTINGS
+        - action: historyButton
+          destination: SCREEN-HISTORY
+        - action: mantraRow
+          destination: SCREEN-MANTRA-SELECT
+    prohibitedActions: []
+
+  - id: SCREEN-SETTINGS
+    name: Settings
+    rootIdentifier: malaStyleRow
+    fixtures: [content]
+    requiredElements:
+      - identifier: malaStyleRow
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: []
+      exits:
+        - action: malaStyleRow
+          destination: SCREEN-MALA-STYLE
+    prohibitedActions: []
+
+  - id: SCREEN-MALA-STYLE
+    name: Mala style picker
+    rootIdentifier: malaApplyButton
+    fixtures: [content]
+    requiredElements:
+      - identifier: malaApplyButton
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: []
+      exits: []
+    prohibitedActions: []
+
+  - id: SCREEN-MANTRA-SELECT
+    name: Mantra select
+    rootIdentifier: addMantraButton
+    fixtures: [content, long-text]
+    requiredElements:
+      - identifier: addMantraButton
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: []
+      exits: []
+    prohibitedActions:
+      # Swipe-to-delete removes a custom mantra permanently.
+      - deleteCustomMantra
+
+  - id: SCREEN-HISTORY
+    name: History
+    rootIdentifier: historyRoot
+    fixtures: [empty, one-record, many-records]
+    requiredElements:
+      - identifier: historyRoot
+        role: other
+        states: [visible]
+    navigation:
+      enterFrom: []
+      exits: []
+    prohibitedActions:
+      # "Clear all" wipes every saved session; swipe-to-delete removes one.
+      - clearHistory
+      - deleteSession
+
+  - id: SCREEN-COMPLETION
+    name: Round completion
+    rootIdentifier: newRoundButton
+    fixtures: [content]
+    requiredElements:
+      - identifier: newRoundButton
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: []
+      exits:
+        - action: newRoundButton
+          destination: SCREEN-PRACTICE
+    prohibitedActions: []
+
+  - id: SCREEN-INTRO
+    name: First-run intro
+    rootIdentifier: introBegin
+    fixtures: [content]
+    requiredElements:
+      - identifier: introBegin
+        role: button
+        states: [enabled]
+    navigation:
+      enterFrom: []
+      exits:
+        - action: introBegin
+          destination: SCREEN-PRACTICE
+    prohibitedActions: []

@@ -17,6 +17,7 @@ struct HistoryView: View {
                 list
             }
         }
+        .accessibilityIdentifier("historyRoot")
         .background(Theme.background.ignoresSafeArea())
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)

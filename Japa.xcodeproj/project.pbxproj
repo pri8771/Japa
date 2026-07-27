@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0327F239B0DC2607EDA2BA20 /* HapticPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3C41A38D48049E9EE6F32 /* HapticPlayer.swift */; };
 		0551F0AAFB244FADA94E38DC /* SeedMantras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419010C5C0377493AD93A9F /* SeedMantras.swift */; };
+		07FE29C2DECC65A15D063DB7 /* UITestModeContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */; };
 		12A730E0CDE654C7981FDA56 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745051048833680674B1BA35 /* Persistence.swift */; };
 		12E20AE3F4AC49063953125D /* MalaStyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BCE54D06E36959BD424560 /* MalaStyleKit.swift */; };
 		176665FFEC02242598789E8E /* MalaStylePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF9C87EAA349A7974500150 /* MalaStylePickerView.swift */; };
@@ -72,6 +73,7 @@
 		21E3D32E6069C78DF6A15B8B /* JapaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JapaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		283ACD90287A1DC23498C9B1 /* MalaStyleRenderers+Special.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MalaStyleRenderers+Special.swift"; sourceTree = "<group>"; };
 		31432E70C1CAD330E8D8C928 /* BeadRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeadRingView.swift; sourceTree = "<group>"; };
+		32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestModeContractTests.swift; sourceTree = "<group>"; };
 		3448922228099A1C41CB3ACE /* Japa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Japa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		392ED404738BF9A7FB1A5277 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		417D2DBDEE07D83D9833C12F /* JapaEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JapaEngine.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 			children = (
 				4DA3CC70A9004E053EB33F1A /* FeatureAuditUITests.swift */,
 				966FF5AA15A66D625C309384 /* JapaUITests.swift */,
+				32F6CB43742141B3EF8757C8 /* UITestModeContractTests.swift */,
 			);
 			path = JapaUITests;
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 			files = (
 				213728C0BAAA850383E9E9F9 /* FeatureAuditUITests.swift in Sources */,
 				EB56029EF211FA0096ABD5C9 /* JapaUITests.swift in Sources */,
+				07FE29C2DECC65A15D063DB7 /* UITestModeContractTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

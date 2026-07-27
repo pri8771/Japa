@@ -38,6 +38,26 @@ platform :ios do
     # number is monotonic per repository, which satisfies that.
     build_number = ENV["BUILD_NUMBER"] || ENV["GITHUB_RUN_NUMBER"] || "1"
 
+    # Derive the user-facing marketing version from the release tag (v1.2.3 ->
+    # 1.2.3) when triggered by a tag push, so shipping a new version is just a
+    # matter of tagging. project.yml stays at its committed MARKETING_VERSION for
+    # manual/untagged runs, so nothing is overridden unless a real version tag
+    # drives the build.
+    marketing_version = ENV["MARKETING_VERSION"]
+    if marketing_version.nil? && ENV["GITHUB_REF_TYPE"] == "tag"
+      ref_name = ENV["GITHUB_REF_NAME"].to_s
+      marketing_version = ref_name.sub(/\Av/, "") if ref_name =~ /\Av\d+\.\d+(\.\d+)?\z/
+    end
+
+    build_settings = [
+      "-allowProvisioningUpdates",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGN_STYLE=Automatic",
+      "DEVELOPMENT_TEAM=#{ENV.fetch('DEVELOPMENT_TEAM')}",
+      "CURRENT_PROJECT_VERSION=#{build_number}"
+    ]
+    build_settings << "MARKETING_VERSION=#{marketing_version}" if marketing_version
+
     build_app(
       scheme: "Japa",
       configuration: "Release",
@@ -47,13 +67,7 @@ platform :ios do
       # Override the CI-safe no-signing defaults from project.yml at archive time
       # only. -allowProvisioningUpdates lets Xcode create/download the App Store
       # provisioning profile using the API key set above.
-      xcargs: [
-        "-allowProvisioningUpdates",
-        "CODE_SIGNING_ALLOWED=YES",
-        "CODE_SIGN_STYLE=Automatic",
-        "DEVELOPMENT_TEAM=#{ENV.fetch('DEVELOPMENT_TEAM')}",
-        "CURRENT_PROJECT_VERSION=#{build_number}"
-      ].join(" ")
+      xcargs: build_settings.join(" ")
     )
 
     upload_to_testflight(

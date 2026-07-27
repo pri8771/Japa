@@ -1,0 +1,14 @@
+appId: com.priyansh.japa
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: introBegin
+- tapOn:
+    id: settingsButton
+- assertVisible:
+    id: malaStyleRow
+- tapOn:
+    id: malaStyleRow
+- assertVisible:
+    id: malaApplyButton

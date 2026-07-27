@@ -65,7 +65,7 @@ Files:
 
 - `fastlane/Fastfile` — the `beta` lane (archive + upload).
 - `fastlane/Appfile` — bundle identifier only; no Apple ID stored.
-- `Gemfile` — declares `fastlane`; add and commit `Gemfile.lock` before calling CI installs reproducible.
+- `Gemfile` — declares `fastlane`; `Gemfile.lock` is committed (regenerated 2026-07-27 via `bundle install`) so `ruby/setup-ruby@v1`'s `bundler-cache: true` step in `release-testflight.yml` has a lockfile to restore instead of hard-failing before it can run anything.
 - `.github/workflows/release-testflight.yml` — tag/dispatch-triggered runner.
 
 ## Required secrets
