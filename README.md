@@ -1,4 +1,4 @@
-# Japa
+# Mala
 
 A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iOS.
 
@@ -7,12 +7,12 @@ A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iO
 > haptic practice screen, a distinct completion signal, mantra selection (reviewed
 > seed set + free-text), quiet history, settings, Dynamic Type support, CI + TestFlight deployment automation, and a 21-style Change Mala picker — all local-first. Current
 > status, test counts, and readiness live in [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md). Remaining
-> work is human content sign-off, VoiceOver/accessibility user validation, code signing, and App Store prep
+> work is public-page publication, final App Store assets, signing/TestFlight verification, and release-candidate QA
 > (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §9 and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
 
 ## What it is
 
-Japa is for anyone with a daily repetition practice who wants to count a fixed
+Mala is for anyone with a daily repetition practice who wants to count a fixed
 number of mantras (classically 108) **without looking at the screen**. The one
 thing it does that a physical mala or a generic counter cannot:
 
@@ -24,7 +24,7 @@ If it can't deliver that eyes-free, look-down-free feel, it's a skinned counter 
 
 ## v1 scope (and non-goals)
 
-**In:** repetition engine, eyes-free tactile practice screen, distinct completion haptic + tone, a tiny **reviewed** seed mantra set **plus** user free-text, session completion, simple quiet history, and 21 visual mala styles with Classic as the default. Local-first; no backend, accounts, or analytics.
+**In:** repetition engine, eyes-free tactile practice screen, distinct completion haptic + tone, neutral Counting plus private user-created labels, session completion, simple quiet history, and 21 visual mala styles with Classic as the default. Local-first; no backend, accounts, or analytics.
 
 **Out (v1):** streaks / loss-aversion mechanics, reminders/notifications, audio/chanting, content library, sync, IAP. (Streaks and reminders are deliberately excluded — gamifying a devotional practice is a tone failure.)
 
@@ -60,7 +60,7 @@ Japa/
   Persistence/   Codable-to-disk store + interruption-safe ActiveSessionStore
   Haptics/       CoreHaptics player (+ UIFeedbackGenerator fallback)
   Audio/         synthesized gentle completion tone (respects silent switch)
-  Content/       reviewed seed mantras
+  Content/       neutral built-in Counting option
   ViewModels/    AppModel, PracticeController
   Views/         Home, Practice, Completion, MantraSelect, History, Settings, MalaStylePicker, Intro
   Design/        Theme + native mala-style renderers
@@ -79,6 +79,6 @@ JapaUITests/     core-flow UI tests (advance, undo, completion, navigation, Dyna
 
 - **[`LAUNCH_READINESS.md`](LAUNCH_READINESS.md)** — authoritative spec: scope, MVP features + acceptance criteria, flows, risk triage, readiness assessment, launch checklist.
 - **[`docs/PROJECT_DOCUMENTATION.md`](docs/PROJECT_DOCUMENTATION.md)** — canonical project documentation (indexed by the App Factory Command Center).
-- **[`docs/CONTENT_REVIEW.md`](docs/CONTENT_REVIEW.md)** — seed mantra content review record (human sign-off gate).
+- **[`docs/CONTENT_REVIEW.md`](docs/CONTENT_REVIEW.md)** — superseded historical seed-content review record.
 
 Tech baseline: SwiftUI, CoreHaptics (with `UIFeedbackGenerator` fallback), minimal AVFoundation, Codable local storage. Target iOS 17+.

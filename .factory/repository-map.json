@@ -22,6 +22,7 @@
     "assumptions": "docs/ASSUMPTIONS.md",
     "testPlan": "docs/TEST_PLAN.md",
     "releaseReadiness": "docs/RELEASE_CHECKLIST.md",
+    "releaseMetadata": "docs/RELEASE_METADATA.md",
     "deploymentProcess": "docs/DEPLOYMENT.md",
     "handoff": "docs/HANDOFF.md",
     "reusableComponents": "docs/REUSABLE_COMPONENTS.md",
@@ -65,6 +66,7 @@
     "featureContracts": "quality/feature-contracts",
     "completionReports": "quality/completion-reports",
     "qualityEvidence": "quality/evidence",
+    "releaseAssets": "AppStoreAssets",
     "libraryCatalog": ".factory/library-catalog.json",
     "reusableComponents": "docs/REUSABLE_COMPONENTS.md"
   },
@@ -128,6 +130,8 @@
       "docs/STATUS.md",
       "docs/TEST_PLAN.md",
       "docs/RELEASE_CHECKLIST.md",
+      "docs/RELEASE_METADATA.md",
+      "AppStoreAssets/Screenshots",
       "LAUNCH_READINESS.md"
     ],
     "deploy-testflight": [

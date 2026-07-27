@@ -128,7 +128,7 @@ final class PracticeFlowTests: XCTestCase {
             .appendingPathComponent("japa-sel-\(UUID().uuidString)", isDirectory: true)
         let persistence = Persistence(directory: dir)
         let app = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
-        let target = SeedMantras.all.first { $0.title == "Om Mani Padme Hum" }!
+        let target = app.addCustomMantra(title: "My selected practice")!
         app.select(target)
 
         let relaunched = AppModel(persistence: persistence, haptics: NoopHaptics(), tone: NoopTone())
@@ -203,7 +203,7 @@ final class PracticeFlowTests: XCTestCase {
         app.select(mantra)
         XCTAssertEqual(app.selectedMantra.id, mantra.id)
         app.deleteCustomMantra(mantra)
-        XCTAssertNotEqual(app.selectedMantra.id, mantra.id, "Selection falls back to a seed mantra")
+        XCTAssertNotEqual(app.selectedMantra.id, mantra.id, "Selection falls back to the neutral default")
         XCTAssertTrue(app.selectedMantra.isSeed)
     }
 

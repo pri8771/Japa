@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-07-27
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -19,23 +19,22 @@ supersedes: []
 
 Product lifecycle (per `iOS_app_factory_rules/governance/PROJECT_LIFECYCLE.md`
 controlled vocabulary): **`verified`** — automated suite green and on-device
-validated, with open `human_review_required` gates before `released`. Not
-`done`: the standard reserves `done` for when all human gates or an approved
-waiver exist (JAPA-6/8 open). Next state is `beta` once a TestFlight build is
-distributed.
+validated, with external release gates before `released`. VoiceOver user
+validation is an explicitly accepted post-v1 risk, not a completed check. Next
+state is `beta` once a signed TestFlight build is distributed.
 
 Factory registration is a separate axis and is **complete** (`projectType:
 existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
 
 ## Current objective
 
-Close the remaining launch gates for the existing Japa codebase under App Factory standard 0.4.0: content sign-off, on-device haptic validation, VoiceOver/accessibility user validation, signing/TestFlight, and App Store evidence.
+Prepare Mala v1 for App Store release: publish the privacy/support pages, approve and upload the captured screenshots, verify signing/TestFlight, and complete App Store Connect metadata and device QA.
 
 ## Product maturity
 
 - **Implementation:** v1 feature set built and on-device validated (2026-07-18, iPhone 16 Pro Max); mala-style picker, Dynamic Type, merged practice surface, stale-round Finish, CI, and TestFlight deployment automation in place
 - **Factory registration:** existing project, standard `0.4.0` (upgraded from `0.2.0` on 2026-07-17), registered 2026-07-16
-- **Ship blockers remaining (human gates):** seed-mantra content sign-off (JAPA-6), VoiceOver user validation (JAPA-8), App Store metadata + first real signed TestFlight upload (JAPA-9). Deployment *automation* now exists (`docs/DEPLOYMENT.md`); it needs App Store Connect secrets + one verified run.
+- **Ship blockers remaining:** live privacy/support URLs, human approval/upload of the captured App Store assets and metadata, and the first real signed TestFlight upload. VoiceOver user validation is deferred post-v1 with residual risk recorded in MALA-7.
 
 ## Verified
 
@@ -43,7 +42,11 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 - Local-first, no networking, no third-party SDKs (source inventory)
 - **Current automated suite: 62 tests (52 unit/flow + 10 UI), all passing** — canonical count; see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
-- **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
+- **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
+- Public product identity is **Mala**. The internal Xcode target/scheme, bundle ID, engine symbols, and persistence path retain `Japa` for compatibility.
+- Bundled spiritual seed content was removed; v1 ships neutral Counting plus private user-created labels.
+- Five App Store screenshots were captured from the iPhone 17 Pro Max simulator at 1320 × 2868 with no alpha and stored under `AppStoreAssets/Screenshots/en-US/6.9-inch/`.
+- A 6.9-inch UI-test run exposed top-chrome taps being intercepted by the practice gesture; the counting hit area now excludes the control bands and the history flow passes.
 - TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
 
 ### Test-count history (superseded — do not treat as current)
@@ -55,21 +58,21 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 
 ## Verification pending
 
-- VoiceOver validation with a real assistive-tech user on device (Dynamic Type portion is implemented + smoke-tested; JAPA-8)
-- Seed mantra human content sign-off (`docs/CONTENT_REVIEW.md`; JAPA-6)
-- First real TestFlight upload (JAPA-9): automation is committed (`docs/DEPLOYMENT.md`, DEC-005) but needs the four App Store Connect secrets and one verified run recorded under `quality/evidence/`. `project.yml` signing stays as-is by decision (JAPA-9); signing is injected at archive time only.
+- Public privacy and support pages at `priyanshchordia.com/mala/privacy` and `/mala/support`
+- Human approval/upload of the captured App Store screenshots and App Store Connect metadata
+- First real TestFlight upload (MALA-8): automation is committed but needs credentials, corrected CI signing setup, and one verified run under `quality/evidence/`
+- VoiceOver validation with a real assistive-tech user is deferred post-v1 (MALA-7); Dynamic Type remains implemented and smoke-tested
 
 ## External trackers
 
-- **Notion Projects:** updated to MVP Ready, reviewed 2026-07-17 — [Japa](https://app.notion.com/p/38eab1f2276581d1aa80e3b10432820c)
-- **Notion Tasks:** JAP-004 Done; JAP-005 Ready; JAP-010 Done; JAP-011..014 Ready; JAP-015 Done (re-checked/updated 2026-07-17)
-- **Jira (canonical): project `JAPA`** — consolidated 2026-07-17 after discovering it pre-dated the `JALA` project (JALA was retired as Deferred/Replaced-By; mapping in `docs/JIRA_SYNC_PENDING.md`). Current JAPA state: [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) epic In Progress; JAPA-2/3 In Review; JAPA-4 In Progress; JAPA-5 Done; JAPA-10, JAPA-11 Done (2026-07-17); **JAPA-7 (device haptics) and JAPA-12 (device smoke) Done 2026-07-18 with on-device evidence**. Remaining open launch gates: JAPA-6 (content sign-off), JAPA-8 (VoiceOver human validation — Dynamic Type done), JAPA-9 (signing / App Store / TestFlight).
+- **Notion:** [Mala Release Hub](https://app.notion.com/p/3a8ab1f22765811fb3cbcdbf485af251) with Work Items, Research & Design, Decisions, Lessons & Mistakes, and Release Evidence databases
+- **Jira (canonical): project `MALA`** — MALA-1 is the v1 release epic; implementation, research, design, QA, and human gates are split into independently assignable work items with Execution Agent values
 
 ## Blockers
 
-- Seed mantra content review unsigned (App Store blocker for spiritual content) (tracked: JAPA-6)
-- TestFlight/App Store distribution not yet exercised: `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by decision (DEC-005/JAPA-9); the CD pipeline injects signing at archive time but needs App Store Connect secrets and one verified run (tracked: JAPA-9; process in `docs/DEPLOYMENT.md`)
-- VoiceOver human validation on device still required (tracked: JAPA-8)
+- Privacy and support URLs are not live yet (MALA-4/15)
+- TestFlight/App Store distribution has not been exercised; CI signing needs a verified signing identity/configuration plus secrets (MALA-8)
+- App Store Connect record, screenshot approval/upload, rating/privacy answers, and release-candidate device QA remain open (MALA-5/6/9)
 
 ## Documentation reconciliation (2026-07-17)
 
@@ -96,6 +99,6 @@ Close the remaining launch gates for the existing Japa codebase under App Factor
 
 ## Next action
 
-1. Close launch gates: content sign-off (JAPA-6), VoiceOver user validation (JAPA-8).
-2. Configure the four App Store Connect secrets and run the TestFlight workflow once; record evidence and flip `docs/DEPLOYMENT.md`'s end-to-end row to `verified` (JAPA-9).
-3. Decide whether to add the spy-based haptic/tone tests FEAT-001 calls for.
+1. Publish and verify the public privacy/support pages.
+2. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
+3. Run release-candidate device QA and finalize App Store Connect fields/assets.

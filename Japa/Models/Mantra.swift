@@ -3,17 +3,17 @@ import Foundation
 /// A mantra the practitioner can repeat.
 ///
 /// Crucially, mantra text **never affects counting** — it is purely a label for
-/// the session. A seed mantra and a user's free-text mantra behave identically
-/// in the engine and on the practice screen.
+/// the session. The neutral built-in label and a user's free-text label behave
+/// identically in the engine and on the practice screen.
 struct Mantra: Identifiable, Codable, Hashable {
     let id: UUID
-    /// Short display name, e.g. "Om Namah Shivaya".
+    /// Short display name, e.g. "Counting".
     var title: String
     /// Optional script/transliteration shown in larger type, e.g. "ॐ नमः शिवाय".
     var script: String?
-    /// A one-line, respectful note. Present only on reviewed seed mantras.
+    /// A one-line explanatory note for a label.
     var note: String?
-    /// True for the bundled, human-reviewed seed set; false for user free-text.
+    /// True for the bundled neutral default; false for user free-text.
     let isSeed: Bool
 
     init(id: UUID = UUID(), title: String, script: String? = nil, note: String? = nil, isSeed: Bool = false) {

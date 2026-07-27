@@ -25,6 +25,13 @@ final class FeatureAuditUITests: XCTestCase {
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).tap()
     }
 
+    private func attach(_ app: XCUIApplication, _ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
     @discardableResult
     private func waitForRingValue(_ ring: XCUIElement, _ expected: String, timeout: TimeInterval = 3) -> Bool {
         let predicate = NSPredicate(format: "value == %@", expected)
@@ -90,17 +97,10 @@ final class FeatureAuditUITests: XCTestCase {
         app.launch()
         dismissIntro(app)
 
-        // Switch to a different seed mantra.
-        app.buttons["mantraRow"].tap()
-        let seed = app.buttons["mantra-Om Mani Padme Hum"]
-        XCTAssertTrue(seed.waitForExistence(timeout: 8))
-        seed.tap()
-        XCTAssertTrue(surfaceShowsMantra(app, "Om Mani Padme Hum"), "Surface reflects the chosen mantra")
-
         // Create a custom free-text mantra.
         app.buttons["mantraRow"].tap()
         let addButton = app.buttons["addMantraButton"]
-        // "Add your own" sits below the seed list; scroll it into view.
+        // Scroll if needed to keep this resilient if the selection screen grows.
         var scrolls = 0
         while !addButton.isHittable && scrolls < 5 {
             app.swipeUp()
@@ -110,13 +110,14 @@ final class FeatureAuditUITests: XCTestCase {
         let field = app.textFields["mantraNameField"]
         XCTAssertTrue(field.waitForExistence(timeout: 8))
         field.tap()
-        field.typeText("My test mantra")
+        field.typeText("Morning gratitude")
         app.buttons["Save"].tap()
 
-        let customRow = app.buttons["mantra-My test mantra"]
+        let customRow = app.buttons["mantra-Morning gratitude"]
         XCTAssertTrue(customRow.waitForExistence(timeout: 8), "Custom mantra is saved and listed")
+        attach(app, "03-Personal-label")
         customRow.tap()
-        XCTAssertTrue(surfaceShowsMantra(app, "My test mantra"), "Surface reflects the custom mantra")
+        XCTAssertTrue(surfaceShowsMantra(app, "Morning gratitude"), "Surface reflects the custom mantra")
     }
 
     // MARK: Stale round → Finish prompt
@@ -173,12 +174,40 @@ final class FeatureAuditUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["advanceRing"].waitForExistence(timeout: 8))
         completeRound(app)
-        app.buttons["Rest"].tap()
+        let rest = app.buttons["Rest"]
+        XCTAssertTrue(rest.waitForExistence(timeout: 8))
+        rest.tap()
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "exists == false"),
+                object: app.buttons["newRoundButton"]
+            )], timeout: 8) == .completed,
+            "Completion overlay closes before navigating"
+        )
 
-        XCTAssertTrue(app.buttons["historyButton"].waitForExistence(timeout: 8))
-        app.buttons["historyButton"].tap()
-        XCTAssertTrue(app.staticTexts["5 / 5"].waitForExistence(timeout: 8), "Completed round is recorded")
-        XCTAssertTrue(app.staticTexts["Om Namah Shivaya"].exists)
+        let historyButton = app.buttons["historyButton"]
+        XCTAssertTrue(historyButton.waitForExistence(timeout: 8))
+        XCTAssertTrue(
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "isHittable == true"),
+                object: historyButton
+            )], timeout: 8) == .completed,
+            "History control is tappable after the completion overlay closes"
+        )
+        var navigationAttempts = 0
+        let historyMarker = app.buttons["Clear"]
+        while !historyMarker.exists && navigationAttempts < 3 {
+            app.buttons["historyButton"].press(forDuration: 0.1)
+            navigationAttempts += 1
+            _ = historyMarker.waitForExistence(timeout: 3)
+        }
+        XCTAssertTrue(historyMarker.exists, "History opens")
+        let completedCount = app.staticTexts
+            .matching(NSPredicate(format: "label == %@ OR label == %@", "5 / 5", "5  5"))
+            .firstMatch
+        XCTAssertTrue(completedCount.exists, "Completed round is recorded")
+        XCTAssertTrue(app.staticTexts["Counting"].exists)
+        attach(app, "05-History")
 
         // Swipe to delete the entry.
         app.cells.element(boundBy: 0).swipeLeft()
@@ -237,6 +266,7 @@ final class FeatureAuditUITests: XCTestCase {
             _ = nextStyleTitle.waitForExistence(timeout: 3)
         }
         XCTAssertTrue(nextStyleTitle.exists, "Picker advances to the next style")
+        attach(app, "04-Mala-style")
         XCTAssertTrue(
             XCTWaiter().wait(for: [XCTNSPredicateExpectation(
                 predicate: NSPredicate(format: "label == %@", "Apply this mala"), object: applyButton)], timeout: 3) == .completed,

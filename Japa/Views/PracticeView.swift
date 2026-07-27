@@ -4,7 +4,7 @@ import SwiftUI
 /// round is always live — the first tap after opening the app counts a bead.
 ///
 /// There is no separate home screen or Begin step. The entire screen advances
-/// (any tap anywhere counts), a swipe-down or the Undo control steps back one
+/// (a tap on the practice surface counts), a swipe-down or the Undo control steps back one
 /// bead, and completion overlays this same surface in place. Mantra, History,
 /// and Settings hide behind quiet chrome at the top.
 ///
@@ -39,10 +39,13 @@ struct PracticeView: View {
                 .allowsHitTesting(false)
             }
 
-            // Whole-screen advance layer.
+            // Practice-surface advance layer.
             Color.clear
                 .contentShape(Rectangle())
-                .ignoresSafeArea()
+                // Keep the counting gesture out of the chrome bands so the
+                // compact navigation and Undo controls always win hit-testing.
+                .padding(.top, 100)
+                .padding(.bottom, 110)
                 .onTapGesture { advance() }
                 .gesture(
                     DragGesture(minimumDistance: 28)

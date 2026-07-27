@@ -1,8 +1,8 @@
 ---
 id: DOC-JIRA-SYNC-PENDING
 canonicalFor: jira-sync-record
-status: active
-lastVerified: 2026-07-17
+status: historical
+lastVerified: 2026-07-27
 readWhen:
   - checking which Jira issue tracks a given launch gate
 related:
@@ -10,9 +10,13 @@ related:
 supersedes: []
 ---
 
-# Jira Sync — Consolidated into JAPA
+# Historical Jira Sync — JAPA/JALA
 
-> **CANONICAL TRACKER: project `JAPA`** (id 10145, created 2026-06-30 by a prior Codex audit session), cloud `priyanshchordia-1779372280524.atlassian.net`.
+> **Superseded 2026-07-25:** current canonical execution tracking is Jira project
+> **`MALA`**. Everything below is retained only to explain the older JAPA/JALA
+> migration and must not be used to assign or track current work.
+
+> **Historical tracker:** project `JAPA` (id 10145, created 2026-06-30 by a prior Codex audit session), cloud `priyanshchordia-1779372280524.atlassian.net`.
 >
 > The `JALA` project documented below (id 10248) was created on 2026-07-17 without knowledge of the pre-existing `JAPA` project and duplicated its launch gates. On 2026-07-17 the user chose **JAPA as the single canonical tracker**; all JALA issues were retired as **Deferred / Replaced By** with pointers to their JAPA counterparts:
 >
@@ -29,9 +33,27 @@ supersedes: []
 
 The historical JALA sync record below is retained for traceability only — do not work launch gates from JALA.
 
-**Date Recorded:** 2026-07-16 (JALA synced 2026-07-17; consolidated into JAPA 2026-07-17)  
-**Related Prompt:** App Factory existing registration + onboarding; Codex-handoff reconciliation  
+**Date Recorded:** 2026-07-16 (JALA synced 2026-07-17; consolidated into JAPA 2026-07-17; live reconcile 2026-07-20)
+**Related Prompt:** App Factory existing registration + onboarding; Codex-handoff reconciliation; sync jira (2026-07-20)
 **Notion sync:** completed (Projects row + Tasks JAP-010..015)
+**Jira sync (2026-07-20):** live — statuses already matched docs; refreshed open launch gates (see below)
+
+---
+
+## Live update history — 2026-07-20
+
+Atlassian MCP reauthenticated. Canonical project `JAPA` read/write confirmed. No new issues created (board already complete). Updates pushed:
+
+| Key | Action |
+|---|---|
+| [JAPA-1](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-1) | Progress comment with full board snapshot + remaining gates |
+| [JAPA-6](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-6) | Priority → **Highest** (content sign-off) |
+| [JAPA-8](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-8) | Description refreshed (Dynamic Type done; VoiceOver human validation remains); Priority → **High** |
+| [JAPA-9](https://priyanshchordia-1779372280524.atlassian.net/browse/JAPA-9) | Description refreshed (DEC-005 TestFlight pipeline committed; secrets + first upload remain); Priority → **High** |
+
+Confirmed already aligned (no status change needed): JAPA-2/3 In Review; JAPA-4 In Progress; JAPA-5/7/10/11/12 Done.
+
+**Remaining open gates:** JAPA-6, JAPA-8, JAPA-9.
 
 ---
 

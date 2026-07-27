@@ -49,6 +49,7 @@ Read in order:
 | Assumptions | `ASSUMPTIONS.md` | Unconfirmed facts |
 | Testing | `TEST_PLAN.md` | Commands, environments, and required scenarios |
 | Release readiness | `RELEASE_CHECKLIST.md` | Release gates |
+| App Store metadata and public-page copy | `RELEASE_METADATA.md` | Draft product-page, privacy, support, and screenshot content |
 | Deployment / release process | `DEPLOYMENT.md` | How builds reach TestFlight/App Store (Fastlane + CI) |
 | Reusable code | `REUSABLE_COMPONENTS.md` | Packages, local candidates, upstream work |
 | Handoff | `HANDOFF.md` | Next-agent context |
@@ -120,7 +121,7 @@ Read:
 - **Resolved 2026-07-17: release-checklist drift.** `RELEASE_CHECKLIST.md` was reconciled against `../LAUNCH_READINESS.md` §9 and the live build/test evidence.
 - **Resolved 2026-07-17: signing blocker missing from launch spec.** `../LAUNCH_READINESS.md` now tracks signing/TestFlight as O5, matching `BUGS.md` B-SIGN and `RISKS.md` R4.
 - **Resolved 2026-07-17: `BUGS.md` B-A11Y understated the accessibility gap.** Source verification showed VoiceOver semantics are coded, but Dynamic Type is **not** implemented; `BUGS.md` and `../LAUNCH_READINESS.md` now state that accurately.
-- **Resolved 2026-07-17/18: canonical Jira project is `JAPA`.** The `JALA-*` keys referenced in earlier notes were a duplicate project that has been **retired** (JALA-1..5 = Deferred/Replaced-By); do not use them. Canonical tracking lives in project `JAPA`; the mapping is in `JIRA_SYNC_PENDING.md`. The `JAPA` board is a Scrum board with no active sprint, so all issues appear under Backlog by design.
+- **Superseded tracker history:** JAPA and JALA were earlier trackers. Current canonical execution tracking is project **`MALA`**; `JIRA_SYNC_PENDING.md` is retained only as historical migration context.
 - **Mostly resolved 2026-07-17: two bug-ID schemes.** `BUGS.md` and `../LAUNCH_READINESS.md` now both include content sign-off, signing/TestFlight, accessibility/Dynamic Type, haptics, and CI/documentation status. Keep both lists aligned when adding or closing launch gates.
 - **`PROMPT_LOG.md`** contains exactly one entry (the 2026-07-16 App Factory onboarding session) and does not capture the sessions that built the v1 app itself. Treat it as a factory-governance activity log, not a full project history.
 - **`STATUS.md` "External trackers"** references Notion tasks "JAP-004 Done; JAP-005 Ready" with no explanation in any read document of what those tasks are (unlike JAP-010–015, which `JIRA_SYNC_PENDING.md` explains). Minor traceability gap.

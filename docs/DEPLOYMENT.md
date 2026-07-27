@@ -2,7 +2,7 @@
 id: DOC-DEPLOYMENT
 canonicalFor: release-deployment-process
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-07-27
 readWhen:
   - shipping a build to TestFlight or the App Store
   - changing signing, CI, or release automation
@@ -17,7 +17,7 @@ supersedes: []
 
 ## Purpose
 
-How a Japa build gets from the repository to TestFlight (and, later, the App
+How a Mala build gets from the repository to TestFlight (and, later, the App
 Store). This is the canonical owner of the **release/deployment process**;
 `RELEASE_CHECKLIST.md` owns the release *gates*, and `STATUS.md` owns current
 status.
@@ -26,15 +26,15 @@ status.
 
 - **Fact:** authoritative for the automated deployment pipeline (Fastlane +
   GitHub Actions) and the signing approach used to produce distribution builds.
-- Does **not** own product-launch gates (content sign-off, VoiceOver, App Store
-  metadata) — those live in `RELEASE_CHECKLIST.md` and Jira (JAPA-6/8/9).
+- Does **not** own product-launch gates (public URLs, App Store metadata/assets,
+  device QA) — those live in `RELEASE_CHECKLIST.md` and Jira MALA.
 
 ## Current summary
 
 | Item | Status |
 |---|---|
-| TestFlight automation (Fastlane `beta` lane + `release-testflight.yml`) | `implemented` |
-| End-to-end upload verified against App Store Connect | `unverified` — requires the four secrets below and one real run |
+| TestFlight automation (Fastlane `beta` lane + `release-testflight.yml`) | `implemented`, signing path requires correction/verification |
+| End-to-end upload verified against App Store Connect | `unverified` — requires signing setup, the four secrets below, and one real run |
 | App Store public submission automation | `planned` — not built; blocked on human gates |
 
 **Decision (DEC-005):** authenticate with an App Store Connect API key and inject
@@ -65,7 +65,7 @@ Files:
 
 - `fastlane/Fastfile` — the `beta` lane (archive + upload).
 - `fastlane/Appfile` — bundle identifier only; no Apple ID stored.
-- `Gemfile` — pins `fastlane` for reproducible CI installs.
+- `Gemfile` — declares `fastlane`; add and commit `Gemfile.lock` before calling CI installs reproducible.
 - `.github/workflows/release-testflight.yml` — tag/dispatch-triggered runner.
 
 ## Required secrets
@@ -78,7 +78,7 @@ Until all four exist, the workflow runs but fails fast.
 | `ASC_KEY_ID` | App Store Connect API key ID |
 | `ASC_ISSUER_ID` | App Store Connect API issuer ID |
 | `ASC_KEY_CONTENT` | base64 of `AuthKey_XXXX.p8` — `base64 -i AuthKey_XXXX.p8 \| pbcopy` |
-| `DEVELOPMENT_TEAM` | Apple Developer team ID (Japa: `796XH483R4`) |
+| `DEVELOPMENT_TEAM` | Apple Developer team ID (`796XH483R4`) |
 
 ## One-time human setup (cannot be automated)
 
@@ -106,18 +106,21 @@ mutating committed files.
 - **Apple App Review.** The upload is automatic; public release still waits on
   Apple's human review.
 - **App Store metadata / screenshots / privacy nutrition label.** Authored once
-  in App Store Connect (or later via a `fastlane deliver` step). Tracked as
-  JAPA-9.
-- **Product launch gates.** Seed-mantra content sign-off (JAPA-6) and VoiceOver
-  validation (JAPA-8) gate the public release regardless of the pipeline.
+  in App Store Connect (or later via a `fastlane deliver` step). Tracked in MALA.
+- **Product launch gates.** Public URLs, final assets, and release-candidate
+  device QA gate the public release regardless of the pipeline.
 
 ## Verification status
 
-- **Fact:** pipeline files are committed and Ruby/YAML syntax is validated.
+- **Fact:** pipeline files are present and Ruby/YAML syntax was validated.
 - **Fact:** the end-to-end TestFlight upload has **not** been run — no evidence
   exists yet. When the first real run succeeds, record it under
   `quality/evidence/` and flip the "End-to-end upload verified" row above to
   `verified`.
+- **Known gap:** the current fresh-runner workflow does not install a signing
+  certificate/private key or pass App Store Connect authentication flags to
+  `xcodebuild`; `-allowProvisioningUpdates` and a team ID alone are not accepted
+  as verified signing setup.
 
 ## Potential improvements — Not Approved
 

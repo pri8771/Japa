@@ -3,7 +3,9 @@
 **Date Recorded:** 2026-06-30
 **Last Verified:** 2026-07-17
 
-The bundled seed mantra set is **spiritual content** and must be human-reviewed
+> Superseded for Mala v1 on 2026-07-26: bundled spiritual seed content was removed from the release scope. This record is retained for traceability and must be reactivated if any bundled spiritual content is proposed.
+
+The former bundled seed mantra set was **spiritual content** and required human review.
 for accuracy and respectfulness before App Store submission. This file is the
 review record.
 

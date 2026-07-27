@@ -87,6 +87,7 @@ private struct HistoryRow: View {
                     .font(Theme.ui(15, weight: .medium))
                     .foregroundStyle(session.isComplete ? Theme.accentBright : Theme.textSecondary)
                     .monospacedDigit()
+                    .accessibilityIdentifier("historyCount-\(session.completedCount)-\(session.target)")
                 Text(session.isComplete ? durationText : "partial · \(durationText)")
                     .font(Theme.ui(11))
                     .foregroundStyle(Theme.textMuted)

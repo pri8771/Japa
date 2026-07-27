@@ -16,7 +16,7 @@ struct IntroView: View {
                     .accessibilityHidden(true)
 
                 VStack(spacing: 14) {
-                    Text("Welcome to Japa")
+                    Text("Welcome to Mala")
                         .font(Theme.serif(26))
                         .foregroundStyle(Theme.textPrimary)
                     Text("Tap anywhere to advance a bead. Feel each one — you can keep your eyes closed. A distinct buzz tells you the round is complete.")

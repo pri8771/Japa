@@ -66,7 +66,7 @@ final class PersistenceTests: XCTestCase {
 
     func testActiveSessionSaveFlushLoadReconstructsExactBead() {
         let store = ActiveSessionStore(persistence: Persistence(directory: tempDirectory()))
-        let state = ActiveSessionState(target: 108, count: 57, mantraTitle: "Om Namah Shivaya", startedAt: Date(), updatedAt: Date())
+        let state = ActiveSessionState(target: 108, count: 57, mantraTitle: "Prior label", startedAt: Date(), updatedAt: Date())
         store.save(state)
         store.flush()
 

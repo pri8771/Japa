@@ -13,13 +13,13 @@ related:
 supersedes: []
 ---
 
-# Japa — Launch Readiness (v1)
+# Mala — Launch Readiness (v1)
 
 > **Canonical scope:** this document owns v1 product scope, MVP features, user flows, and acceptance criteria. Current status, test counts, and live release-gate state are owned by [`docs/STATUS.md`](docs/STATUS.md), [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), and [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) — this document links to them rather than restating them.
 
-> Japa is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
+> Mala is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
 >
-> **Implementation maturity: v1 BUILT.** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; mantra selection (reviewed seed set + user free-text); a quiet, non-gamified history; settings; Dynamic Type support; CI and TestFlight deployment automation; a 21-style Change Mala visual picker with Classic as the default; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release simulator for iOS 17+ and has been validated on a physical device. **Current test counts, verification dates, and production-readiness are owned by [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md); this document does not restate them.** What remains before public launch: human content sign-off, VoiceOver/accessibility user validation, code signing, and App Store metadata/TestFlight (§9 is the scope-level view; [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) tracks live gate status). The original product definition is in the `pri8771/conversation` thread (`Japa.md`); factory registration is recorded in `docs/DECISIONS.md` DEC-004.
+> **Implementation maturity: v1 BUILT.** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; neutral counting plus user-created private labels; a quiet, non-gamified history; settings; Dynamic Type support; CI and TestFlight deployment automation; a 21-style Change Mala visual picker with Classic as the default; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release simulator for iOS 17+ and has been validated on a physical device. **Current test counts, verification dates, and production-readiness are owned by [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md); this document does not restate them.** What remains before public launch: public privacy/support pages, App Store Connect setup, final assets, signing/TestFlight, and device QA (§9 is the scope-level view; [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) tracks live gate status). The original product definition was developed under the working name Japa; factory registration is recorded in `docs/DECISIONS.md` DEC-004.
 
 ---
 
@@ -37,7 +37,7 @@ A quiet digital mala you can use with your eyes closed: advance one bead at a ti
 
 ### Positioning / category & one-sentence pitch
 - **Category:** Spiritual / meditation utility (a focused single-purpose practice tool, *not* a meditation-content platform or habit tracker).
-- **Pitch:** "Japa is a digital mala for daily mantra practice — eyes-free, interruption-safe, and respectfully quiet, with a distinct haptic at the 108th bead so you always know your round is done."
+- **Pitch:** "Mala is a digital mala for daily repetition practice — eyes-free, interruption-safe, and respectfully quiet, with a distinct haptic at the final bead so you always know your round is done."
 
 ### Platform & tech baseline (as built)
 - **Platform:** iOS, native. **Target iOS 17+** (locked). iPhone, portrait. Generated from `project.yml` via XcodeGen.
@@ -49,7 +49,7 @@ A quiet digital mala you can use with your eyes closed: advance one bead at a ti
 - **No backend, no network, no accounts.** Local-first by construction (audited; see F7).
 
 ### Business model (only what the repo supports/plans)
-- **Free core practice.** The repetition loop, the seed mantra set, free-text mantras, and history are free.
+- **Free core practice.** The repetition loop, neutral counting mode, user free-text labels, and history are free.
 - Future, *not in v1 scope*: optional audio/content packs, a one-time "supporter" unlock, or bundling into a larger spiritual product. v1 ships with **no IAP, no StoreKit configuration** (verified — no `.storekit`, no StoreKit import).
 
 ### North-star / success signals (local-only / beta-observable; privacy-respecting)
@@ -90,13 +90,13 @@ The pure, UI-independent core in [`Japa/Engine/JapaEngine.swift`](Japa/Engine/Ja
 - ✅ **Given** the tone is muted in settings, **then** only the completion haptic fires.
 - ⏳ **Pending (manual, on device):** A/B confirmation that per-bead vs. completion is distinguishable eyes-free. **Hard gate — code complete; final sign-off is on-device.**
 
-### F4. Mantra selection: tiny reviewed seed set **plus** user free-text — **Built (content sign-off pending)**
-[`Japa/Content/SeedMantras.swift`](Japa/Content/SeedMantras.swift) + [`MantraSelectView`](Japa/Views/MantraSelectView.swift).
+### F4. Mantra selection: neutral counting mode **plus** user free-text — **Built**
+[`Japa/Content/SeedMantras.swift`](Japa/Content/SeedMantras.swift) + [`MantraSelectView`](Japa/Views/MantraSelectView.swift). Mala v1 ships only a neutral counting default; bundled spiritual seed content was removed on 2026-07-26.
 - ✅ **Given** the seed set, **then** a small list of mantras (title, script, neutral note) is shown.
 - ✅ **Given** a custom mantra, **then** the user types free text (title + optional script), it's usable for a session and persisted locally for reuse; deletable.
 - ✅ **Given** any mantra, **then** counting logic is identical (mantra text never affects the engine).
 - ✅ **Given** no desire for a label, **then** a neutral "Counting" entry lets practice proceed.
-- ⏳ **Pending:** human content sign-off of the seed text (`docs/CONTENT_REVIEW.md`, B6). Verified: custom mantra save/load + selection persistence (`PracticeFlowTests`).
+- ✅ **Content scope verified:** v1 includes only neutral Counting plus private custom labels; the former seed-content review is retained as historical context.
 
 ### F5. Session completion + simple history — **Built**
 [`PracticeSession`](Japa/Models/PracticeSession.swift) + [`HistoryView`](Japa/Views/HistoryView.swift).
@@ -177,12 +177,12 @@ Unchanged from the locked product decision, and honored by the build:
 | F1 | Repetition engine | **Built ✓** | Unit tests green: advance, completion once at N only, interruption-resume, target-config (boundary/invalid), undo/decrement. **Hard gate — passed.** |
 | F2 | Eyes-free practice screen | **Built** (device feel ⏳) | Whole-screen advance, per-bead haptic, silent-mode haptics, one-step undo, eyes-closed operable; UI-tested. On-device latency/feel sign-off pending. |
 | F3 | Distinct completion signal | **Built** (device A/B ⏳) | Distinct Core Haptics pattern, fires once at target, graceful fallback, respects tone-off. **Hard gate — code complete; on-device A/B pending.** |
-| F4 | Seed set + free-text mantras | **Built** (content ⏳) | Seed list shown; custom free-text usable + persisted; mantra never affects counting. Human content sign-off pending. |
+| F4 | Neutral counting + private labels | **Built** | Neutral Counting shown; custom free-text usable + persisted; label text never affects counting. |
 | F5 | Session completion + history | **Built ✓** | Sessions saved; calm reverse-chron list; partials honest; delete/clear; **no streak UI** (asserted). |
 | F6 | Preferences | **Built ✓** | Target/tone/intensity persist and apply without restart. |
 | F7 | Local-first persistence & privacy | **Built ✓** | No network/analytics; sandbox-only JSON; bundled `PrivacyInfo.xcprivacy`. **Hard gate — passed** (label entered at submission). |
 
-**Overall launch gate:** F1/F7 hard gates passed; F3 code complete (final sign-off on device); F2/F4/F5/F6 meet criteria; §9 remaining items are content sign-off, device haptic validation, accessibility, and App Store prep.
+**Overall launch gate:** F1/F7 hard gates passed; F3 was validated on device; F2/F4/F5/F6 meet criteria. Remaining items are public URLs, final App Store assets/metadata, signing/TestFlight, and release-candidate device QA. VoiceOver user testing is deferred post-v1 with acknowledged risk.
 
 ---
 
@@ -241,7 +241,7 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 
 ### Current estimated readiness
 
-The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, and device-validated**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, content selection with free-text, a non-gamified history, settings, Dynamic Type support, CI + TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is genuinely off-keyboard or release-gate work: human content sign-off, an accessibility pass with real assistive-tech users, code signing, and App Store submission assets. Those are the gating items between "works and is correct" and "publicly shipped."
+The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, and device-validated**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, neutral/custom label selection, a non-gamified history, settings, Dynamic Type support, CI + TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is public-page publication, final App Store assets and metadata, verified code signing/TestFlight, and release-candidate device QA.
 
 ### Remaining work to reach launch (ordered)
 1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
@@ -292,7 +292,7 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 - [x] **Haptics & silent-switch behavior documented in-app** (Settings copy).
 - [x] **Local data controls** — delete an entry / clear all.
 - [x] **Accessibility partially implemented** — VoiceOver labels/values/advance action, reduced-motion handling, and Dynamic Type are coded; Dynamic Type smoke-tested at accessibility text size.
-- [ ] **Content sign-off (O1):** seed mantra text reviewed by a qualified human; record in `docs/CONTENT_REVIEW.md`.
+- [x] **Content scope (O1):** bundled spiritual seed content removed from Mala v1 on 2026-07-26; historical review record retained in `docs/CONTENT_REVIEW.md`.
 - [x] **On-device haptic / completion validation (O2)** — validated on a physical iPhone 16 Pro Max (2026-07-18): tick + distinct completion + fallback path; closes JAPA-7. (One hardware class; additional classes optional.)
 - [ ] **Accessibility validated with VoiceOver users and Dynamic Type users on device (O4).**
 - [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.

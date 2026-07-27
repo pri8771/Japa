@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/pri8771/iOS_app_factory_rules/main/schemas/project-context.schema.json",
-  "projectName": "Japa",
+  "projectName": "Mala",
   "projectType": "existing",
   "lifecycleStatus": "verified",
   "platforms": [

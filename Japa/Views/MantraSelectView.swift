@@ -14,7 +14,7 @@ struct MantraSelectView: View {
                     }
                 }
             } header: {
-                header("Reviewed")
+                header("Practice without a label")
             }
 
             if !app.customMantras.isEmpty {

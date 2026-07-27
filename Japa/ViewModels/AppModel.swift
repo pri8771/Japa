@@ -23,7 +23,7 @@ final class AppModel {
     private let haptics: HapticFeedback
     private let tone: TonePlaying
 
-    /// Seed set followed by the user's own mantras.
+    /// Neutral default followed by the user's own mantras.
     var allMantras: [Mantra] { SeedMantras.all + customMantras }
 
     init(
@@ -45,7 +45,6 @@ final class AppModel {
         let pool = SeedMantras.all + custom
         self.selectedMantra =
             pool.first { $0.id == prefs.lastMantraID }
-            ?? pool.first { $0.title == "Om Namah Shivaya" }
             ?? Mantra.none
 
         refreshResumable()

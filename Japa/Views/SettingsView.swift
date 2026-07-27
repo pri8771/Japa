@@ -52,11 +52,13 @@ struct SettingsView: View {
             } header: {
                 sectionHeader("Data")
             } footer: {
-                Text("Everything stays on this device. Japa has no account, makes no network requests, and collects nothing.")
+                Text("Everything stays on this device. Mala has no account, makes no network requests, and collects nothing.")
             }
 
             Section {
                 LabeledContent("Version", value: appVersion)
+                Link("Privacy Policy", destination: privacyPolicyURL)
+                Link("Support", destination: supportURL)
             } header: {
                 sectionHeader("About")
             }
@@ -98,5 +100,13 @@ struct SettingsView: View {
     private var appVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         return version
+    }
+
+    private var privacyPolicyURL: URL {
+        URL(string: "https://priyanshchordia.com/mala/privacy")!
+    }
+
+    private var supportURL: URL {
+        URL(string: "https://priyanshchordia.com/mala/support")!
     }
 }

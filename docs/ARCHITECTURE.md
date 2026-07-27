@@ -22,7 +22,7 @@ supersedes: []
 
 ## Current architecture
 
-Japa is a local-first SwiftUI iOS app (iOS 17+) generated with XcodeGen from `project.yml`. There is no backend, networking, accounts, analytics, or third-party packages.
+Mala is a local-first SwiftUI iOS app (iOS 17+) generated with XcodeGen from `project.yml`. There is no backend, networking, accounts, analytics, or third-party packages. Internal target, scheme, bundle, and persistence identifiers retain the original `Japa` name for compatibility.
 
 ```text
 JapaApp
@@ -48,7 +48,7 @@ JapaApp
 | `Persistence/` | Codable JSON sandbox store + async active-session flush |
 | `Haptics/` | Core Haptics player with UIKit fallback |
 | `Audio/` | Single completion tone |
-| `Content/` | Bundled seed mantras |
+| `Content/` | Neutral built-in Counting option |
 | `ViewModels/` | `AppModel`, `PracticeController` |
 | `Views/` | SwiftUI screens, including the 21-style Change Mala picker |
 | `Design/` | Theme and mala-style renderers |
