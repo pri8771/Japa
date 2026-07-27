@@ -40,7 +40,7 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- **Current automated suite: 62 tests (52 unit/flow + 10 UI), all passing** — canonical count; see `TEST_PLAN.md`
+- **Current automated suite: 64 tests (53 unit/flow + 11 UI), all passing** — verified 2026-07-27 post branch-merge via `xcodebuild test`; canonical count, see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 - Public product identity is **Mala**. The internal Xcode target/scheme, bundle ID, engine symbols, and persistence path retain `Japa` for compatibility.
@@ -130,8 +130,10 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 - Added a real `Gemfile.lock` (via `bundle install`) so `release-testflight.yml`'s
   `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before
   reaching the (still-unconfigured) signing step.
-- Post-merge canonical test count and full-suite/build verification are
-  recorded once re-run; see the top of this document and `TEST_PLAN.md`.
+- Post-merge full-suite verification: `xcodebuild test` on iPhone 17 Pro
+  (iOS 26.5), `CODE_SIGNING_ALLOWED=NO` — **64/64 passing** (`JapaTests.xctest`
+  53/53, `JapaUITests.xctest` 11/11), `** TEST SUCCEEDED **`, 0 failures.
+  `xcodebuild build -configuration Release` also succeeded. See `TEST_PLAN.md`.
 
 ## Next action
 

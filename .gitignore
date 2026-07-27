@@ -23,5 +23,9 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output/
 
+# Bundler (Gemfile.lock IS committed; local gem installs are not)
+vendor/bundle/
+.bundle/
+
 # The .xcodeproj is generated from project.yml by XcodeGen.
 # It is committed for one-step opening; regenerate with `xcodegen generate`.

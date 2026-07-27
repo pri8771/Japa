@@ -22,7 +22,7 @@ Mala is a local-first iOS digital mala for daily repetition practice. Differenti
 - Registered with App Factory as **existing**; product lifecycle state is **`verified`** (registration/onboarding complete)
 - **Enrolled in Studio OS** as **`PROD-JAPA`** (`pri8771/studio-ios`); product-side pointer in `.factory/studio-link.json`, authoritative record proposed at `products/japa/` (PR)
 - v1 implementation present and **on-device validated** on iPhone 16 Pro Max (2026-07-18)
-- Automated suite: full unit + UI count is being re-verified after merging `agent/fix-app-icon` with `origin/main` on 2026-07-27 (branches had diverged to 62 and 64 tests respectively); see `docs/STATUS.md`/`TEST_PLAN.md` for the post-merge canonical count
+- Automated suite: **64 tests (53 unit/flow + 11 UI), all passing** — re-verified 2026-07-27 after merging `agent/fix-app-icon` with `origin/main` (`xcodebuild test`, `** TEST SUCCEEDED **`, 0 failures); see `docs/STATUS.md`/`TEST_PLAN.md`
 - **Automated-UI-testing foundation** in `quality/ui/` (screens/journeys/safe-actions + generated Maestro flows); deterministic `UI_TEST_MODE`/`UI_FIXTURE` contract in `Japa/JapaApp.swift`
 - Platforms: **iOS / iPhone only** (DEC-003)
 - Standard lock: `pri8771/iOS_app_factory_rules` @ `0.4.0` (upgraded from `0.2.0` on 2026-07-17 — DEC-004)
