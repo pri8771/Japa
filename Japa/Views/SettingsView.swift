@@ -103,10 +103,10 @@ struct SettingsView: View {
     }
 
     private var privacyPolicyURL: URL {
-        URL(string: "https://priyanshchordia.com/mala/privacy")!
+        URL(string: "https://priyanshchordia.com/apps/mala/privacy/")!
     }
 
     private var supportURL: URL {
-        URL(string: "https://priyanshchordia.com/mala/support")!
+        URL(string: "https://priyanshchordia.com/apps/mala/support/")!
     }
 }
