@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-07-28
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -63,3 +63,13 @@ supersedes: []
 - **Consequences:** `ios-ci.yml` simulator build/test is unaffected. Public release still waits on Apple App Review and the human launch gates (JAPA-6/8/9). The pipeline is `implemented` but the end-to-end TestFlight upload is `unverified` until the four secrets (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`, `DEVELOPMENT_TEAM`) are configured and one real run is recorded under `quality/evidence/`.
 - **Related Prompt:** Automatic TestFlight deployment + doc reconciliation to App Factory standard
 - **Related Files:** `fastlane/Fastfile`, `fastlane/Appfile`, `Gemfile`, `.github/workflows/release-testflight.yml`, `docs/DEPLOYMENT.md`, `docs/RELEASE_CHECKLIST.md`
+
+## DEC-006 — Use support@priyanshchordia.com as the Mala public support contact
+
+- **Status:** accepted
+- **Date Recorded:** 2026-07-28
+- **Context:** The App Store support URL and privacy policy require a real public contact path. The canonical page drafts still contained an unpublished-email placeholder.
+- **Options Considered:** A personal mailbox; a product-specific mailbox; `support@priyanshchordia.com`.
+- **Decision:** Publish `support@priyanshchordia.com` on both Mala public pages and use it for App Store support and privacy inquiries.
+- **Consequences:** The mailbox or forwarding rule must be configured and tested before the URLs are marked live. Both pages should use a `mailto:support@priyanshchordia.com` link. If the address changes, update the public pages, App Store Connect, and `docs/RELEASE_METADATA.md` together.
+- **Related Files:** `docs/RELEASE_METADATA.md`, `docs/RELEASE_CHECKLIST.md`

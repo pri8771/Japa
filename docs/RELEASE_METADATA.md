@@ -120,7 +120,7 @@ If Mala's data practices change, this policy and the App Store privacy informati
 
 ### Contact
 
-For privacy questions, contact **[INSERT PUBLISHED SUPPORT EMAIL]**.
+For privacy questions, contact **support@priyanshchordia.com**.
 
 ## Support-page draft
 
@@ -137,7 +137,7 @@ Mala is a local-first digital mala for quiet repetition practice.
 
 ## Contact
 
-For help, feedback, or a privacy question, email **[INSERT PUBLISHED SUPPORT EMAIL]**.
+For help, feedback, or a privacy question, email **support@priyanshchordia.com**.
 
 When you contact support, do not include sensitive personal information or your private practice labels unless it is necessary to explain the issue.
 
