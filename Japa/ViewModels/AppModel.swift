@@ -172,7 +172,14 @@ final class AppModel {
         // restores the exact persisted bead.
         guard let state = activeStore.load(), state.count > 0, !state.makeEngine().isComplete else { return nil }
         let mantra = allMantras.first { $0.title == state.mantraTitle } ?? Mantra(title: state.mantraTitle)
-        return makeController(mantra: mantra, target: state.target, restoredCount: state.count, startedAt: state.startedAt, restoredUpdatedAt: state.updatedAt)
+        return makeController(
+            mantra: mantra,
+            target: state.target,
+            restoredCount: state.count,
+            startedAt: state.startedAt,
+            restoredUpdatedAt: state.updatedAt,
+            restoredActiveDuration: state.elapsedActiveDuration
+        )
     }
 
     func discardResumable() {
@@ -180,13 +187,21 @@ final class AppModel {
         resumableState = nil
     }
 
-    private func makeController(mantra: Mantra, target: Int, restoredCount: Int?, startedAt: Date, restoredUpdatedAt: Date?) -> PracticeController {
+    private func makeController(
+        mantra: Mantra,
+        target: Int,
+        restoredCount: Int?,
+        startedAt: Date,
+        restoredUpdatedAt: Date?,
+        restoredActiveDuration: TimeInterval = 0
+    ) -> PracticeController {
         PracticeController(
             mantra: mantra,
             target: target,
             restoredCount: restoredCount,
             startedAt: startedAt,
             restoredUpdatedAt: restoredUpdatedAt,
+            restoredActiveDuration: restoredActiveDuration,
             preferences: { [weak self] in self?.preferences ?? Preferences() },
             haptics: haptics,
             tone: tone,

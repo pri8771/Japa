@@ -20,14 +20,17 @@ final class PracticeController {
     private(set) var phase: Phase = .practicing
 
     let mantra: Mantra
-    let startedAt: Date
+    private(set) var startedAt: Date
     /// The last accepted interaction (advance/undo/new round). Restored from
     /// the persisted snapshot on resume so a round left untouched for a long
     /// time can be recognized as stale across relaunches. Not refreshed by
     /// launches or persistence flushes — only by real interactions (or an
     /// explicit "keep going" answer to the stale prompt via `touch()`).
     private(set) var lastInteractionAt: Date
+    private(set) var accumulatedActiveDuration: TimeInterval
+    private var activeSince: Date?
 
+    private let now: () -> Date
     private let haptics: HapticFeedback
     private let tone: TonePlaying
     private let activeStore: ActiveSessionStore
@@ -41,6 +44,11 @@ final class PracticeController {
     var isComplete: Bool { engine.isComplete }
     /// Whether there is a place worth resuming (used to gate the resume prompt).
     var hasProgress: Bool { engine.count > 0 }
+    /// Foreground practice time only; suspended and terminated intervals are
+    /// deliberately excluded.
+    var elapsedActiveDuration: TimeInterval {
+        accumulatedActiveDuration + activeSegmentDuration(at: now())
+    }
 
     init(
         mantra: Mantra,
@@ -48,6 +56,8 @@ final class PracticeController {
         restoredCount: Int? = nil,
         startedAt: Date = Date(),
         restoredUpdatedAt: Date? = nil,
+        restoredActiveDuration: TimeInterval = 0,
+        now: @escaping () -> Date = Date.init,
         preferences: @escaping () -> Preferences,
         haptics: HapticFeedback,
         tone: TonePlaying,
@@ -56,7 +66,11 @@ final class PracticeController {
     ) {
         self.mantra = mantra
         self.startedAt = startedAt
-        self.lastInteractionAt = restoredUpdatedAt ?? Date()
+        self.now = now
+        let current = now()
+        self.lastInteractionAt = restoredUpdatedAt ?? current
+        self.accumulatedActiveDuration = max(0, restoredActiveDuration)
+        self.activeSince = current
         self.engine = JapaEngine(target: target, count: restoredCount ?? 0)
         self.preferences = preferences
         self.haptics = haptics
@@ -78,11 +92,11 @@ final class PracticeController {
         guard phase == .practicing else { return }
         switch engine.advance() {
         case .advanced:
-            lastInteractionAt = Date()
+            lastInteractionAt = now()
             haptics.tick(intensity: preferences().hapticIntensity)
             persistActive()
         case .completed:
-            lastInteractionAt = Date()
+            lastInteractionAt = now()
             haptics.completion()
             if preferences().completionToneEnabled { tone.play() }
             complete()
@@ -95,7 +109,7 @@ final class PracticeController {
     func undo() {
         guard phase == .practicing else { return }
         if engine.undo() {
-            lastInteractionAt = Date()
+            lastInteractionAt = now()
             haptics.back()
             persistActive()
         }
@@ -103,9 +117,13 @@ final class PracticeController {
 
     /// Start a fresh round at the same target (the explicit "new round" path).
     func startNewRound() {
+        let current = now()
         engine.startNewRound()
         phase = .practicing
-        lastInteractionAt = Date()
+        startedAt = current
+        lastInteractionAt = current
+        accumulatedActiveDuration = 0
+        activeSince = current
         persistActive()
     }
 
@@ -118,13 +136,13 @@ final class PracticeController {
         phase == .practicing
             && engine.count > 0
             && !engine.isComplete
-            && Date().timeIntervalSince(lastInteractionAt) >= threshold
+            && now().timeIntervalSince(lastInteractionAt) >= threshold
     }
 
     /// The practitioner answered "keep going" to the stale prompt — treat that
     /// as an interaction so the prompt doesn't immediately re-fire.
     func touch() {
-        lastInteractionAt = Date()
+        lastInteractionAt = now()
         persistActive()
     }
 
@@ -148,15 +166,28 @@ final class PracticeController {
         }
     }
 
-    /// Resign-active backstop: ensure the latest place is flushed to disk.
-    func persistNow() {
+    /// Pause the foreground stopwatch and synchronously save before suspend.
+    func pauseTiming() {
+        accumulateActiveTime()
         persistActive()
         activeStore.flush()
+    }
+
+    /// Begin a new foreground timing segment after the app becomes active.
+    func resumeTiming() {
+        guard phase == .practicing, activeSince == nil else { return }
+        activeSince = now()
+    }
+
+    /// Compatibility entry point used by existing lifecycle tests.
+    func persistNow() {
+        pauseTiming()
     }
 
     // MARK: - Internals
 
     private func complete() {
+        accumulateActiveTime()
         phase = .completed
         activeStore.clear() // round done — nothing in-progress to resume
         onFinish(makeSession(reached: true))
@@ -172,7 +203,8 @@ final class PracticeController {
                 startedAt: startedAt,
                 // Deliberately the last *interaction*, not "now": launches and
                 // flushes must not mask how long the round has sat untouched.
-                updatedAt: lastInteractionAt
+                updatedAt: lastInteractionAt,
+                elapsedActiveDuration: elapsedActiveDuration
             )
         )
     }
@@ -180,11 +212,22 @@ final class PracticeController {
     private func makeSession(reached: Bool) -> PracticeSession {
         PracticeSession(
             startedAt: startedAt,
-            duration: Date().timeIntervalSince(startedAt),
+            duration: elapsedActiveDuration,
             mantraTitle: mantra.title,
             target: engine.target,
             completedCount: engine.count,
             reachedTarget: reached
         )
+    }
+
+    private func activeSegmentDuration(at date: Date) -> TimeInterval {
+        guard let activeSince else { return 0 }
+        return max(0, date.timeIntervalSince(activeSince))
+    }
+
+    private func accumulateActiveTime() {
+        let current = now()
+        accumulatedActiveDuration += activeSegmentDuration(at: current)
+        activeSince = nil
     }
 }

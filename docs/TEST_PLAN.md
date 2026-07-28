@@ -2,7 +2,7 @@
 id: DOC-TEST-PLAN
 canonicalFor: test-plan
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-07-28
 readWhen:
   - running or changing tests
   - preparing a release
@@ -22,13 +22,13 @@ supersedes: []
 | Integration / flow | present | `JapaTests/PracticeFlowTests.swift` |
 | UI smoke | present | `JapaUITests/JapaUITests.swift`, `FeatureAuditUITests.swift` |
 
-## Coverage summary (source inventory 2026-07-16)
+## Coverage summary (source inventory 2026-07-28)
 
-- **52** unit/flow tests
-- **10** UI tests
+- **56** unit/flow tests
+- **11** UI tests
 - Engine: advance, completion-once, undo floor, boundaries, reconstruct from count
-- Persistence: prefs/sessions/active-session round-trip + flush; legacy-snapshot lenient decode (`updatedAt` migration)
-- Practice flow: resume across relaunch, honest partials, no streak fields, stale-round detection/finish/touch
+- Persistence: prefs/sessions/active-session round-trip + flush; legacy-snapshot lenient decode (`updatedAt` and active-duration migration)
+- Practice flow: resume across relaunch, honest partials, foreground-only duration, per-round timing reset, no streak fields, stale-round detection/finish/touch
 - UI: advance/undo/complete, settings/history, in-place resume after terminate, mantra custom, history delete, mala-style apply, accessibility text-size smoke, stale-round Finish prompt end-to-end
 
 ## Not automatable (device-only)
@@ -46,7 +46,7 @@ supersedes: []
 - [x] Re-verified 2026-07-17 (registration-upgrade pass): `xcodegen generate`, `xcodebuild build`, and `xcodebuild test` on iPhone 17 Pro (OS 26.5) — build succeeded, 53/53 tests passed (0 failures), confirming the then-current 46+7 count
 - [x] Re-verified 2026-07-17 (mala-style + Dynamic Type + CI pass): `xcodegen generate`; Release simulator build; full `xcodebuild test` on iPhone 17 Pro (OS 26.5) — 56/56 tests passed (47 unit/flow + 9 UI); compact-phone accessibility text-size smoke passed on iPhone 17e.
 - [x] 2026-07-18: 62 tests (52 unit/flow + 10 UI), all passing after the merged-surface, animation, red-final-bead, and stale-round-Finish work; also on-device validated on a physical iPhone 16 Pro Max. See `STATUS.md` for the on-device evidence link. (Earlier 46+7=53 / 47+9=56 rows above are superseded history.)
-- [x] **Current (2026-07-27, post branch-merge): 64 tests (53 unit/flow + 11 UI), all passing.** Full `xcodebuild test -scheme Japa -destination "id=<iPhone 17 Pro sim>" CODE_SIGNING_ALLOWED=NO` run on iOS 26.5 after merging `agent/fix-app-icon` with `origin/main`: `JapaTests.xctest` 53/53 (JapaEngineTests 23, PersistenceTests 11, PracticeFlowTests 19), `JapaUITests.xctest` 11/11 (FeatureAuditUITests 6, JapaUITests 4, UITestModeContractTests 1). `** TEST SUCCEEDED **`, 0 failures. This is the canonical current count.
+- [x] **Current (2026-07-28): 67 tests (56 unit/flow + 11 UI), all passing.** Full `xcodebuild test -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' CODE_SIGNING_ALLOWED=NO` exited 0 after the history-format and foreground-only session-duration fixes. New deterministic coverage proves an 8-hour inactive gap adds zero time and every new round resets its duration. This is the canonical current count.
 
 ## Quality manifest alignment
 

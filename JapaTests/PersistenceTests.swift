@@ -135,6 +135,7 @@ final class PersistenceTests: XCTestCase {
         let state = try decoder.decode(ActiveSessionState.self, from: Data(json.utf8))
         XCTAssertEqual(state.count, 12)
         XCTAssertEqual(state.updatedAt, state.startedAt, "Legacy snapshots treat the start as the last interaction")
+        XCTAssertEqual(state.elapsedActiveDuration, 0, "Legacy snapshots must not import unknowable wall-clock duration")
     }
 
     func testLatestSnapshotWinsAfterRapidSaves() {

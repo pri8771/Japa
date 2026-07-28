@@ -68,9 +68,10 @@ struct RootView: View {
             if phase == .active {
                 app.refreshResumable()
                 ensureController()
+                practice?.resumeTiming()
                 promptIfStale()
             } else {
-                practice?.persistNow()
+                practice?.pauseTiming()
             }
         }
         // Target/mantra changes apply immediately while no beads are counted;

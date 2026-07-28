@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-27
+lastVerified: 2026-07-28
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -40,13 +40,14 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- **Current automated suite: 64 tests (53 unit/flow + 11 UI), all passing** — verified 2026-07-27 post branch-merge via `xcodebuild test`; canonical count, see `TEST_PLAN.md`
+- **Current automated suite: 67 tests (56 unit/flow + 11 UI), all passing** — verified 2026-07-28 after the history-format and foreground-only session-duration fixes; canonical count, see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 - Public product identity is **Mala**. The internal Xcode target/scheme, bundle ID, engine symbols, and persistence path retain `Japa` for compatibility.
 - Bundled spiritual seed content was removed; v1 ships neutral Counting plus private user-created labels.
 - Five App Store screenshots were captured from the iPhone 17 Pro Max simulator at 1320 × 2868 with no alpha and stored under `AppStoreAssets/Screenshots/en-US/6.9-inch/`.
 - A 6.9-inch UI-test run exposed top-chrome taps being intercepted by the practice gesture; the counting hit area now excludes the control bands and the history flow passes.
+- Physical-device QA exposed inflated history durations (for example, 803m). Root cause was wall-clock timing across background/termination plus a new-round path that retained the prior start time. `B-SESSION-DURATION` now tracks foreground-active time only and resets timing for every round; full simulator regression is green, with refreshed device validation still required.
 - TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
 - Enrolled in Studio OS as `PROD-JAPA` (`pri8771/studio-ios`, 2026-07-19); `.factory/studio-link.json` is the product-side pointer. Automated-UI-testing manifests (`quality/ui/`) and generated Maestro flows were added the same day; Maestro simulator execution is still pending (CLI unavailable at enrollment time).
 - `Gemfile.lock` is committed (regenerated via `bundle install` 2026-07-27) so the TestFlight CD workflow's `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before it can run.

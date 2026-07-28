@@ -44,4 +44,10 @@ struct PracticeSession: Identifiable, Codable, Hashable {
 extension PracticeSession {
     /// Honest completeness label for the history list.
     var isComplete: Bool { reachedTarget }
+
+    /// Stable history duration copy, including both units for short sessions.
+    var durationText: String {
+        let total = max(0, Int(duration))
+        return "\(total / 60)m \(total % 60)s"
+    }
 }
