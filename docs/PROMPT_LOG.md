@@ -54,7 +54,7 @@
 - **Date Finished:** 2026-07-16
 - **Related Files:** `.factory/`, `quality/`, `AGENTS.md`, `docs/*`, `quality/feature-contracts/FEAT-001*.json` …
 - **Related Docs:** `docs/STATUS.md`, `docs/DECISIONS.md`, `docs/JIRA_SYNC_PENDING.md`
-- **Related Feature/Bug/Epic/Story/Task:** JAP-010..015 (Notion); canonical Jira project `JAPA` (JALA retired)
+- **Related Feature/Bug/Epic/Story/Task:** JAP-010..015 (Notion); then-current Jira mirror `JAPA` (JALA retired), superseded by `MALA`; repository authority is now defined by DEC-007
 - **Related Decision:** DEC-001, DEC-002, DEC-003
 - **Related Jira Ticket:** JAPA-1 epic — see `docs/JIRA_SYNC_PENDING.md`
 - **Outcome:** Registered existing; platforms corrected to iOS-only; baseline docs + contracts; Notion updated; Jira later consolidated under JAPA and live-synced 2026-07-20 (P-002).

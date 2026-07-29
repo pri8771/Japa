@@ -68,8 +68,9 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 ## External trackers
 
-- **Notion:** [Mala Release Hub](https://app.notion.com/p/3a8ab1f22765811fb3cbcdbf485af251) with Work Items, Research & Design, Decisions, Lessons & Mistakes, and Release Evidence databases
-- **Jira (canonical): project `MALA`** — MALA-1 is the v1 release epic; implementation, research, design, QA, and human gates are split into independently assignable work items with Execution Agent values
+- **Authority:** repository documents listed in `docs/README.md`; synchronization and conflict rules live in `docs/GOVERNANCE.md`.
+- **Notion mirror:** [Mala Release Hub](https://app.notion.com/p/3a8ab1f22765811fb3cbcdbf485af251) provides convenient Work Items, Research & Design, Decisions, Lessons & Mistakes, and Release Evidence views.
+- **Jira mirror: project `MALA`** — work is split into independently assignable items with Execution Agent, estimate, worklog, dependency, and human-gate fields. Jira mirrors repository state and does not override it.
 
 ## Blockers
 

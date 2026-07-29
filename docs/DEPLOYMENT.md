@@ -27,7 +27,7 @@ status.
 - **Fact:** authoritative for the automated deployment pipeline (Fastlane +
   GitHub Actions) and the signing approach used to produce distribution builds.
 - Does **not** own product-launch gates (public URLs, App Store metadata/assets,
-  device QA) — those live in `RELEASE_CHECKLIST.md` and Jira MALA.
+  device QA) — those live in `RELEASE_CHECKLIST.md`; Jira MALA mirrors them.
 
 ## Current summary
 

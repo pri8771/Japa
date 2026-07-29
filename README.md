@@ -77,6 +77,7 @@ JapaUITests/     core-flow UI tests (advance, undo, completion, navigation, Dyna
 
 ## Documents
 
+- **[`docs/GOVERNANCE.md`](docs/GOVERNANCE.md)** — source-of-truth policy and repository-to-tracker synchronization rules.
 - **[`LAUNCH_READINESS.md`](LAUNCH_READINESS.md)** — authoritative spec: scope, MVP features + acceptance criteria, flows, risk triage, readiness assessment, launch checklist.
 - **[`docs/PROJECT_DOCUMENTATION.md`](docs/PROJECT_DOCUMENTATION.md)** — canonical project documentation (indexed by the App Factory Command Center).
 - **[`docs/CONTENT_REVIEW.md`](docs/CONTENT_REVIEW.md)** — superseded historical seed-content review record.

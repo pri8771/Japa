@@ -2,7 +2,7 @@
 id: DOC-INDEX
 canonicalFor: documentation-navigation
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-07-29
 readWhen:
   - onboarding
   - locating authoritative project information
@@ -24,9 +24,10 @@ Read in order:
 1. `../AGENTS.md`
 2. `../.factory/repository-map.json`
 3. `../.factory/project-context.json`
-4. `STATUS.md`
-5. `ARCHITECTURE.md`
-6. Only the task-relevant documents below
+4. `GOVERNANCE.md`
+5. `STATUS.md`
+6. `ARCHITECTURE.md`
+7. Only the task-relevant documents below
 
 ## Canonical documents
 
@@ -35,6 +36,7 @@ Read in order:
 | Project identity and type | `../.factory/project-context.json` | Machine-readable project classification |
 | Standards and catalog versions | `../.factory/standard-lock.json` | Installed central versions |
 | Repository navigation | `../.factory/repository-map.json` | Reading and location map |
+| Repository authority and external mirrors | `GOVERNANCE.md` | Source precedence, synchronization, conflict resolution, completion |
 | Product overview | `../README.md` | Front-door summary; defers scope detail to LAUNCH_READINESS.md |
 | Launch scope and readiness | `../LAUNCH_READINESS.md` | Self-declared authoritative PRD, MVP acceptance criteria, launch checklist |
 | Detailed cross-functional documentation | `PROJECT_DOCUMENTATION.md` | Product/Design/Frontend/Backend/Business/Marketing/UA/Execution/QA/Legal/Operations template, mirrored to Notion |
@@ -54,7 +56,7 @@ Read in order:
 | Reusable code | `REUSABLE_COMPONENTS.md` | Packages, local candidates, upstream work |
 | Handoff | `HANDOFF.md` | Next-agent context |
 | Prompt/change activity log | `PROMPT_LOG.md` | Working log of App-Factory-governance sessions — **not** a full project history (see gaps) |
-| Pending external tracker sync | `JIRA_SYNC_PENDING.md` | Working queue of intended Jira state — **not** a record of actual Jira state (see gaps) |
+| Historical external tracker migration | `JIRA_SYNC_PENDING.md` | Historical migration record — **not** current project authority or current Jira state |
 
 ## Task-based reading routes
 
@@ -98,7 +100,7 @@ Read:
 3. `RELEASE_CHECKLIST.md`
 4. current bugs, risks, and waivers.
 
-`RELEASE_CHECKLIST.md`'s checkboxes were reconciled against verified evidence and `../LAUNCH_READINESS.md` §9 (2026-07-17, re-dated 2026-07-18); they reflect real status, not an unstarted template.
+`RELEASE_CHECKLIST.md`'s checkboxes must be reconciled against verified repository evidence. Jira and Notion mirror this state but do not define it.
 
 ### Deploy to TestFlight
 
@@ -121,7 +123,7 @@ Read:
 - **Resolved 2026-07-17: release-checklist drift.** `RELEASE_CHECKLIST.md` was reconciled against `../LAUNCH_READINESS.md` §9 and the live build/test evidence.
 - **Resolved 2026-07-17: signing blocker missing from launch spec.** `../LAUNCH_READINESS.md` now tracks signing/TestFlight as O5, matching `BUGS.md` B-SIGN and `RISKS.md` R4.
 - **Resolved 2026-07-17: `BUGS.md` B-A11Y understated the accessibility gap.** Source verification showed VoiceOver semantics are coded, but Dynamic Type is **not** implemented; `BUGS.md` and `../LAUNCH_READINESS.md` now state that accurately.
-- **Superseded tracker history:** `JALA` and then `JAPA` were earlier trackers (`JALA-*` retired as Deferred/Replaced-By in favor of `JAPA`, per the 2026-07-17/18 consolidation). Current canonical execution tracking is project **`MALA`**; `JIRA_SYNC_PENDING.md` is retained only as historical migration context, including the `JAPA` mapping.
+- **Superseded tracker history:** `JALA` and then `JAPA` were earlier trackers. Project **`MALA`** is the current Jira mirror, while repository documents remain authoritative. `JIRA_SYNC_PENDING.md` is retained only as historical migration context.
 - **Mostly resolved 2026-07-17: two bug-ID schemes.** `BUGS.md` and `../LAUNCH_READINESS.md` now both include content sign-off, signing/TestFlight, accessibility/Dynamic Type, haptics, and CI/documentation status. Keep both lists aligned when adding or closing launch gates.
 - **`PROMPT_LOG.md`** contains exactly one entry (the 2026-07-16 App Factory onboarding session) and does not capture the sessions that built the v1 app itself. Treat it as a factory-governance activity log, not a full project history.
 - **`STATUS.md` "External trackers"** references Notion tasks "JAP-004 Done; JAP-005 Ready" with no explanation in any read document of what those tasks are (unlike JAP-010–015, which `JIRA_SYNC_PENDING.md` explains). Minor traceability gap.

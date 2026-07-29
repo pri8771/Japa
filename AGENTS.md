@@ -22,3 +22,16 @@ Search `.factory/library-catalog.json` before implementing cross-cutting infrast
 
 Do not create duplicate documentation authorities or mix current facts with unapproved proposals. Do not claim `done` when platform checks or human review remain. Record actual verification and limitations.
 <!-- APP-FACTORY:END -->
+
+## Project authority
+
+Repository code, evidence, feature contracts, and the canonical documents
+routed by `.factory/repository-map.json` are the source of truth.
+
+Jira, Notion, Studio OS, dashboards, and chat history are mirrors used for
+planning, assignment, time tracking, and convenient views. Synchronize outward
+from verified repository state. When a mirror conflicts with the repository,
+verify the repository evidence and correct the mirror; do not redefine scope or
+completion from the external tool.
+
+Read `docs/GOVERNANCE.md` before creating or updating external tracker state.

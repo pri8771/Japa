@@ -12,9 +12,10 @@ supersedes: []
 
 # Historical Jira Sync — JAPA/JALA
 
-> **Superseded 2026-07-25:** current canonical execution tracking is Jira project
-> **`MALA`**. Everything below is retained only to explain the older JAPA/JALA
-> migration and must not be used to assign or track current work.
+> **Superseded 2026-07-25; authority clarified 2026-07-29:** **`MALA`** is the
+> current Jira mirror. Canonical project state lives in this repository per
+> `docs/GOVERNANCE.md`. Everything below is retained only to explain the older
+> JAPA/JALA migration and must not be used to assign or track current work.
 
 > **Historical tracker:** project `JAPA` (id 10145, created 2026-06-30 by a prior Codex audit session), cloud `priyanshchordia-1779372280524.atlassian.net`.
 >

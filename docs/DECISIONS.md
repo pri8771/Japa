@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-07-28
+lastVerified: 2026-07-29
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -73,3 +73,13 @@ supersedes: []
 - **Decision:** Publish `support@priyanshchordia.com` on both Mala public pages and use it for App Store support and privacy inquiries.
 - **Consequences:** The mailbox or forwarding rule must be configured and tested before the URLs are marked live. Both pages should use a `mailto:support@priyanshchordia.com` link. If the address changes, update the public pages, App Store Connect, and `docs/RELEASE_METADATA.md` together.
 - **Related Files:** `docs/RELEASE_METADATA.md`, `docs/RELEASE_CHECKLIST.md`
+
+## DEC-007 — Repository documents are authoritative; external tools are mirrors
+
+- **Status:** accepted
+- **Date Recorded:** 2026-07-29
+- **Context:** Jira and Notion improve assignment, time tracking, filtering, and visibility, but tracker state drifted from verified code and repository documents. Studio OS also described its product record as authoritative, creating conflicting ownership.
+- **Options Considered:** Jira as execution source of truth; Notion as project source of truth; multiple equal authorities; repository-first authority with external mirrors.
+- **Decision:** Code, evidence, feature contracts, and canonical documents committed to the product repository are the source of truth. Jira, Notion, Studio OS, dashboards, and chat history are external mirrors and convenience views.
+- **Consequences:** Synchronization flows from verified repository state outward. Material external events must be recorded in the applicable repository document. Conflicts are resolved by verifying repository evidence and correcting mirrors. Tracker status alone cannot change scope or prove completion.
+- **Related Files:** `AGENTS.md`, `.factory/AGENTS.factory.md`, `.factory/repository-map.json`, `docs/GOVERNANCE.md`, `docs/README.md`, `docs/STATUS.md`
