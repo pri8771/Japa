@@ -81,6 +81,90 @@ final class PracticeFlowTests: XCTestCase {
         XCTAssertTrue(app.sessions.isEmpty, "A zero-count session is not recorded")
     }
 
+    func testHistoryDurationAlwaysIncludesMinutesAndSeconds() {
+        let short = PracticeSession(
+            startedAt: Date(),
+            duration: 9,
+            mantraTitle: "Counting",
+            target: 5,
+            completedCount: 5,
+            reachedTarget: true
+        )
+        let longer = PracticeSession(
+            startedAt: Date(),
+            duration: 125,
+            mantraTitle: "Counting",
+            target: 27,
+            completedCount: 27,
+            reachedTarget: true
+        )
+
+        XCTAssertEqual(short.durationText, "0m 9s")
+        XCTAssertEqual(longer.durationText, "2m 5s")
+    }
+
+    func testSessionDurationExcludesTimeWhileAppIsInactive() {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("japa-active-duration-\(UUID().uuidString)", isDirectory: true)
+        let persistence = Persistence(directory: dir)
+        var clock = Date(timeIntervalSince1970: 1_000)
+        var recorded: PracticeSession?
+        let controller = PracticeController(
+            mantra: Mantra.none,
+            target: 2,
+            startedAt: clock,
+            now: { clock },
+            preferences: { Preferences() },
+            haptics: NoopHaptics(),
+            tone: NoopTone(),
+            activeStore: ActiveSessionStore(persistence: persistence),
+            onFinish: { recorded = $0 }
+        )
+
+        controller.prepare()
+        clock.addTimeInterval(30)
+        controller.advance()
+        controller.pauseTiming()
+
+        clock.addTimeInterval(8 * 60 * 60)
+        controller.resumeTiming()
+        clock.addTimeInterval(15)
+        controller.advance()
+
+        XCTAssertNotNil(recorded)
+        XCTAssertEqual(recorded!.duration, 45, accuracy: 0.001)
+    }
+
+    func testNewRoundResetsDurationOrigin() {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("japa-new-round-duration-\(UUID().uuidString)", isDirectory: true)
+        let persistence = Persistence(directory: dir)
+        var clock = Date(timeIntervalSince1970: 2_000)
+        var recorded: [PracticeSession] = []
+        let controller = PracticeController(
+            mantra: Mantra.none,
+            target: 1,
+            startedAt: clock,
+            now: { clock },
+            preferences: { Preferences() },
+            haptics: NoopHaptics(),
+            tone: NoopTone(),
+            activeStore: ActiveSessionStore(persistence: persistence),
+            onFinish: { recorded.append($0) }
+        )
+
+        controller.prepare()
+        clock.addTimeInterval(12)
+        controller.advance()
+        clock.addTimeInterval(3_600)
+        controller.startNewRound()
+        clock.addTimeInterval(8)
+        controller.advance()
+
+        XCTAssertEqual(recorded.map(\.duration), [12, 8])
+        XCTAssertEqual(recorded[1].startedAt, Date(timeIntervalSince1970: 5_612))
+    }
+
     func testUndoStepsBackAndDoesNotComplete() {
         let app = makeApp()
         app.setDefaultTarget(2)

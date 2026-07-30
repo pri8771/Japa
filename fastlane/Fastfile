@@ -12,22 +12,24 @@
 # Required environment variables (provided as CI secrets):
 #   ASC_KEY_ID        App Store Connect API key ID
 #   ASC_ISSUER_ID     App Store Connect API issuer ID
-#   ASC_KEY_CONTENT   base64-encoded contents of the AuthKey_XXXX.p8 file
+#   ASC_KEY_PATH      path to the temporary AuthKey_XXXX.p8 file
 #   DEVELOPMENT_TEAM  Apple Developer team ID (e.g. 796XH483R4)
 # Optional:
 #   BUILD_NUMBER      overrides the TestFlight build number (defaults to the CI run number)
+
+require "shellwords"
 
 default_platform(:ios)
 
 platform :ios do
   desc "Archive a signed Release build and upload it to TestFlight."
-  desc "Requires ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT (base64 .p8), DEVELOPMENT_TEAM."
+  desc "Requires ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH, DEVELOPMENT_TEAM."
   lane :beta do
+    api_key_path = ENV.fetch("ASC_KEY_PATH")
     api_key = app_store_connect_api_key(
       key_id: ENV.fetch("ASC_KEY_ID"),
       issuer_id: ENV.fetch("ASC_ISSUER_ID"),
-      key_content: ENV.fetch("ASC_KEY_CONTENT"),
-      is_key_content_base64: true
+      key_filepath: api_key_path
     )
 
     # project.yml is the source of truth for the Xcode project; regenerate the
@@ -49,7 +51,16 @@ platform :ios do
       marketing_version = ref_name.sub(/\Av/, "") if ref_name =~ /\Av\d+\.\d+(\.\d+)?\z/
     end
 
-    build_settings = [
+    authentication_args = [
+      "-authenticationKeyPath",
+      Shellwords.escape(api_key_path),
+      "-authenticationKeyID",
+      Shellwords.escape(ENV.fetch("ASC_KEY_ID")),
+      "-authenticationKeyIssuerID",
+      Shellwords.escape(ENV.fetch("ASC_ISSUER_ID"))
+    ]
+
+    build_settings = authentication_args + [
       "-allowProvisioningUpdates",
       "CODE_SIGNING_ALLOWED=YES",
       "CODE_SIGN_STYLE=Automatic",
@@ -67,7 +78,9 @@ platform :ios do
       # Override the CI-safe no-signing defaults from project.yml at archive time
       # only. -allowProvisioningUpdates lets Xcode create/download the App Store
       # provisioning profile using the API key set above.
-      xcargs: build_settings.join(" ")
+      xcargs: build_settings.join(" "),
+      export_xcargs: (authentication_args + ["-allowProvisioningUpdates"]).join(" "),
+      export_team_id: ENV.fetch("DEVELOPMENT_TEAM")
     )
 
     upload_to_testflight(

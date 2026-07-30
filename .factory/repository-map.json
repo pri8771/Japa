@@ -14,6 +14,7 @@
     "studioLink": ".factory/studio-link.json",
     "libraryCatalog": ".factory/library-catalog.json",
     "documentationIndex": "docs/README.md",
+    "governance": "docs/GOVERNANCE.md",
     "currentStatus": "docs/STATUS.md",
     "currentArchitecture": "docs/ARCHITECTURE.md",
     "featureInventory": "docs/FEATURES.md",
@@ -154,6 +155,12 @@
       ".github/workflows/release-testflight.yml",
       "docs/RELEASE_CHECKLIST.md"
     ],
+    "sync-external-trackers": [
+      "docs/GOVERNANCE.md",
+      "docs/STATUS.md",
+      "docs/DECISIONS.md",
+      "docs/README.md"
+    ],
     "evaluate-reuse": [
       ".factory/library-catalog.json",
       "docs/REUSABLE_COMPONENTS.md",
@@ -169,10 +176,11 @@
   "notes": [
     "Populated from the actual Japa source tree during the 2026-07-17 registration-upgrade pass (standard 0.2.0 -> 0.4.0).",
     "CI configuration added 2026-07-17: .github/workflows/ios-ci.yml runs XcodeGen, Release simulator build, and tests.",
-    "TestFlight deployment added 2026-07-18: fastlane/ + .github/workflows/release-testflight.yml archive and upload to TestFlight (tag- or dispatch-triggered). Canonical process doc: docs/DEPLOYMENT.md. project.yml signing is unchanged (DEC-005); pipeline is implemented but end-to-end upload is unverified until App Store Connect secrets are configured.",
+    "TestFlight deployment added 2026-07-18 and corrected 2026-07-29: fastlane/ + .github/workflows/release-testflight.yml archive and upload to TestFlight (tag- or dispatch-triggered). The macos-26 workflow authenticates Xcode provisioning with the temporary App Store Connect API key during archive/export. Canonical process doc: docs/DEPLOYMENT.md. project.yml signing remains CI-safe per DEC-005; end-to-end upload is unverified until secrets are configured and a real run succeeds.",
     "Studio OS enrollment 2026-07-19: .factory/studio-link.json links this repo to Studio OS product PROD-JAPA (pri8771/studio-ios). quality/ui/ adds the App Factory automated-UI-testing manifests (screens/journeys/safe-actions) + generated Maestro flows; Japa/JapaApp.swift honors the standard UI_TEST_MODE/UI_FIXTURE/UI_RESET_STATE/UI_DISABLE_ANIMATIONS contract. Maestro simulator execution is pending (CLI not installed at enrollment time).",
     "Merged agent/fix-app-icon (Mala rebrand, seed-content removal, App Store screenshot assets, TestFlight Fastfile tag-version support) with origin/main (Studio OS enrollment, Maestro UI-testing manifests) on 2026-07-27 to unblock release. Both lines' additions are preserved; see docs/HANDOFF.md.",
     "docs/PROMPT_LOG.md and docs/JIRA_SYNC_PENDING.md are working logs, not canonical product documentation — see docs/README.md's documentation-gaps section.",
+    "Repository code, evidence, contracts, and canonical documents are authoritative. Jira, Notion, Studio OS, dashboards, and chat history are external mirrors; see docs/GOVERNANCE.md.",
     "Do not treat templates or examples as implemented product facts."
   ]
 }

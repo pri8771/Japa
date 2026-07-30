@@ -94,7 +94,7 @@ struct CompletionView: View {
 
     private var subtitle: String {
         let mantra = controller.mantra.title
-        let minutes = max(1, Int((Date().timeIntervalSince(controller.startedAt) / 60).rounded()))
+        let minutes = max(1, Int((controller.elapsedActiveDuration / 60).rounded()))
         return "\(mantra) · \(minutes) min"
     }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Local reference linking this product repository to Studio OS (pri8771/studio-ios). The authoritative product record lives in Studio OS at the studioProductRecord path below; this file is the product-side pointer.",
+  "description": "Local reference linking this authoritative product repository to its Studio OS portfolio mirror (pri8771/studio-ios). Canonical product facts live in this repository; the studioProductRecord path below is an external index/mirror.",
   "product": {
     "id": "PROD-JAPA",
     "slug": "japa",

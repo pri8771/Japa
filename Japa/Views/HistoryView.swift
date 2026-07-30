@@ -89,7 +89,7 @@ private struct HistoryRow: View {
                     .foregroundStyle(session.isComplete ? Theme.accentBright : Theme.textSecondary)
                     .monospacedDigit()
                     .accessibilityIdentifier("historyCount-\(session.completedCount)-\(session.target)")
-                Text(session.isComplete ? durationText : "partial · \(durationText)")
+                Text(session.isComplete ? session.durationText : "partial · \(session.durationText)")
                     .font(Theme.ui(11))
                     .foregroundStyle(Theme.textMuted)
             }
@@ -99,12 +99,5 @@ private struct HistoryRow: View {
 
     private var dateText: String {
         session.startedAt.formatted(date: .abbreviated, time: .shortened)
-    }
-
-    private var durationText: String {
-        let total = Int(session.duration)
-        let minutes = total / 60
-        let seconds = total % 60
-        return minutes > 0 ? "\(minutes)m \(seconds)s" : "\(seconds)s"
     }
 }

@@ -16,6 +16,15 @@ AGENTS.md
 
 Do not recursively read the entire repository by default. Do not create duplicate sources of truth.
 
+## Repository authority and external mirrors
+
+- Repository code, evidence, contracts, and canonical documents are the project source of truth.
+- Jira, Notion, Studio OS, dashboards, and chat history are convenience mirrors.
+- Synchronize verified repository state outward to those mirrors.
+- If a mirror conflicts with the repository, verify the repository evidence and correct the mirror.
+- External status, scope, estimates, or completion claims do not override canonical repository documents.
+- Read `docs/GOVERNANCE.md` before creating or updating external tracker state.
+
 ## Quality and reuse rules
 
 - Never use undisclosed fake data in production.

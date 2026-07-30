@@ -2,7 +2,7 @@
 id: DOC-DEPLOYMENT
 canonicalFor: release-deployment-process
 status: active
-lastVerified: 2026-07-27
+lastVerified: 2026-07-29
 readWhen:
   - shipping a build to TestFlight or the App Store
   - changing signing, CI, or release automation
@@ -27,13 +27,13 @@ status.
 - **Fact:** authoritative for the automated deployment pipeline (Fastlane +
   GitHub Actions) and the signing approach used to produce distribution builds.
 - Does **not** own product-launch gates (public URLs, App Store metadata/assets,
-  device QA) — those live in `RELEASE_CHECKLIST.md` and Jira MALA.
+  device QA) — those live in `RELEASE_CHECKLIST.md`; Jira MALA mirrors them.
 
 ## Current summary
 
 | Item | Status |
 |---|---|
-| TestFlight automation (Fastlane `beta` lane + `release-testflight.yml`) | `implemented`, signing path requires correction/verification |
+| TestFlight automation (Fastlane `beta` lane + `release-testflight.yml`) | `implemented`, corrected signing path requires end-to-end verification |
 | End-to-end upload verified against App Store Connect | `unverified` — requires signing setup, the four secrets below, and one real run |
 | App Store public submission automation | `planned` — not built; blocked on human gates |
 
@@ -52,7 +52,7 @@ the repo is not tied to an Apple team. See `DECISIONS.md`.
 
 ```text
 git tag vX.Y.Z  (or manual "Release to TestFlight" run)
-  → GitHub Actions: release-testflight.yml (macos-latest)
+  → GitHub Actions: release-testflight.yml (macos-26; rejects Xcode < 26)
     → brew install xcodegen; xcodegen generate
     → fastlane beta
       → app_store_connect_api_key   (unattended auth)
@@ -67,6 +67,8 @@ Files:
 - `fastlane/Appfile` — bundle identifier only; no Apple ID stored.
 - `Gemfile` — declares `fastlane`; `Gemfile.lock` is committed (regenerated 2026-07-27 via `bundle install`) so `ruby/setup-ruby@v1`'s `bundler-cache: true` step in `release-testflight.yml` has a lockfile to restore instead of hard-failing before it can run anything.
 - `.github/workflows/release-testflight.yml` — tag/dispatch-triggered runner.
+  It decodes the API key into the runner's temporary directory with mode `0600`;
+  the key is never written to the repository or uploaded as an artifact.
 
 ## Required secrets
 
@@ -117,10 +119,12 @@ mutating committed files.
   exists yet. When the first real run succeeds, record it under
   `quality/evidence/` and flip the "End-to-end upload verified" row above to
   `verified`.
-- **Known gap:** the current fresh-runner workflow does not install a signing
-  certificate/private key or pass App Store Connect authentication flags to
-  `xcodebuild`; `-allowProvisioningUpdates` and a team ID alone are not accepted
-  as verified signing setup.
+- **Implemented 2026-07-29:** the fresh-runner workflow passes
+  `-authenticationKeyPath`, `-authenticationKeyID`, and
+  `-authenticationKeyIssuerID` during both archive and export, alongside
+  `-allowProvisioningUpdates` and the team ID. This follows Xcode's supported
+  automatic-provisioning authentication path but remains `unverified` until the
+  first real upload succeeds.
 
 ## Potential improvements — Not Approved
 
@@ -128,5 +132,6 @@ mutating committed files.
   `-allowProvisioningUpdates` automatic signing, for fully reproducible signing
   across runners.
 - Add a `fastlane deliver` step to sync App Store metadata from the repo.
-- Pin the Xcode version on the runner (`maxim-lobanov/setup-xcode`) once a
-  minimum is chosen.
+- Pin a specific Xcode 26 minor version if runner-image drift causes a
+  reproducibility problem; the current workflow pins `macos-26` and enforces
+  Xcode major version 26 or newer.
