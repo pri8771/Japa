@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-07-30
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -40,10 +40,10 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- **Current automated suite: 67 tests (56 unit/flow + 11 UI), all passing** — verified 2026-07-28 after the history-format and foreground-only session-duration fixes; canonical count, see `TEST_PLAN.md`
+- **Current automated suite: 67 tests (56 unit/flow + 11 UI), all passing** — re-verified 2026-07-30 after changing the shipping bundle identifier to `com.priyansh.mala`; canonical count, see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
-- Public product identity is **Mala**. The internal Xcode target/scheme, bundle ID, engine symbols, and persistence path retain `Japa` for compatibility.
+- Public product identity is **Mala**. The release bundle ID is `com.priyansh.mala`; internal Xcode target/scheme, engine symbols, and persistence path retain `Japa` for compatibility.
 - Bundled spiritual seed content was removed; v1 ships neutral Counting plus private user-created labels.
 - Five App Store screenshots were captured from the iPhone 17 Pro Max simulator at 1320 × 2868 with no alpha and stored under `AppStoreAssets/Screenshots/en-US/6.9-inch/`.
 - A 6.9-inch UI-test run exposed top-chrome taps being intercepted by the practice gesture; the counting hit area now excludes the control bands and the history flow passes.
@@ -53,6 +53,7 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 - `Gemfile.lock` is committed (regenerated via `bundle install` 2026-07-27) so the TestFlight CD workflow's `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before it can run.
 - Public privacy and support pages are live at `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/`; both returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29.
 - The fresh-runner signing implementation now materializes the App Store Connect key only in the runner's temporary directory and passes Xcode's authentication-key arguments during both archive and export. The runner is pinned to `macos-26`, and the workflow rejects Xcode versions older than 26. End-to-end signing/upload remains unverified until the first workflow run.
+- The product-branded bundle identifier change is locally verified: XcodeGen succeeded, 67/67 tests passed, and Xcode produced a signed `com.priyansh.mala` 1.0 (1) archive for team `796XH483R4` using automatic provisioning. Evidence: `quality/evidence/2026-07-30-mala-bundle-id.md`.
 
 ### Test-count history (superseded — do not treat as current)
 

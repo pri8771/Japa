@@ -2,7 +2,7 @@
 id: DOC-RELEASE-CHECKLIST
 canonicalFor: release-readiness
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-07-30
 readWhen:
   - preparing a release
 related:
@@ -18,14 +18,14 @@ Reconciled 2026-07-17 (re-dated 2026-07-18) against `LAUNCH_READINESS.md` §9 an
 
 ## Build / config
 
-- [x] Production configuration builds (Release simulator) — verified 2026-07-27 with `CODE_SIGNING_ALLOWED=NO`; built identity is display name `Mala`, bundle `com.priyansh.japa`, version `1.0` (1)
-- [~] Signing for device/TestFlight — `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by decision (DEC-005); the CD pipeline now authenticates Xcode provisioning during archive and export. Not yet exercised end-to-end (needs App Store Connect secrets).
+- [x] Production configuration builds — verified 2026-07-30; built identity is display name `Mala`, bundle `com.priyansh.mala`, version `1.0` (1)
+- [~] Signing for device/TestFlight — signed local archive for `com.priyansh.mala` succeeded on team `796XH483R4` using automatic provisioning on 2026-07-30. `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by DEC-005; the CD archive/export and upload path still needs its first end-to-end run.
 - [x] `xcodegen generate` from `project.yml` keeps project consistent — verified 2026-07-27, regenerated cleanly, exit 0
 - [x] Fake / UITest-only data paths excluded from production — `JapaApp.swift` only substitutes an ephemeral/fixed-directory `Persistence` when `JAPA_UITEST*` env vars are set
 
 ## Quality
 
-- [x] Required automated tests pass — 67/67 (56 unit/flow + 11 UI), full scheme exited 0 on iPhone 17 Pro / iOS 26.5 on 2026-07-29; current canonical count per `TEST_PLAN.md`
+- [x] Required automated tests pass — 67/67 (56 unit/flow + 11 UI), full scheme exited 0 on iPhone 17 Pro / iOS 26.5 on 2026-07-30 after the bundle-ID change; current canonical count per `TEST_PLAN.md`
 - [x] Persistence relaunch verified — `PersistenceTests` + `FeatureAuditUITests.testResumeAfterInterruptionRestoresExactBead` (real background+terminate+relaunch)
 - [x] No network / no analytics / PrivacyInfo truthful — source-grep audit found no networking code; `PrivacyInfo.xcprivacy` declares no tracking/collection
 - [x] No streak / notification surfaces — structurally asserted by `PracticeFlowTests.testModelsHaveNoStreakOrChainConcept`; no notification permission triggered anywhere in source

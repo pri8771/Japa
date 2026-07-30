@@ -2,7 +2,7 @@
 id: DOC-DEPLOYMENT
 canonicalFor: release-deployment-process
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-07-30
 readWhen:
   - shipping a build to TestFlight or the App Store
   - changing signing, CI, or release automation
@@ -88,7 +88,7 @@ Until all four exist, the workflow runs but fails fast.
 2. Create an **App Store Connect API key**: App Store Connect → Users and Access
    → Integrations → Keys → App Store Connect API → generate a key with **App
    Manager** access. Download the `.p8` once and record the Key ID + Issuer ID.
-3. Create the app record in App Store Connect for bundle id `com.priyansh.japa`
+3. Create the app record in App Store Connect for bundle id `com.priyansh.mala`
    (name, primary category, etc.) if it does not exist.
 4. Add the four secrets above to the GitHub repository.
 

@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-07-30
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -83,3 +83,13 @@ supersedes: []
 - **Decision:** Code, evidence, feature contracts, and canonical documents committed to the product repository are the source of truth. Jira, Notion, Studio OS, dashboards, and chat history are external mirrors and convenience views.
 - **Consequences:** Synchronization flows from verified repository state outward. Material external events must be recorded in the applicable repository document. Conflicts are resolved by verifying repository evidence and correcting mirrors. Tracker status alone cannot change scope or prove completion.
 - **Related Files:** `AGENTS.md`, `.factory/AGENTS.factory.md`, `.factory/repository-map.json`, `docs/GOVERNANCE.md`, `docs/README.md`, `docs/STATUS.md`
+
+## DEC-008 — Use the product-branded App Store bundle identifier
+
+- **Status:** accepted
+- **Date Recorded:** 2026-07-30
+- **Context:** Before the first App Store Connect or TestFlight upload, the user chose a product-branded bundle identifier rather than retaining the original internal project name in the public release identity.
+- **Options Considered:** Retain `com.priyansh.japa`; change the release bundle to `com.priyansh.mala` while preserving compatibility-sensitive internal target, scheme, engine, and persistence-directory names.
+- **Decision:** Use `com.priyansh.mala` for the shipping app, with matching test-target and UI-automation identifiers. Preserve the internal `Japa` target/scheme and persistence directory.
+- **Consequences:** Apple must accept and register `com.priyansh.mala` before the first upload. Development builds under the former bundle identifier use a different app sandbox and do not share local history with the new identifier; no customer migration is required because the app has not shipped.
+- **Related Files:** `project.yml`, `fastlane/Appfile`, `quality/ui/`, `docs/ARCHITECTURE.md`, `docs/RELEASE_METADATA.md`, `docs/DEPLOYMENT.md`

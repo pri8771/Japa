@@ -2,7 +2,7 @@
 id: DOC-RELEASE-METADATA
 canonicalFor: app-store-metadata-and-public-page-copy
 status: draft
-lastVerified: 2026-07-29
+lastVerified: 2026-07-30
 readWhen:
   - creating the App Store Connect record
   - publishing Mala public pages
@@ -31,7 +31,7 @@ The app links to both URLs from Settings. Both returned HTTP 200 and exposed `su
 |---|---|---|
 | App name | Mala | Within Apple's 30-character limit. |
 | Subtitle | A quiet digital mala | Within Apple's 30-character limit. |
-| Bundle ID | `com.priyansh.japa` | Must match the archive. |
+| Bundle ID | `com.priyansh.mala` | Must match the archive and Apple registration. |
 | SKU | `mala-ios-v1` | Internal, immutable once created; accountable human confirms before creation. |
 | Primary category | Lifestyle | Avoids unsubstantiated health claims. |
 | Secondary category | None | Optional; leave empty for v1. |

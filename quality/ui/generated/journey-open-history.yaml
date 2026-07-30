@@ -1,4 +1,4 @@
-appId: com.priyansh.japa
+appId: com.priyansh.mala
 ---
 - launchApp
 - assertVisible:
