@@ -2,7 +2,7 @@
 id: DOC-RELEASE-CHECKLIST
 canonicalFor: release-readiness
 status: active
-lastVerified: 2026-07-27
+lastVerified: 2026-07-29
 readWhen:
   - preparing a release
 related:
@@ -19,17 +19,17 @@ Reconciled 2026-07-17 (re-dated 2026-07-18) against `LAUNCH_READINESS.md` §9 an
 ## Build / config
 
 - [x] Production configuration builds (Release simulator) — verified 2026-07-27 with `CODE_SIGNING_ALLOWED=NO`; built identity is display name `Mala`, bundle `com.priyansh.japa`, version `1.0` (1)
-- [~] Signing for device/TestFlight — `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by decision (DEC-005); distribution signing is injected at archive time by the CD pipeline. Not yet exercised end-to-end (needs App Store Connect secrets).
+- [~] Signing for device/TestFlight — `project.yml` stays `CODE_SIGNING_ALLOWED: NO` by decision (DEC-005); the CD pipeline now authenticates Xcode provisioning during archive and export. Not yet exercised end-to-end (needs App Store Connect secrets).
 - [x] `xcodegen generate` from `project.yml` keeps project consistent — verified 2026-07-27, regenerated cleanly, exit 0
 - [x] Fake / UITest-only data paths excluded from production — `JapaApp.swift` only substitutes an ephemeral/fixed-directory `Persistence` when `JAPA_UITEST*` env vars are set
 
 ## Quality
 
-- [x] Required automated tests pass — 62/62 (52 unit/flow + 10 UI), full scheme exited 0 on iPhone 17 / iOS 26.5 on 2026-07-27; current canonical count per `TEST_PLAN.md` (earlier 53/56 counts superseded)
+- [x] Required automated tests pass — 67/67 (56 unit/flow + 11 UI), full scheme exited 0 on iPhone 17 Pro / iOS 26.5 on 2026-07-29; current canonical count per `TEST_PLAN.md`
 - [x] Persistence relaunch verified — `PersistenceTests` + `FeatureAuditUITests.testResumeAfterInterruptionRestoresExactBead` (real background+terminate+relaunch)
 - [x] No network / no analytics / PrivacyInfo truthful — source-grep audit found no networking code; `PrivacyInfo.xcprivacy` declares no tracking/collection
 - [x] No streak / notification surfaces — structurally asserted by `PracticeFlowTests.testModelsHaveNoStreakOrChainConcept`; no notification permission triggered anywhere in source
-- [x] In-app Privacy Policy and Support links — Settings links target the planned public Mala URLs; simulator build verified 2026-07-26
+- [x] In-app Privacy Policy and Support links — Settings links target the live `/apps/mala/` URLs; both returned HTTP 200 on 2026-07-29
 
 ## Launch gates (from LAUNCH_READINESS)
 
@@ -37,7 +37,7 @@ Reconciled 2026-07-17 (re-dated 2026-07-18) against `LAUNCH_READINESS.md` §9 an
 - [x] On-device haptic validation — verified on physical iPhone 16 Pro Max 2026-07-18 (tick + distinct completion + fallback path); closes JAPA-7. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`. (Single hardware class; additional classes optional.)
 - [ ] Accessibility validation (VoiceOver/reduce motion coded but unvalidated with users; Dynamic Type implemented and smoke-tested; MALA-7)
 - [~] App Store metadata, screenshots, support URL, age rating (MALA-5/6/8) — five 6.9-inch PNGs captured and technically validated 2026-07-27; metadata entry, human screenshot approval/upload, URLs, and questionnaires remain open
-- [ ] Public privacy-policy and support pages — copy drafted in `RELEASE_METADATA.md`; publish and validate `priyanshchordia.com/mala/privacy` and `/mala/support` (MALA-4/15)
+- [x] Public privacy-policy and support pages — `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/` returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29
 - [ ] TestFlight crash-free E2E on device — CD pipeline committed (`DEPLOYMENT.md`); needs secrets + first real upload before this can be checked (MALA-8)
 
 ## Deployment automation

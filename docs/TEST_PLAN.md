@@ -2,7 +2,7 @@
 id: DOC-TEST-PLAN
 canonicalFor: test-plan
 status: active
-lastVerified: 2026-07-28
+lastVerified: 2026-07-29
 readWhen:
   - running or changing tests
   - preparing a release
@@ -46,7 +46,7 @@ supersedes: []
 - [x] Re-verified 2026-07-17 (registration-upgrade pass): `xcodegen generate`, `xcodebuild build`, and `xcodebuild test` on iPhone 17 Pro (OS 26.5) — build succeeded, 53/53 tests passed (0 failures), confirming the then-current 46+7 count
 - [x] Re-verified 2026-07-17 (mala-style + Dynamic Type + CI pass): `xcodegen generate`; Release simulator build; full `xcodebuild test` on iPhone 17 Pro (OS 26.5) — 56/56 tests passed (47 unit/flow + 9 UI); compact-phone accessibility text-size smoke passed on iPhone 17e.
 - [x] 2026-07-18: 62 tests (52 unit/flow + 10 UI), all passing after the merged-surface, animation, red-final-bead, and stale-round-Finish work; also on-device validated on a physical iPhone 16 Pro Max. See `STATUS.md` for the on-device evidence link. (Earlier 46+7=53 / 47+9=56 rows above are superseded history.)
-- [x] **Current (2026-07-28): 67 tests (56 unit/flow + 11 UI), all passing.** Full `xcodebuild test -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' CODE_SIGNING_ALLOWED=NO` exited 0 after the history-format and foreground-only session-duration fixes. New deterministic coverage proves an 8-hour inactive gap adds zero time and every new round resets its duration. This is the canonical current count.
+- [x] **Current (2026-07-29): 67 tests (56 unit/flow + 11 UI), all passing.** Full `xcodebuild test -scheme Japa -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' CODE_SIGNING_ALLOWED=NO` exited 0 during the TestFlight release audit after the history-format and foreground-only session-duration fixes. New deterministic coverage proves an 8-hour inactive gap adds zero time and every new round resets its duration. This is the canonical current count.
 
 ## Quality manifest alignment
 

@@ -32,7 +32,7 @@ concurrency:
 jobs:
   testflight:
     name: Archive and upload to TestFlight
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 45
 
     steps:
@@ -48,11 +48,35 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: true
 
-      - name: Upload to TestFlight
+      - name: Prepare App Store Connect authentication
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
+        run: |
+          for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_CONTENT DEVELOPMENT_TEAM; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required GitHub Actions secret: ${name}"
+              exit 1
+            fi
+          done
+
+          xcode_major="$(xcodebuild -version | awk 'NR == 1 { split($2, parts, \".\"); print parts[1] }')"
+          if [[ "$xcode_major" -lt 26 ]]; then
+            echo "::error::Xcode 26 or newer is required for App Store Connect uploads."
+            exit 1
+          fi
+
+          umask 077
+          key_path="${RUNNER_TEMP}/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$ASC_KEY_CONTENT" | base64 -D > "$key_path"
+          echo "ASC_KEY_PATH=$key_path" >> "$GITHUB_ENV"
+
+      - name: Upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
           BUILD_NUMBER: ${{ github.event.inputs.build_number || github.run_number }}
         run: bundle exec fastlane beta

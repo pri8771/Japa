@@ -2,7 +2,7 @@
 id: DOC-RELEASE-METADATA
 canonicalFor: app-store-metadata-and-public-page-copy
 status: draft
-lastVerified: 2026-07-27
+lastVerified: 2026-07-29
 readWhen:
   - creating the App Store Connect record
   - publishing Mala public pages
@@ -16,14 +16,14 @@ supersedes: []
 
 # Mala v1.0 Release Metadata
 
-This is the canonical draft for the App Store product page and the two required public pages. It describes only verified v1 behavior. The privacy and support pages must be published at the URLs below before App Store submission.
+This is the canonical draft for the App Store product page and the two required public pages. It describes only verified v1 behavior. The privacy and support pages below were live-checked on 2026-07-29.
 
 ## Public URLs
 
-- Privacy policy: `https://priyanshchordia.com/mala/privacy`
-- Support: `https://priyanshchordia.com/mala/support`
+- Privacy policy: `https://priyanshchordia.com/apps/mala/privacy/`
+- Support: `https://priyanshchordia.com/apps/mala/support/`
 
-The app links to both URLs from Settings. Publication and a live-URL check remain open.
+The app links to both URLs from Settings. Both returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29.
 
 ## App Store Connect record
 
@@ -36,8 +36,8 @@ The app links to both URLs from Settings. Publication and a live-URL check remai
 | Primary category | Lifestyle | Avoids unsubstantiated health claims. |
 | Secondary category | None | Optional; leave empty for v1. |
 | Price | Free | No IAP or StoreKit in v1. |
-| Privacy policy URL | `https://priyanshchordia.com/mala/privacy` | Required for iOS. |
-| Support URL | `https://priyanshchordia.com/mala/support` | Must contain real contact information. |
+| Privacy policy URL | `https://priyanshchordia.com/apps/mala/privacy/` | Required for iOS; live-checked 2026-07-29. |
+| Support URL | `https://priyanshchordia.com/apps/mala/support/` | Contains the public support email; live-checked 2026-07-29. |
 
 ## Product-page copy
 
@@ -143,8 +143,6 @@ When you contact support, do not include sensitive personal information or your 
 
 ## Release evidence to collect
 
-- Live privacy-policy URL check
-- Live support URL check with contact path
 - Final App Store Connect field values and privacy-answer screenshots
 - Final human approval and App Store Connect upload of the captured screenshot set
 - TestFlight processing and device-QA evidence

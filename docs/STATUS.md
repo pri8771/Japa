@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-28
+lastVerified: 2026-07-29
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -28,13 +28,13 @@ existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
 
 ## Current objective
 
-Prepare Mala v1 for App Store release: publish the privacy/support pages, approve and upload the captured screenshots, verify signing/TestFlight, and complete App Store Connect metadata and device QA.
+Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and upload the captured screenshots, and complete App Store Connect metadata and device QA.
 
 ## Product maturity
 
 - **Implementation:** v1 feature set built and on-device validated (2026-07-18, iPhone 16 Pro Max); mala-style picker, Dynamic Type, merged practice surface, stale-round Finish, CI, and TestFlight deployment automation in place
 - **Factory registration:** existing project, standard `0.4.0` (upgraded from `0.2.0` on 2026-07-17), registered 2026-07-16
-- **Ship blockers remaining:** live privacy/support URLs, human approval/upload of the captured App Store assets and metadata, and the first real signed TestFlight upload. VoiceOver user validation is deferred post-v1 with residual risk recorded in MALA-7.
+- **Ship blockers remaining:** human approval/upload of the captured App Store assets and metadata, and the first real signed TestFlight upload. VoiceOver user validation is deferred post-v1 with residual risk recorded in MALA-7.
 
 ## Verified
 
@@ -51,6 +51,8 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 - TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
 - Enrolled in Studio OS as `PROD-JAPA` (`pri8771/studio-ios`, 2026-07-19); `.factory/studio-link.json` is the product-side pointer. Automated-UI-testing manifests (`quality/ui/`) and generated Maestro flows were added the same day; Maestro simulator execution is still pending (CLI unavailable at enrollment time).
 - `Gemfile.lock` is committed (regenerated via `bundle install` 2026-07-27) so the TestFlight CD workflow's `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before it can run.
+- Public privacy and support pages are live at `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/`; both returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29.
+- The fresh-runner signing implementation now materializes the App Store Connect key only in the runner's temporary directory and passes Xcode's authentication-key arguments during both archive and export. The runner is pinned to `macos-26`, and the workflow rejects Xcode versions older than 26. End-to-end signing/upload remains unverified until the first workflow run.
 
 ### Test-count history (superseded — do not treat as current)
 
@@ -61,9 +63,8 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 ## Verification pending
 
-- Public privacy and support pages at `priyanshchordia.com/mala/privacy` and `/mala/support`
 - Human approval/upload of the captured App Store screenshots and App Store Connect metadata
-- First real TestFlight upload (MALA-8): automation is committed but needs credentials, corrected CI signing setup, and one verified run under `quality/evidence/`
+- First real TestFlight upload (MALA-8): corrected automation is committed locally but still needs credentials and one verified run under `quality/evidence/`
 - VoiceOver validation with a real assistive-tech user is deferred post-v1 (MALA-7); Dynamic Type remains implemented and smoke-tested
 
 ## External trackers
@@ -74,7 +75,6 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 ## Blockers
 
-- Privacy and support URLs are not live yet (MALA-4/15)
 - TestFlight/App Store distribution has not been exercised; CI signing needs a verified signing identity/configuration plus secrets (MALA-8)
 - App Store Connect record, screenshot approval/upload, rating/privacy answers, and release-candidate device QA remain open (MALA-5/6/9)
 
@@ -139,7 +139,6 @@ Prepare Mala v1 for App Store release: publish the privacy/support pages, approv
 
 ## Next action
 
-1. Publish and verify the public privacy/support pages.
-2. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
-3. Run release-candidate device QA and finalize App Store Connect fields/assets.
-4. Decide whether to pursue Maestro simulator execution for the `quality/ui/` manifests now that the CLI can be installed.
+1. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
+2. Run release-candidate device QA and finalize App Store Connect fields/assets.
+3. Decide whether to pursue Maestro simulator execution for the `quality/ui/` manifests now that the CLI can be installed.

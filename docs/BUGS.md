@@ -2,7 +2,7 @@
 id: DOC-BUGS
 canonicalFor: known-defects
 status: active
-lastVerified: 2026-07-27
+lastVerified: 2026-07-29
 readWhen:
   - fixing a bug
   - checking known defects before claiming a feature is done
@@ -19,8 +19,8 @@ Open product/engineering gaps tracked for launch. Pre-existing relative to App F
 | ID | Severity | Area | Summary | Status | Evidence |
 |----|----------|------|---------|--------|----------|
 | B6 | high | Content | ~~Seed mantra set not human-signed off~~ | **resolved 2026-07-26** | Bundled spiritual seed content removed; neutral Counting + private custom labels remain |
-| B-SIGN | high | Release | Fresh-runner TestFlight signing path is unverified and lacks a demonstrated signing identity setup | open | `fastlane/Fastfile`, `.github/workflows/release-testflight.yml` |
-| B-URL | high | Release | Planned privacy and support URLs are not live | open | `https://priyanshchordia.com/mala/privacy`, `/mala/support` |
+| B-SIGN | high | Release | Fresh-runner Xcode authentication was added for archive/export, but no signed TestFlight upload has demonstrated it yet | verification pending | `fastlane/Fastfile`, `.github/workflows/release-testflight.yml` |
+| B-URL | high | Release | ~~Planned privacy and support URLs were not live~~ | **resolved 2026-07-29** | `/apps/mala/privacy/` and `/apps/mala/support/` both returned HTTP 200 with the public support email |
 | B-A11Y | medium | Accessibility | VoiceOver is coded but user validation is deferred post-v1. Dynamic Type is implemented and smoke-tested. | accepted post-v1 risk | `Japa/Design/Theme.swift`; `JapaUITests.testPrimaryFlowAtAccessibilityTextSize`; MALA-7 |
 | B-HAPT | medium | Haptics | Physical iPhone 16 Pro Max validation passed; automated tick-vs-completion spy coverage remains absent | partial | Device evidence 2026-07-18; FEAT-001 verification gap |
 | B-DOC | low | Docs | ~~`README.md` and `docs/PROJECT_DOCUMENTATION.md` test counts outdated vs source~~ | **resolved 2026-07-17** | Corrected to 46+7=53 in README.md, docs/PROJECT_DOCUMENTATION.md, and LAUNCH_READINESS.md; confirmed by a passing `xcodebuild test` run |
