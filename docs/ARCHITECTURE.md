@@ -2,7 +2,7 @@
 id: DOC-ARCHITECTURE
 canonicalFor: current-architecture
 status: active
-lastVerified: 2026-07-17
+lastVerified: 2026-07-30
 readWhen:
   - onboarding
   - changing architecture
@@ -22,7 +22,7 @@ supersedes: []
 
 ## Current architecture
 
-Mala is a local-first SwiftUI iOS app (iOS 17+) generated with XcodeGen from `project.yml`. There is no backend, networking, accounts, analytics, or third-party packages. Internal target, scheme, bundle, and persistence identifiers retain the original `Japa` name for compatibility.
+Mala is a local-first SwiftUI iOS app (iOS 17+) generated with XcodeGen from `project.yml`. There is no backend, networking, accounts, analytics, or third-party packages. Internal target, scheme, engine symbols, and persistence-directory identifiers retain the original `Japa` name for compatibility; the release bundle identifier is product-branded.
 
 ```text
 JapaApp
@@ -62,7 +62,7 @@ JapaApp
 | JapaTests | unit | iOS 17+ | iPhone |
 | JapaUITests | UI | iOS 17+ | iPhone |
 
-Bundle ID: `com.priyansh.japa`
+Bundle ID: `com.priyansh.mala`
 
 ### Persistence & interruption model
 

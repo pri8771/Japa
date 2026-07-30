@@ -472,7 +472,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japaUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.malaUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = Japa;
@@ -491,7 +491,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japaTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.malaTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Japa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Japa";
@@ -519,7 +519,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japa;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.mala;
 				PRODUCT_NAME = Japa;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -599,7 +599,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japaTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.malaTests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Japa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Japa";
@@ -618,7 +618,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japaUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.malaUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				TEST_TARGET_NAME = Japa;
@@ -646,7 +646,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.japa;
+				PRODUCT_BUNDLE_IDENTIFIER = com.priyansh.mala;
 				PRODUCT_NAME = Japa;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;

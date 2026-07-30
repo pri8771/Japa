@@ -23,7 +23,7 @@ targets:
       - path: Japa
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.japa
+        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.mala
         PRODUCT_NAME: Japa
         GENERATE_INFOPLIST_FILE: YES
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
@@ -53,7 +53,7 @@ targets:
       - target: Japa
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.japaTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.malaTests
         GENERATE_INFOPLIST_FILE: YES
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         TARGETED_DEVICE_FAMILY: "1"
@@ -70,7 +70,7 @@ targets:
       - target: Japa
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.japaUITests
+        PRODUCT_BUNDLE_IDENTIFIER: com.priyansh.malaUITests
         GENERATE_INFOPLIST_FILE: YES
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         TARGETED_DEVICE_FAMILY: "1"

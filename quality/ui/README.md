@@ -18,7 +18,7 @@ Canonical UI contract for App Factory automated UI testing
 ## Generating flows
 
 ```bash
-MAESTRO_APP_ID=com.priyansh.japa \
+MAESTRO_APP_ID=com.priyansh.mala \
   ruby /path/to/iOS_app_factory_rules/scripts/generate-maestro-flows.rb \
   quality/ui/screens.yaml quality/ui/journeys.yaml quality/ui/generated
 ```
