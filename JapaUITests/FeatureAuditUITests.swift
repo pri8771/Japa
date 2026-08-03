@@ -156,6 +156,28 @@ final class FeatureAuditUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["3 / 8"].waitForExistence(timeout: 8), "Partial recorded to history")
     }
 
+    func testExplicitFinishEarlyRecordsPartialAndStartsFresh() {
+        let app = ephemeralApp(target: 8)
+        app.launch()
+        dismissIntro(app)
+
+        let ring = app.buttons["advanceRing"]
+        XCTAssertTrue(ring.waitForExistence(timeout: 8))
+        advance(app, ring, to: "3 of 8")
+
+        let finishEarly = app.buttons["finishEarlyButton"]
+        XCTAssertTrue(finishEarly.waitForExistence(timeout: 8))
+        finishEarly.tap()
+
+        let alert = app.alerts["Finish this round?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 8))
+        alert.buttons["Finish"].tap()
+
+        XCTAssertTrue(waitForRingValue(ring, "0 of 8", timeout: 8), "Fresh round after explicit finish")
+        app.buttons["historyButton"].tap()
+        XCTAssertTrue(app.staticTexts["3 / 8"].waitForExistence(timeout: 8), "Partial recorded to history")
+    }
+
     /// The practice surface exposes the current mantra through the mantraRow
     /// button's accessibility label ("Mantra: <title>. Change mantra.").
     private func surfaceShowsMantra(_ app: XCUIApplication, _ title: String, timeout: TimeInterval = 8) -> Bool {

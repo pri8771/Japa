@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-30
+lastVerified: 2026-07-31
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -40,7 +40,7 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- **Current automated suite: 67 tests (56 unit/flow + 11 UI), all passing** — re-verified 2026-07-30 after changing the shipping bundle identifier to `com.priyansh.mala`; canonical count, see `TEST_PLAN.md`
+- **Current automated suite: 68 tests (56 unit/flow + 12 UI), all passing** — re-verified 2026-08-02 after adding the explicit Finish early flow; canonical count, see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 - Public product identity is **Mala**. The release bundle ID is `com.priyansh.mala`; internal Xcode target/scheme, engine symbols, and persistence path retain `Japa` for compatibility.
@@ -54,6 +54,10 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 - Public privacy and support pages are live at `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/`; both returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29.
 - The fresh-runner signing implementation now materializes the App Store Connect key only in the runner's temporary directory and passes Xcode's authentication-key arguments during both archive and export. The runner is pinned to `macos-26`, and the workflow rejects Xcode versions older than 26. End-to-end signing/upload remains unverified until the first workflow run.
 - The product-branded bundle identifier change is locally verified: XcodeGen succeeded, 67/67 tests passed, and Xcode produced a signed `com.priyansh.mala` 1.0 (1) archive for team `796XH483R4` using automatic provisioning. Evidence: `quality/evidence/2026-07-30-mala-bundle-id.md`.
+- The current release candidate was independently re-verified 2026-07-31 on iPhone 17 Pro / iOS 26.5 simulator: 67 passed, 0 failed, 0 skipped. Result bundle: `/private/tmp/mala-release-verification/Logs/Test/Test-Japa-2026.07.31_10-02-36--0400.xcresult` (local ephemeral evidence; record durable CI/TestFlight evidence before release).
+- Explicit Finish early is now available from the practice surface with confirmation; it records an honest partial session and starts a fresh round. Targeted UI verification passed 2026-08-02.
+- Repository-backed App Store metadata and approval-gated submission automation are implemented locally (`fastlane/metadata`, `store_metadata`, `submit_review`, and `release-app-store.yml`). Metadata upload cannot submit; submission requires an exact version/build confirmation and keeps public release manual. Authenticated execution remains unverified. Evidence: `quality/evidence/2026-07-31-app-store-automation.md`.
+- A read-only GitHub secret-name audit on 2026-07-31 found `ASC_KEY_ID`, `ASC_ISSUER_ID`, and `DEVELOPMENT_TEAM`; `ASC_KEY_CONTENT` remains the single missing TestFlight secret. No TestFlight workflow run existed yet.
 
 ### Test-count history (superseded — do not treat as current)
 
@@ -76,7 +80,7 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 ## Blockers
 
-- TestFlight/App Store distribution has not been exercised; CI signing needs a verified signing identity/configuration plus secrets (MALA-8)
+- TestFlight/App Store distribution has not been exercised; local signing is verified but CI needs `ASC_KEY_CONTENT` plus a first approved run (MALA-8)
 - App Store Connect record, screenshot approval/upload, rating/privacy answers, and release-candidate device QA remain open (MALA-5/6/9)
 
 ## Documentation reconciliation (2026-07-17)
@@ -141,5 +145,5 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 ## Next action
 
 1. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
-2. Run release-candidate device QA and finalize App Store Connect fields/assets.
-3. Decide whether to pursue Maestro simulator execution for the `quality/ui/` manifests now that the CLI can be installed.
+2. Run release-candidate device QA and human-approve App Store Connect fields/assets.
+3. Upload repository metadata, submit the approved processed build, and retain App Store evidence.
