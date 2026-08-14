@@ -4,7 +4,7 @@
 |----|------|-------------|--------|------------|-------|--------|
 | R1 | Haptic feel differs on untested device classes | medium | high | iPhone 16 Pro Max passed; add broader device coverage post-v1 | owner | accepted |
 | R2 | Spiritual seed content inaccurate / disrespectful | low | high | Bundled spiritual content removed; reactivate review if reintroduced | owner | resolved |
-| R3 | Accessibility gaps undermine eyes-free promise | medium | high | Dynamic Type passes; VoiceOver user testing explicitly deferred and tracked in MALA-7 | owner | accepted post-v1 |
+| R3 | Accessibility gaps undermine eyes-free promise | low | medium | Dynamic Type passes and is the accessibility baseline; VoiceOver support is out of scope by product decision (2026-08-14, MALA-7) — not planned for any version, so no residual VoiceOver risk is tracked | owner | closed — out of scope |
 | R4 | Signing/config drift blocks TestFlight | low | high | Build 2 manual archive/upload succeeded; preserve evidence and configure `ASC_KEY_CONTENT` later before relying on unattended deployment | owner | mitigated; automation deferred |
 | R5 | Repository docs vs external-mirror drift | medium | medium | Repository is authoritative; sync outward to Jira, Notion, and Studio OS; reconcile conflicts from verified repo evidence per `GOVERNANCE.md` | owner | mitigated |
 | R6 | No CI allows silent regressions | low | medium | GitHub Actions build/test workflow exists | owner | resolved |

@@ -118,3 +118,27 @@ supersedes: []
 - **Related Files:** `fastlane/Fastfile`, `fastlane/metadata/`,
   `.github/workflows/release-app-store.yml`, `docs/DEPLOYMENT.md`,
   `docs/RELEASE_CHECKLIST.md`, `docs/RELEASE_METADATA.md`
+
+## DEC-010 — VoiceOver support is out of scope, not deferred
+
+- **Status:** accepted
+- **Date Recorded:** 2026-08-14
+- **Context:** B-A11Y/R3/O4 tracked VoiceOver user validation as an "accepted
+  post-v1 risk" — implying VoiceOver support was still planned, just not yet
+  validated. The user decided VoiceOver is not wanted for this app at all.
+- **Options Considered:** Keep VoiceOver as a deferred post-v1 gate requiring
+  future user validation; drop VoiceOver as a product requirement entirely
+  while leaving existing VoiceOver labels/actions in the code as-is (no code
+  removal, just no further investment or launch-gating on it).
+- **Decision:** VoiceOver support is out of scope for Mala, for any version.
+  It is not a launch gate, not a post-v1 roadmap item, and not tracked as a
+  residual risk going forward. Dynamic Type remains the app's accessibility
+  baseline and stays implemented, tested, and required for launch.
+- **Consequences:** B-A11Y (BUGS.md) and R3 (RISKS.md) are closed as
+  out-of-scope rather than left open as accepted risk. O4 (LAUNCH_READINESS.md
+  §7/§9) is closed — no VoiceOver user-validation step blocks launch.
+  Existing VoiceOver labels/values/actions in `Japa/Design/Theme.swift` are
+  left in place unmodified; this decision governs requirements and roadmap,
+  not existing code.
+- **Related Files:** `docs/BUGS.md`, `docs/RISKS.md`, `docs/STATUS.md`,
+  `LAUNCH_READINESS.md`

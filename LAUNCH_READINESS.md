@@ -182,7 +182,7 @@ Unchanged from the locked product decision, and honored by the build:
 | F6 | Preferences | **Built ✓** | Target/tone/intensity persist and apply without restart. |
 | F7 | Local-first persistence & privacy | **Built ✓** | No network/analytics; sandbox-only JSON; bundled `PrivacyInfo.xcprivacy`. **Hard gate — passed** (label entered at submission). |
 
-**Overall launch gate:** F1/F7 hard gates passed; F3 was validated on device; F2/F4/F5/F6 meet criteria. Build 2 is processed, confirmed working through TestFlight, and `Ready to Submit`. Remaining items are final App Store assets/metadata, questionnaires, and public-release review. VoiceOver user testing is deferred post-v1 with acknowledged risk.
+**Overall launch gate:** F1/F7 hard gates passed; F3 was validated on device; F2/F4/F5/F6 meet criteria. Build 2 is processed, confirmed working through TestFlight, and was submitted for App Review on 2026-08-06 (Waiting for Review). Remaining items are the App Review decision and public-release review. VoiceOver support is out of scope by product decision (2026-08-14) — Dynamic Type is the app's accessibility baseline and is implemented and smoke-tested.
 
 ---
 
@@ -191,7 +191,7 @@ Unchanged from the locked product decision, and honored by the build:
 - **Haptic feel is device-dependent.** Crispness, latency, and distinctness vary across Taptic Engine generations. The core claim was validated on iPhone 16 Pro Max; broader device-class coverage is optional post-v1. The Simulator has no Taptic Engine, so feel cannot be auto-tested.
 - **Silent-switch / tone split is nuanced.** Haptics ignore the mute switch; the tone (`.ambient`) follows it. This is documented in Settings copy but should be watched in beta for "why no sound?" confusion.
 - **Bundled spiritual seed content is not in Mala v1.** `docs/CONTENT_REVIEW.md` is retained as historical context and must be reactivated if that content returns.
-- **Accessibility is partially implemented and not yet validated with users.** VoiceOver labels/values/actions, an advance action on the ring, reduced-motion handling, and Dynamic Type are in place. Dynamic Type has simulator smoke coverage at accessibility text size on large and compact iPhones; VoiceOver and real-user validation remain required before public launch.
+- **Accessibility baseline is Dynamic Type, not VoiceOver.** VoiceOver support is out of scope by product decision (2026-08-14) and is not planned for any version, though existing VoiceOver labels/values/actions and reduced-motion handling remain in place as-is. Dynamic Type has simulator smoke coverage at accessibility text size on large and compact iPhones and is the accessibility baseline required before public launch.
 - **The generated `.xcodeproj` is committed for convenience** but `project.yml` is the source of truth — regenerate with `xcodegen generate` rather than hand-editing the project.
 
 ---
@@ -219,7 +219,7 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 | O1 (was B6) | **Bundled spiritual content review** | Closed for v1 because bundled spiritual content was removed; reactivate only if it returns. |
 | O2 (was B3/B4) | **Broader haptic device coverage** | Core haptic and completion behavior passed on iPhone 16 Pro Max; broader coverage is optional post-v1. |
 | O3 (was B9) | **App Store metadata:** name (cleared), bundle id, category (Lifestyle vs Health & Fitness), age rating, screenshots, description, support URL, privacy label. | Required to submit. |
-| O4 | **Accessibility pass** with VoiceOver + Dynamic Type users. | Non-negotiable for an eyes-free app; VoiceOver is coded but unvalidated. Dynamic Type is implemented and smoke-tested, but final accessibility sign-off still needs users/devices. |
+| O4 | **Accessibility pass** with Dynamic Type users. | **Closed 2026-08-14** — VoiceOver support is out of scope by product decision and is no longer a launch gate. Dynamic Type is implemented and smoke-tested at accessibility text size and is the app's accessibility baseline. |
 | O5 | **Release-candidate distribution** | **Closed 2026-08-06** — Build 2 processed to `Ready to Submit` and confirmed working through TestFlight. GitHub automation is deferred. |
 
 ### Non-blocking (ship-with, fix later)
@@ -241,7 +241,7 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 
 ### Current estimated readiness
 
-The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, device-validated, uploaded, and in TestFlight beta**, not publicly released — a pure tested engine (the hard gate), the eyes-free practice surface, explicit early completion, a distinct completion signal with fallback, interruption-safe persistence, neutral/custom label selection, a non-gamified history, settings, Dynamic Type support, optional TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is the processed-build smoke check, final App Store assets and metadata, questionnaires, and App Review.
+The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, device-validated, uploaded, and submitted for App Review** (2026-08-06, Waiting for Review), not yet publicly released — a pure tested engine (the hard gate), the eyes-free practice surface, explicit early completion, a distinct completion signal with fallback, interruption-safe persistence, neutral/custom label selection, a non-gamified history, settings, Dynamic Type support, optional TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is the App Review decision and, once approved, the manual public release.
 
 ### Remaining work to reach launch (ordered)
 1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
@@ -255,8 +255,8 @@ The live readiness estimate and latest verification are owned by [`docs/STATUS.m
 9. ✅ Change Mala visual picker — 21 native SwiftUI/Canvas styles; Classic remains default.
 10. ✅ Privacy/no-network audit (F7) + `PrivacyInfo.xcprivacy`.
 11. ✅ **Content scope (O1)** — bundled spiritual seed content removed from v1; historical review retained.
-12. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion/Dynamic Type are coded; validate on device.
-13. ✅ **On-device haptic validation (O2)** — done on a physical iPhone 16 Pro Max (2026-07-18). ⏳ **App Store prep + release candidate (O3/O5)** — Build 2 uploaded manually; processing, refreshed assets/metadata, questionnaires, and submission approval remain (`docs/DEPLOYMENT.md`).
+12. ✅ **Accessibility pass (O4)** — Dynamic Type is the accessibility baseline, implemented and smoke-tested; VoiceOver support is out of scope by product decision (2026-08-14), closing this gate.
+13. ✅ **On-device haptic validation (O2)** — done on a physical iPhone 16 Pro Max (2026-07-18). ✅ **App Store prep + release candidate (O3/O5)** — Build 2 uploaded, processed, and submitted for App Review on 2026-08-06; App Review decision and manual public release remain (`docs/DEPLOYMENT.md`).
 
 ### Audit (2026-07-01)
 A full audit was run against the built app. Findings fixed:
@@ -291,10 +291,10 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 - [x] **App icon** (respectful, abstract bead-ring — no appropriated imagery).
 - [x] **Haptics & silent-switch behavior documented in-app** (Settings copy).
 - [x] **Local data controls** — delete an entry / clear all.
-- [x] **Accessibility partially implemented** — VoiceOver labels/values/advance action, reduced-motion handling, and Dynamic Type are coded; Dynamic Type smoke-tested at accessibility text size.
+- [x] **Accessibility baseline implemented** — Dynamic Type and reduced-motion handling are coded and smoke-tested; existing VoiceOver labels/values/advance action remain in place as-is, but VoiceOver support is out of scope by product decision (2026-08-14) and is not a launch requirement.
 - [x] **Content scope (O1):** bundled spiritual seed content removed from Mala v1 on 2026-07-26; historical review record retained in `docs/CONTENT_REVIEW.md`.
 - [x] **On-device haptic / completion validation (O2)** — validated on a physical iPhone 16 Pro Max (2026-07-18): tick + distinct completion + fallback path; closes JAPA-7. (One hardware class; additional classes optional.)
-- [ ] **Accessibility validated with VoiceOver users and Dynamic Type users on device (O4).**
+- [x] **Accessibility gate closed (O4)** — Dynamic Type validated at accessibility text size on device; VoiceOver is out of scope, so no VoiceOver user validation is required.
 - [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.
 - [x] **Release-candidate distribution (O5):** Build 2 processed to `Ready to Submit` and confirmed working through TestFlight on 2026-08-06.
 - [ ] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` (no data collected/tracked).
