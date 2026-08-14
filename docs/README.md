@@ -2,7 +2,7 @@
 id: DOC-INDEX
 canonicalFor: documentation-navigation
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-08-03
 readWhen:
   - onboarding
   - locating authoritative project information
@@ -39,8 +39,8 @@ Read in order:
 | Repository authority and external mirrors | `GOVERNANCE.md` | Source precedence, synchronization, conflict resolution, completion |
 | Product overview | `../README.md` | Front-door summary; defers scope detail to LAUNCH_READINESS.md |
 | Launch scope and readiness | `../LAUNCH_READINESS.md` | Self-declared authoritative PRD, MVP acceptance criteria, launch checklist |
-| Detailed cross-functional documentation | `PROJECT_DOCUMENTATION.md` | Product/Design/Frontend/Backend/Business/Marketing/UA/Execution/QA/Legal/Operations template, mirrored to Notion |
-| Content review | `CONTENT_REVIEW.md` | Seed mantra tradition/gloss review + human sign-off gate |
+| Detailed cross-functional documentation | `PROJECT_DOCUMENTATION.md` | Product/Design/Frontend/Backend/Business/Marketing/UA/Execution/QA/Legal/Operations, including the canonical go-to-market work breakdown; mirrored to Notion |
+| Content review | `CONTENT_REVIEW.md` | Historical seed-mantra review; not a Mala v1 gate unless bundled spiritual content returns |
 | Current status | `STATUS.md` | Current progress, blockers, verification |
 | Current architecture | `ARCHITECTURE.md` | Implemented architecture, not proposals |
 | Feature inventory | `FEATURES.md` | Current feature status |

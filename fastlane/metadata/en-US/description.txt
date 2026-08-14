@@ -1,0 +1,14 @@
+Mala is a quiet digital mala for steady, distraction-free repetition practice.
+
+Advance one bead at a time and keep your place with clear haptic feedback. Choose a round length that fits your practice, from a short sit to a full 108-bead mala. A distinct completion signal marks the end of each round.
+
+Make it yours:
+
+- Count without a label, or add your own private practice label.
+- Choose from visual mala styles.
+- Adjust haptic strength and the completion tone.
+- Finish a round early and save your partial progress honestly.
+- Pause and resume an in-progress round.
+- Keep a simple on-device history, or clear it whenever you want.
+
+Mala is local-first: no accounts, no ads, no analytics, and no network requests. Your practice stays on your device.

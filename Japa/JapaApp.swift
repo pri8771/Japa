@@ -73,6 +73,15 @@ struct JapaApp: App {
             break // Clean store is the empty fixture.
         case "one-record":
             model.record(sampleSession(daysAgo: 1, completed: true))
+        case "app-store-history":
+            model.record(PracticeSession(
+                startedAt: Date(timeIntervalSince1970: 1_785_971_400),
+                duration: 540,
+                mantraTitle: "Counting",
+                target: 108,
+                completedCount: 108,
+                reachedTarget: true
+            ))
         case "many-records":
             for day in 1...12 {
                 model.record(sampleSession(daysAgo: day, completed: day % 3 != 0))

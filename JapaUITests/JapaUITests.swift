@@ -127,6 +127,22 @@ final class JapaUITests: XCTestCase {
         attach(app, "07-History-empty")
     }
 
+    /// Captures the release-candidate History state using the same deterministic
+    /// local fixture used by UI validation. This keeps App Store artwork aligned
+    /// with the shipped duration formatting without adding seed content to the app.
+    func testAppStoreHistoryScreenshot() {
+        let app = makeApp()
+        app.launchEnvironment["UI_FIXTURE"] = "app-store-history"
+        app.launch()
+        dismissIntro(app)
+
+        XCTAssertTrue(app.buttons["historyButton"].waitForExistence(timeout: 8))
+        app.buttons["historyButton"].tap()
+        XCTAssertTrue(app.navigationBars["History"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["9m 0s"].waitForExistence(timeout: 8))
+        attach(app, "08-History-release")
+    }
+
     func testPrimaryFlowAtAccessibilityTextSize() {
         let app = makeApp()
         app.launchArguments += [

@@ -57,13 +57,16 @@
     ],
     "ciConfiguration": [
       ".github/workflows/ios-ci.yml",
-      ".github/workflows/release-testflight.yml"
+      ".github/workflows/release-testflight.yml",
+      ".github/workflows/release-app-store.yml"
     ],
     "deploymentConfiguration": [
       "fastlane/Fastfile",
       "fastlane/Appfile",
+      "fastlane/metadata",
       "Gemfile",
-      ".github/workflows/release-testflight.yml"
+      ".github/workflows/release-testflight.yml",
+      ".github/workflows/release-app-store.yml"
     ],
     "featureContracts": "quality/feature-contracts",
     "completionReports": "quality/completion-reports",
@@ -155,6 +158,14 @@
       ".github/workflows/release-testflight.yml",
       "docs/RELEASE_CHECKLIST.md"
     ],
+    "deploy-app-store": [
+      "docs/DEPLOYMENT.md",
+      "docs/RELEASE_METADATA.md",
+      "fastlane/Fastfile",
+      "fastlane/metadata",
+      ".github/workflows/release-app-store.yml",
+      "docs/RELEASE_CHECKLIST.md"
+    ],
     "sync-external-trackers": [
       "docs/GOVERNANCE.md",
       "docs/STATUS.md",
@@ -176,11 +187,12 @@
   "notes": [
     "Populated from the actual Japa source tree during the 2026-07-17 registration-upgrade pass (standard 0.2.0 -> 0.4.0).",
     "CI configuration added 2026-07-17: .github/workflows/ios-ci.yml runs XcodeGen, Release simulator build, and tests.",
-    "TestFlight deployment added 2026-07-18 and corrected 2026-07-29: fastlane/ + .github/workflows/release-testflight.yml archive and upload to TestFlight (tag- or dispatch-triggered). The macos-26 workflow authenticates Xcode provisioning with the temporary App Store Connect API key during archive/export. Canonical process doc: docs/DEPLOYMENT.md. project.yml signing remains CI-safe per DEC-005; end-to-end upload is unverified until secrets are configured and a real run succeeds.",
+    "TestFlight deployment added 2026-07-18 and corrected 2026-07-29: fastlane/ + .github/workflows/release-testflight.yml archive and upload to TestFlight (tag- or dispatch-triggered). Build 2 was uploaded manually through Xcode Organizer on 2026-08-06; missing ASC_KEY_CONTENT blocks only optional GitHub automation, not the manual release. The macos-26 workflow authenticates Xcode provisioning with the temporary App Store Connect API key during archive/export. Canonical process doc: docs/DEPLOYMENT.md. project.yml signing remains CI-safe per DEC-005.",
     "Studio OS enrollment 2026-07-19: .factory/studio-link.json links this repo to Studio OS product PROD-JAPA (pri8771/studio-ios). quality/ui/ adds the App Factory automated-UI-testing manifests (screens/journeys/safe-actions) + generated Maestro flows; Japa/JapaApp.swift honors the standard UI_TEST_MODE/UI_FIXTURE/UI_RESET_STATE/UI_DISABLE_ANIMATIONS contract. Maestro simulator execution is pending (CLI not installed at enrollment time).",
     "Merged agent/fix-app-icon (Mala rebrand, seed-content removal, App Store screenshot assets, TestFlight Fastfile tag-version support) with origin/main (Studio OS enrollment, Maestro UI-testing manifests) on 2026-07-27 to unblock release. Both lines' additions are preserved; see docs/HANDOFF.md.",
     "docs/PROMPT_LOG.md and docs/JIRA_SYNC_PENDING.md are working logs, not canonical product documentation — see docs/README.md's documentation-gaps section.",
     "Repository code, evidence, contracts, and canonical documents are authoritative. Jira, Notion, Studio OS, dashboards, and chat history are external mirrors; see docs/GOVERNANCE.md.",
+    "App Store metadata and submission automation added 2026-07-31: repository-backed fastlane/metadata plus the manual-only release-app-store.yml workflow. Metadata upload cannot submit; submission requires an exact confirmation phrase and processed build number and keeps public release manual. End-to-end App Store Connect execution remains unverified pending credentials, human approvals, and a real run.",
     "Do not treat templates or examples as implemented product facts."
   ]
 }

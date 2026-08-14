@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-07-31
+lastVerified: 2026-08-06
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -18,37 +18,42 @@ supersedes: []
 ## Lifecycle status
 
 Product lifecycle (per `iOS_app_factory_rules/governance/PROJECT_LIFECYCLE.md`
-controlled vocabulary): **`verified`** — automated suite green and on-device
-validated, with external release gates before `released`. VoiceOver user
-validation is an explicitly accepted post-v1 risk, not a completed check. Next
-state is `beta` once a signed TestFlight build is distributed.
+controlled vocabulary): **`beta`** — Build 1 is available in TestFlight and
+Build 2, containing explicit Finish early and the current fixes, was uploaded
+manually through Xcode Organizer on 2026-08-06 and is **Ready to Submit** in App
+Store Connect. VoiceOver user validation is an explicitly accepted post-v1 risk,
+not a completed check.
 
 Factory registration is a separate axis and is **complete** (`projectType:
 existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
 
 ## Current objective
 
-Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and upload the captured screenshots, and complete App Store Connect metadata and device QA.
+Monitor App Review for version 1.0 Build 2, respond to any reviewer questions,
+and manually release the approved version after a final status check.
 
 ## Product maturity
 
 - **Implementation:** v1 feature set built and on-device validated (2026-07-18, iPhone 16 Pro Max); mala-style picker, Dynamic Type, merged practice surface, stale-round Finish, CI, and TestFlight deployment automation in place
 - **Factory registration:** existing project, standard `0.4.0` (upgraded from `0.2.0` on 2026-07-17), registered 2026-07-16
-- **Ship blockers remaining:** human approval/upload of the captured App Store assets and metadata, and the first real signed TestFlight upload. VoiceOver user validation is deferred post-v1 with residual risk recorded in MALA-7.
+- **App Review:** version 1.0 Build 2 is Waiting for Review. It was submitted on
+  2026-08-06 at 11:40 PM under submission `897d1493-c2f1-474f-afa6-01d3e92694c4`.
+  Public release remains manual. GitHub automation is deferred and is not a
+  blocker. VoiceOver user validation remains an accepted post-v1 residual risk.
 
 ## Verified
 
 - App Factory registration files present and verified (`verify-project-registration.sh`)
 - Local-first, no networking, no third-party SDKs (source inventory)
-- **Current automated suite: 68 tests (56 unit/flow + 12 UI), all passing** — re-verified 2026-08-02 after adding the explicit Finish early flow; canonical count, see `TEST_PLAN.md`
+- **Current automated suite: 69 tests (56 unit/flow + 13 UI), all passing** — re-verified 2026-08-06 after adding the deterministic App Store history-screenshot fixture; canonical count, see `TEST_PLAN.md`
 - XcodeGen `project.yml` is source of truth for targets
 - **On-device validated on a physical iPhone 16 Pro Max (2026-07-18):** signed dev build installed and run; eyes-free haptics (tick + distinct completion), full round flow, and all 21 animated mala styles confirmed working on hardware by the accountable human. Closes JAPA-7 and JAPA-12. Evidence: `quality/evidence/2026-07-18-device-validation-iphone16promax.md`.
 - Public product identity is **Mala**. The release bundle ID is `com.priyansh.mala`; internal Xcode target/scheme, engine symbols, and persistence path retain `Japa` for compatibility.
 - Bundled spiritual seed content was removed; v1 ships neutral Counting plus private user-created labels.
-- Five App Store screenshots were captured from the iPhone 17 Pro Max simulator at 1320 × 2868 with no alpha and stored under `AppStoreAssets/Screenshots/en-US/6.9-inch/`.
+- Five final App Store screenshots were accepted in App Store Connect and are stored at 1284 × 2778 with no alpha under `AppStoreAssets/Screenshots/en-US/6.5-inch/`.
 - A 6.9-inch UI-test run exposed top-chrome taps being intercepted by the practice gesture; the counting hit area now excludes the control bands and the history flow passes.
 - Physical-device QA exposed inflated history durations (for example, 803m). Root cause was wall-clock timing across background/termination plus a new-round path that retained the prior start time. `B-SESSION-DURATION` now tracks foreground-active time only and resets timing for every round; full simulator regression is green, with refreshed device validation still required.
-- TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. End-to-end upload is `unverified` pending App Store Connect secrets — see `docs/DEPLOYMENT.md`.
+- TestFlight deployment pipeline committed (`fastlane/` + `release-testflight.yml`); Ruby/YAML syntax validated. Build 1 is in App Store Connect TestFlight (`Testing`). Follow-up workflow runs 30778381551 and 30778424180 failed because `ASC_KEY_CONTENT` is empty; see `docs/DEPLOYMENT.md`.
 - Enrolled in Studio OS as `PROD-JAPA` (`pri8771/studio-ios`, 2026-07-19); `.factory/studio-link.json` is the product-side pointer. Automated-UI-testing manifests (`quality/ui/`) and generated Maestro flows were added the same day; Maestro simulator execution is still pending (CLI unavailable at enrollment time).
 - `Gemfile.lock` is committed (regenerated via `bundle install` 2026-07-27) so the TestFlight CD workflow's `ruby/setup-ruby@v1` `bundler-cache: true` step no longer hard-fails before it can run.
 - Public privacy and support pages are live at `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/`; both returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29.
@@ -56,8 +61,12 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 - The product-branded bundle identifier change is locally verified: XcodeGen succeeded, 67/67 tests passed, and Xcode produced a signed `com.priyansh.mala` 1.0 (1) archive for team `796XH483R4` using automatic provisioning. Evidence: `quality/evidence/2026-07-30-mala-bundle-id.md`.
 - The current release candidate was independently re-verified 2026-07-31 on iPhone 17 Pro / iOS 26.5 simulator: 67 passed, 0 failed, 0 skipped. Result bundle: `/private/tmp/mala-release-verification/Logs/Test/Test-Japa-2026.07.31_10-02-36--0400.xcresult` (local ephemeral evidence; record durable CI/TestFlight evidence before release).
 - Explicit Finish early is now available from the practice surface with confirmation; it records an honest partial session and starts a fresh round. Targeted UI verification passed 2026-08-02.
+- Mala 1.0 (2) was archived and uploaded manually through Xcode Organizer on 2026-08-06. Xcode reported `App upload complete`; App Store Connect processed it to `Ready to Submit`, expiring in 90 days. Evidence: `quality/evidence/2026-08-06-manual-app-store-upload-build-2.md`.
+- The accountable user confirmed on 2026-08-06 that processed Build 2 worked correctly through TestFlight. This closes the release-candidate distribution-path smoke check.
 - Repository-backed App Store metadata and approval-gated submission automation are implemented locally (`fastlane/metadata`, `store_metadata`, `submit_review`, and `release-app-store.yml`). Metadata upload cannot submit; submission requires an exact version/build confirmation and keeps public release manual. Authenticated execution remains unverified. Evidence: `quality/evidence/2026-07-31-app-store-automation.md`.
-- A read-only GitHub secret-name audit on 2026-07-31 found `ASC_KEY_ID`, `ASC_ISSUER_ID`, and `DEVELOPMENT_TEAM`; `ASC_KEY_CONTENT` remains the single missing TestFlight secret. No TestFlight workflow run existed yet.
+- App Store Connect preparation was completed manually through the in-app browser on 2026-08-06: five final screenshots accepted and ordered; product copy, Support URL, category, content rights, 4+ age rating, free worldwide availability, manual release, and Build 2 entered. Build metadata confirms non-exempt encryption is No. Exact store name `Mala` was unavailable, so the saved store name remains `Mala: A Quiet Digital Mala` while the installed display name remains `Mala`. Evidence: `quality/evidence/2026-08-06-app-store-connect-preparation.md`.
+- The Data Not Collected privacy response was published, DSA non-trader status became Active for 27 EU regions, App Review contact information was saved, and version 1.0 Build 2 was submitted successfully on 2026-08-06 at 11:40 PM. Current status: Waiting for Review. Submission ID: `897d1493-c2f1-474f-afa6-01d3e92694c4`.
+- A GitHub Actions audit on 2026-08-03 found `ASC_KEY_ID`, `ASC_ISSUER_ID`, and `DEVELOPMENT_TEAM` present; `ASC_KEY_CONTENT` remains the single missing TestFlight secret. Two follow-up upload runs failed at authentication preflight before archive/upload.
 
 ### Test-count history (superseded — do not treat as current)
 
@@ -68,8 +77,8 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 ## Verification pending
 
-- Human approval/upload of the captured App Store screenshots and App Store Connect metadata
-- First real TestFlight upload (MALA-8): corrected automation is committed locally but still needs credentials and one verified run under `quality/evidence/`
+- Apple App Review decision and any reviewer follow-up
+- Accountable-human final release decision after approval; automatic release is disabled
 - VoiceOver validation with a real assistive-tech user is deferred post-v1 (MALA-7); Dynamic Type remains implemented and smoke-tested
 
 ## External trackers
@@ -80,8 +89,7 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 ## Blockers
 
-- TestFlight/App Store distribution has not been exercised; local signing is verified but CI needs `ASC_KEY_CONTENT` plus a first approved run (MALA-8)
-- App Store Connect record, screenshot approval/upload, rating/privacy answers, and release-candidate device QA remain open (MALA-5/6/9)
+- No pre-review submission blocker remains. The release is waiting on Apple's review decision.
 
 ## Documentation reconciliation (2026-07-17)
 
@@ -144,6 +152,6 @@ Prepare Mala v1 for App Store release: verify signing/TestFlight, approve and up
 
 ## Next action
 
-1. Complete and verify CI signing, then upload the first TestFlight build (MALA-8).
-2. Run release-candidate device QA and human-approve App Store Connect fields/assets.
-3. Upload repository metadata, submit the approved processed build, and retain App Store evidence.
+1. Monitor submission `897d1493-c2f1-474f-afa6-01d3e92694c4` for review status or reviewer messages.
+2. Address any App Review issue without replacing Build 2 unless a code change is required.
+3. After approval, perform a final product-page check and manually release version 1.0.

@@ -1,4 +1,4 @@
-# Seed Mantra Content Review (B6)
+# Historical Seed Mantra Content Review (B6)
 
 **Date Recorded:** 2026-06-30
 **Last Verified:** 2026-07-17
@@ -50,4 +50,4 @@ Source of truth: [`Japa/Content/SeedMantras.swift`](../Japa/Content/SeedMantras.
 - [ ] Date: _______________
 - [ ] Approved for App Store submission
 
-Until this sign-off is complete, treat B6 as **open**.
+The former B6 gate is **closed for Mala v1** because the bundled spiritual seed content was removed from the shipping scope on 2026-07-26. If bundled spiritual content is proposed again, reactivate this review before release.

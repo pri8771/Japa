@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-07-30
+lastVerified: 2026-08-06
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -60,7 +60,7 @@ supersedes: []
 - **Context:** The user asked for automatic deployment to TestFlight, reusable across apps. Distribution requires real code signing, but DEC (JAPA-9, working agreement) deliberately keeps `project.yml` shipping `CODE_SIGNING_ALLOWED: NO` so the simulator CI (`ios-ci.yml`) stays green and the repo is not tied to an Apple team. The device-install flow already overrides signing at the command line (team `796XH483R4`, automatic provisioning).
 - **Options Considered:** (a) flip `project.yml` to committed signing (rejected — breaks simulator CI, ties repo to the team, contradicts JAPA-9); (b) Xcode Cloud (rejected for now — less portable, not "works for any app" off-GitHub); (c) `fastlane match` with a private certs repo (more reproducible but adds a second repo + `MATCH_PASSWORD` setup — deferred as a hardening option); (d) **Fastlane `beta` lane authenticated by an App Store Connect API key, injecting distribution signing only at archive time via `xcargs` + `-allowProvisioningUpdates`, triggered by a tag/dispatch GitHub Actions workflow.**
 - **Decision:** Option (d). `project.yml` is unchanged; signing is applied only inside the archive step, mirroring the existing device-install override. Authentication uses an ASC API key (no Apple ID/2FA) so runs are unattended. Build number = CI run number (monotonic).
-- **Consequences:** `ios-ci.yml` simulator build/test is unaffected. Public release still waits on Apple App Review and the human launch gates (JAPA-6/8/9). The pipeline is `implemented` but the end-to-end TestFlight upload is `unverified` until the four secrets (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`, `DEVELOPMENT_TEAM`) are configured and one real run is recorded under `quality/evidence/`.
+- **Consequences:** `ios-ci.yml` simulator build/test is unaffected. The automated path remains unavailable until the four secrets (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`, `DEVELOPMENT_TEAM`) are configured; `ASC_KEY_CONTENT` is currently missing. This does not block a manual Xcode Organizer upload: Build 2 was uploaded manually on 2026-08-06. Public release still waits on Apple App Review and the human launch gates (JAPA-6/8/9).
 - **Related Prompt:** Automatic TestFlight deployment + doc reconciliation to App Factory standard
 - **Related Files:** `fastlane/Fastfile`, `fastlane/Appfile`, `Gemfile`, `.github/workflows/release-testflight.yml`, `docs/DEPLOYMENT.md`, `docs/RELEASE_CHECKLIST.md`
 
@@ -93,3 +93,28 @@ supersedes: []
 - **Decision:** Use `com.priyansh.mala` for the shipping app, with matching test-target and UI-automation identifiers. Preserve the internal `Japa` target/scheme and persistence directory.
 - **Consequences:** Apple must accept and register `com.priyansh.mala` before the first upload. Development builds under the former bundle identifier use a different app sandbox and do not share local history with the new identifier; no customer migration is required because the app has not shipped.
 - **Related Files:** `project.yml`, `fastlane/Appfile`, `quality/ui/`, `docs/ARCHITECTURE.md`, `docs/RELEASE_METADATA.md`, `docs/DEPLOYMENT.md`
+
+## DEC-009 — Separate store-content upload from App Review submission
+
+- **Status:** accepted
+- **Date Recorded:** 2026-07-31
+- **Context:** TestFlight upload automation existed, but App Store metadata,
+  screenshots, and review submission were manual-only. Public submission is a
+  consequential action and must never occur from a tag push or an ambiguous
+  command.
+- **Options Considered:** Keep all store work manual; make a tag-triggered full
+  release lane; create one workflow with separate metadata and explicit submit
+  actions.
+- **Decision:** Version the approved App Store copy under `fastlane/metadata`.
+  Add `store_metadata`, which cannot submit or upload a binary, and
+  `submit_review`, which selects an exact processed build, requires a manually
+  dispatched workflow with the confirmation `SUBMIT-MALA-<version>`, and sets
+  `automatic_release: false`.
+- **Consequences:** Store copy and screenshots can be synchronized repeatably
+  after human approval, while TestFlight upload, review submission, and public
+  release remain distinct gates. Privacy, age-rating, export, agreement,
+  territory, and pricing answers are not inferred by automation. The new lanes
+  remain unverified until authenticated App Store Connect runs succeed.
+- **Related Files:** `fastlane/Fastfile`, `fastlane/metadata/`,
+  `.github/workflows/release-app-store.yml`, `docs/DEPLOYMENT.md`,
+  `docs/RELEASE_CHECKLIST.md`, `docs/RELEASE_METADATA.md`
