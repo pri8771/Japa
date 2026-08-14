@@ -2,7 +2,7 @@
 id: DOC-LAUNCH-READINESS
 canonicalFor: launch-scope-and-prd
 status: active
-lastVerified: 2026-07-18
+lastVerified: 2026-08-06
 readWhen:
   - understanding v1 product scope, MVP features, or acceptance criteria
 related:
@@ -19,7 +19,7 @@ supersedes: []
 
 > Mala is a local-first iOS app for *japa* — the repetition of a mantra a fixed number of times (classically 108, one full *mala*). It is for anyone with a daily repetition practice — Hindu, Buddhist, Sikh, or secular-meditative — who wants a quiet, eyes-free way to keep count without a physical bead string and without the practice becoming a noisy, gamified phone app. The core loop is a single tactile practice screen: the practitioner advances one bead at a time (tap anywhere / thumb-swipe) without looking, each advance is confirmed by a crisp haptic, and reaching the target (the 108th bead, or a chosen target) fires a **distinct completion haptic plus a gentle tone** so the round's end is unmistakable without looking at or listening hard to the device. Sessions complete and are saved to a quiet local history.
 >
-> **Implementation maturity: v1 BUILT.** The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; neutral counting plus user-created private labels; a quiet, non-gamified history; settings; Dynamic Type support; CI and TestFlight deployment automation; a 21-style Change Mala visual picker with Classic as the default; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release simulator for iOS 17+ and has been validated on a physical device. **Current test counts, verification dates, and production-readiness are owned by [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md); this document does not restate them.** What remains before public launch: public privacy/support pages, App Store Connect setup, final assets, signing/TestFlight, and device QA (§9 is the scope-level view; [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) tracks live gate status). The original product definition was developed under the working name Japa; factory registration is recorded in `docs/DECISIONS.md` DEC-004.
+> **Implementation maturity: v1 in TestFlight beta.** Build 2, containing explicit Finish early and the current fixes, was uploaded manually through Xcode Organizer, processed to `Ready to Submit`, and confirmed working through TestFlight on 2026-08-06. The repository contains a building, tested SwiftUI app generated from `project.yml` via XcodeGen. Present: a pure `JapaEngine` with the frozen contract and a passing unit-test suite; the eyes-free, whole-screen-advance practice surface; explicit Finish early with honest partial-session recording; a distinct completion haptic (CoreHaptics, with `UIFeedbackGenerator` fallback) plus a synthesized gentle tone that respects the silent switch; interruption-safe local persistence; neutral counting plus user-created private labels; a quiet, non-gamified history; settings; Dynamic Type support; CI and optional TestFlight deployment automation; a 21-style Change Mala visual picker with Classic as the default; an app icon; and a truthful `PrivacyInfo.xcprivacy` with a verified no-network/no-analytics posture. Builds in Debug and Release simulator and has been validated on a physical device. **Current test counts, verification dates, and production-readiness are owned by [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md); this document does not restate them.** What remains before public launch: final assets/metadata, questionnaires, and App Review (§9 is the scope-level view; [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) tracks live gate status). The original product definition was developed under the working name Japa; factory registration is recorded in `docs/DECISIONS.md` DEC-004.
 
 ---
 
@@ -74,21 +74,21 @@ The pure, UI-independent core in [`Japa/Engine/JapaEngine.swift`](Japa/Engine/Ja
 - ✅ **Given** a user undo/back-tap, **then** count decrements by 1 without going below 0 and without firing completion.
 - ✅ **Verified by:** `JapaEngineTests` (23 tests) — advance, completion-once-at-N, advance-past-target `.alreadyComplete`, target-config incl. boundary/invalid, undo/decrement floor, reset/new-round, reconstruction from persisted count. **Hard gate — green.**
 
-### F2. Eyes-free tactile practice screen — **Built (device feel pending)**
+### F2. Eyes-free tactile practice screen — **Built (device-validated on iPhone 16 Pro Max)**
 [`Japa/Views/PracticeView.swift`](Japa/Views/PracticeView.swift): a whole-screen advance layer; only the close/undo controls capture touches. Each advance fires a crisp haptic; the target fires the distinct completion haptic + tone.
 - ✅ **Given** the practice screen, **when** the user taps anywhere (or the VoiceOver advance action), **then** the bead advances and a per-bead haptic fires (in-memory state + haptic first, then async persist).
 - ✅ **Given** eyes-closed use, **then** no visual confirmation is required — the haptic is the confirmation; whole-screen hit area needs no aiming.
 - ✅ **Given** silent mode, **then** per-bead haptics still fire (independent of the mute switch); the completion tone respects the silent switch + setting.
 - ✅ **Given** an accidental tap, **then** a one-step undo (swipe-down or the Undo control) maps to F1 decrement.
-- ⏳ **Pending (manual, on device):** per-bead haptic crispness/latency (<~50 ms feel) confirmed across iPhone classes. UI-tested for advance→increment and undo→decrement (`JapaUITests`).
+- ✅ **Manual device validation:** per-bead haptic crispness and the eyes-free practice flow were confirmed on iPhone 16 Pro Max on 2026-07-18. Broader device-class coverage is optional post-v1.
 
-### F3. Distinct end-of-round completion signal — **Built (device A/B pending)**
+### F3. Distinct end-of-round completion signal — **Built (device-validated on iPhone 16 Pro Max)**
 [`Japa/Haptics/HapticPlayer.swift`](Japa/Haptics/HapticPlayer.swift): per-bead tick is a single sharp transient; completion is a short rising swell capped by a firm transient — a deliberately different Core Haptics pattern — plus one synthesized gentle tone.
 - ✅ **Given** the per-bead haptic, **then** the completion pattern uses a different Core Haptics shape (continuous swell + transient vs. a single transient).
 - ✅ **Given** target reached, **then** completion fires exactly once (engine returns `.completed` once; `complete()` runs once), with one tone.
 - ✅ **Given** no Core Haptics, **then** a graceful fallback (`UINotificationFeedbackGenerator(.success)`) fires and the tone still plays.
 - ✅ **Given** the tone is muted in settings, **then** only the completion haptic fires.
-- ⏳ **Pending (manual, on device):** A/B confirmation that per-bead vs. completion is distinguishable eyes-free. **Hard gate — code complete; final sign-off is on-device.**
+- ✅ **Manual device validation:** per-bead and completion signals were distinguishable eyes-free on iPhone 16 Pro Max on 2026-07-18, including the fallback path.
 
 ### F4. Mantra selection: neutral counting mode **plus** user free-text — **Built**
 [`Japa/Content/SeedMantras.swift`](Japa/Content/SeedMantras.swift) + [`MantraSelectView`](Japa/Views/MantraSelectView.swift). Mala v1 ships only a neutral counting default; bundled spiritual seed content was removed on 2026-07-26.
@@ -131,7 +131,7 @@ Unchanged from the locked product decision, and honored by the build:
 - **Reminders / push notifications.** None requested; no notification permission is triggered.
 - **Audio / guided chanting / per-bead recited audio.** Out. v1 ships at most one gentle completion tone.
 - **External 3D/photoreal asset pipeline.** Out. v1 visual styles are native SwiftUI/Canvas renderers plus the haptic rhythm.
-- **Content library / large curated catalog, translations, meanings, pronunciation audio.** Out. Tiny reviewed seed set + user free-text only.
+- **Content library / large curated catalog, translations, meanings, pronunciation audio.** Out. Neutral Counting plus private user-created labels only.
 - **Accounts, cloud sync, cross-device, sharing, social, leaderboards.** Out. Local-first, single-device.
 - **Analytics, telemetry, ads, third-party SDKs.** Out (would break F7).
 - **In-app purchases / StoreKit.** Out for v1 (no `.storekit`, no IAP UI).
@@ -157,7 +157,7 @@ Unchanged from the locked product decision, and honored by the build:
 
 ### Flow C — Choose / create a mantra
 1. From Home, open **Mantra Select**.
-2. Pick from the reviewed seed set, or **Add your own** free-text (title + optional script), saved locally for reuse.
+2. Use neutral **Counting**, or **Add your own** free-text label (title + optional script), saved locally for reuse.
 
 ### Flow D — History
 1. **History**: a calm, reverse-chronological list (mantra, date, count/target, duration; partials labeled). Swipe to delete an entry; **Clear** removes all. No streaks anywhere.
@@ -175,22 +175,22 @@ Unchanged from the locked product decision, and honored by the build:
 | ID | Feature | Status | Launch pass/fail gate (summary) |
 |----|---------|--------|----------------------------------|
 | F1 | Repetition engine | **Built ✓** | Unit tests green: advance, completion once at N only, interruption-resume, target-config (boundary/invalid), undo/decrement. **Hard gate — passed.** |
-| F2 | Eyes-free practice screen | **Built** (device feel ⏳) | Whole-screen advance, per-bead haptic, silent-mode haptics, one-step undo, eyes-closed operable; UI-tested. On-device latency/feel sign-off pending. |
-| F3 | Distinct completion signal | **Built** (device A/B ⏳) | Distinct Core Haptics pattern, fires once at target, graceful fallback, respects tone-off. **Hard gate — code complete; on-device A/B pending.** |
+| F2 | Eyes-free practice screen | **Built** (device-validated) | Whole-screen advance, per-bead haptic, silent-mode haptics, one-step undo, eyes-closed operable; UI-tested and validated on iPhone 16 Pro Max. |
+| F3 | Distinct completion signal | **Built** (device-validated) | Distinct Core Haptics pattern, fires once at target, graceful fallback, respects tone-off; validated on iPhone 16 Pro Max. |
 | F4 | Neutral counting + private labels | **Built** | Neutral Counting shown; custom free-text usable + persisted; label text never affects counting. |
 | F5 | Session completion + history | **Built ✓** | Sessions saved; calm reverse-chron list; partials honest; delete/clear; **no streak UI** (asserted). |
 | F6 | Preferences | **Built ✓** | Target/tone/intensity persist and apply without restart. |
 | F7 | Local-first persistence & privacy | **Built ✓** | No network/analytics; sandbox-only JSON; bundled `PrivacyInfo.xcprivacy`. **Hard gate — passed** (label entered at submission). |
 
-**Overall launch gate:** F1/F7 hard gates passed; F3 was validated on device; F2/F4/F5/F6 meet criteria. Remaining items are public URLs, final App Store assets/metadata, signing/TestFlight, and release-candidate device QA. VoiceOver user testing is deferred post-v1 with acknowledged risk.
+**Overall launch gate:** F1/F7 hard gates passed; F3 was validated on device; F2/F4/F5/F6 meet criteria. Build 2 is processed, confirmed working through TestFlight, and `Ready to Submit`. Remaining items are final App Store assets/metadata, questionnaires, and public-release review. VoiceOver user testing is deferred post-v1 with acknowledged risk.
 
 ---
 
 ## 6. Known Limitations
 
-- **Haptic feel is device-dependent and validated only in code/Simulator so far.** Crispness, latency, and the distinctness of the completion pattern vary across Taptic Engine generations and degrade on devices without Core Haptics (a fallback path exists). The "eyes-free distinct completion" claim must be confirmed per-device class on hardware — the single highest-risk product assumption. The Simulator has no Taptic Engine, so feel cannot be auto-tested.
+- **Haptic feel is device-dependent.** Crispness, latency, and distinctness vary across Taptic Engine generations. The core claim was validated on iPhone 16 Pro Max; broader device-class coverage is optional post-v1. The Simulator has no Taptic Engine, so feel cannot be auto-tested.
 - **Silent-switch / tone split is nuanced.** Haptics ignore the mute switch; the tone (`.ambient`) follows it. This is documented in Settings copy but should be watched in beta for "why no sound?" confusion.
-- **Seed mantra content correctness is a human-review dependency** (`docs/CONTENT_REVIEW.md`). Text/transliteration is drafted but not yet signed off; this is outside what code can self-verify.
+- **Bundled spiritual seed content is not in Mala v1.** `docs/CONTENT_REVIEW.md` is retained as historical context and must be reactivated if that content returns.
 - **Accessibility is partially implemented and not yet validated with users.** VoiceOver labels/values/actions, an advance action on the ring, reduced-motion handling, and Dynamic Type are in place. Dynamic Type has simulator smoke coverage at accessibility text size on large and compact iPhones; VoiceOver and real-user validation remain required before public launch.
 - **The generated `.xcodeproj` is committed for convenience** but `project.yml` is the source of truth — regenerate with `xcodegen generate` rather than hand-editing the project.
 
@@ -216,11 +216,11 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 
 | ID | Description | Why blocking |
 |----|-------------|--------------|
-| O1 (was B6) | **Seed mantra content human sign-off.** | Spiritual content must be accurate/respectful; record in `docs/CONTENT_REVIEW.md`. |
-| O2 (was B3/B4) | **On-device haptic validation** across ≥2 iPhone classes incl. the no-Core-Haptics fallback. | The eyes-free distinct-completion claim is the core value and cannot be validated in Simulator. |
+| O1 (was B6) | **Bundled spiritual content review** | Closed for v1 because bundled spiritual content was removed; reactivate only if it returns. |
+| O2 (was B3/B4) | **Broader haptic device coverage** | Core haptic and completion behavior passed on iPhone 16 Pro Max; broader coverage is optional post-v1. |
 | O3 (was B9) | **App Store metadata:** name (cleared), bundle id, category (Lifestyle vs Health & Fitness), age rating, screenshots, description, support URL, privacy label. | Required to submit. |
 | O4 | **Accessibility pass** with VoiceOver + Dynamic Type users. | Non-negotiable for an eyes-free app; VoiceOver is coded but unvalidated. Dynamic Type is implemented and smoke-tested, but final accessibility sign-off still needs users/devices. |
-| O5 | **Code signing disabled** (`project.yml`: `CODE_SIGNING_ALLOWED: NO`, empty `DEVELOPMENT_TEAM`). | Blocks any device or TestFlight build; tracked as `docs/BUGS.md` B-SIGN. |
+| O5 | **Release-candidate distribution** | **Closed 2026-08-06** — Build 2 processed to `Ready to Submit` and confirmed working through TestFlight. GitHub automation is deferred. |
 
 ### Non-blocking (ship-with, fix later)
 
@@ -241,7 +241,7 @@ The original "blocking" list captured the gaps between an empty repo and a shipp
 
 ### Current estimated readiness
 
-The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, and device-validated**, not specified — a pure tested engine (the hard gate), the eyes-free practice surface, a distinct completion signal with fallback, interruption-safe persistence, neutral/custom label selection, a non-gamified history, settings, Dynamic Type support, CI + TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is public-page publication, final App Store assets and metadata, verified code signing/TestFlight, and release-candidate device QA.
+The live readiness estimate and latest verification are owned by [`docs/STATUS.md`](docs/STATUS.md); this section describes the *shape* of what remains, not a number this document maintains. Qualitatively the product is **built, tested, device-validated, uploaded, and in TestFlight beta**, not publicly released — a pure tested engine (the hard gate), the eyes-free practice surface, explicit early completion, a distinct completion signal with fallback, interruption-safe persistence, neutral/custom label selection, a non-gamified history, settings, Dynamic Type support, optional TestFlight deployment automation, the 21-style Change Mala picker, an app icon, and a verified privacy posture. What remains is the processed-build smoke check, final App Store assets and metadata, questionnaires, and App Review.
 
 ### Remaining work to reach launch (ordered)
 1. ✅ Scaffold (XcodeGen, SwiftUI, iOS 17+, bundle id, app name, icon, README).
@@ -254,9 +254,9 @@ The live readiness estimate and latest verification are owned by [`docs/STATUS.m
 8. ✅ Settings (F6) — target, tone, intensity, mala style, clear history.
 9. ✅ Change Mala visual picker — 21 native SwiftUI/Canvas styles; Classic remains default.
 10. ✅ Privacy/no-network audit (F7) + `PrivacyInfo.xcprivacy`.
-11. ⏳ **Content sign-off (O1).**
+11. ✅ **Content scope (O1)** — bundled spiritual seed content removed from v1; historical review retained.
 12. ⏳ **Accessibility pass with users (O4)** — labels/actions/reduced-motion/Dynamic Type are coded; validate on device.
-13. ✅ **On-device haptic validation (O2)** — done on a physical iPhone 16 Pro Max (2026-07-18). ⏳ **App Store prep + TestFlight (O3)** — CD automation committed (`docs/DEPLOYMENT.md`); needs App Store Connect secrets + first upload.
+13. ✅ **On-device haptic validation (O2)** — done on a physical iPhone 16 Pro Max (2026-07-18). ⏳ **App Store prep + release candidate (O3/O5)** — Build 2 uploaded manually; processing, refreshed assets/metadata, questionnaires, and submission approval remain (`docs/DEPLOYMENT.md`).
 
 ### Audit (2026-07-01)
 A full audit was run against the built app. Findings fixed:
@@ -280,7 +280,7 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 > Live gate status is tracked in [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) and [`docs/STATUS.md`](docs/STATUS.md); the list below is the PRD's scope-level view.
 
 - [x] **Repetition engine built + unit-tested** (hard gate, F1).
-- [x] **Distinct completion haptic + tone implemented** with fallback (F3 — on-device A/B pending, O2).
+- [x] **Distinct completion haptic + tone implemented and device-validated** with fallback (F3/O2).
 - [x] **Eyes-free whole-screen practice + one-step undo** (F2).
 - [x] **Interruption-safe persistence / exact-bead resume** (B8/F7).
 - [x] **`PrivacyInfo.xcprivacy`** present, bundled, declaring no tracking / no collection (F7).
@@ -296,8 +296,8 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 - [x] **On-device haptic / completion validation (O2)** — validated on a physical iPhone 16 Pro Max (2026-07-18): tick + distinct completion + fallback path; closes JAPA-7. (One hardware class; additional classes optional.)
 - [ ] **Accessibility validated with VoiceOver users and Dynamic Type users on device (O4).**
 - [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.
-- [ ] **Code signing enabled (O5)** with a real Development Team, for device/TestFlight builds.
+- [x] **Release-candidate distribution (O5):** Build 2 processed to `Ready to Submit` and confirmed working through TestFlight on 2026-08-06.
 - [ ] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` (no data collected/tracked).
 - [ ] **Crash-free core loop on a physical device:** a full 108-bead round end-to-end, including an interruption mid-round, on clean install and on upgrade.
 - [ ] **Support/contact URL** and a short, respectful App Store description.
-- [ ] **TestFlight beta** with practice users; collect qualitative "didn't have to look" / interruption-safety feedback before public release.
+- [~] **TestFlight beta:** intended testers reported the release-candidate behavior acceptable; verify processed Build 2 installs and launches before public release.

@@ -4,10 +4,9 @@ A quiet, local-first **digital mala** for daily mantra repetition (*japa*) on iO
 
 > **Status: v1 built and device-validated.** The app is built and running: a tested
 > repetition engine, the eyes-free
-> haptic practice screen, a distinct completion signal, mantra selection (reviewed
-> seed set + free-text), quiet history, settings, Dynamic Type support, CI + TestFlight deployment automation, and a 21-style Change Mala picker — all local-first. Current
+> haptic practice screen, a distinct completion signal, neutral Counting plus private custom labels, quiet history, settings, Dynamic Type support, CI + TestFlight deployment automation, and a 21-style Change Mala picker — all local-first. Current
 > status, test counts, and readiness live in [`docs/STATUS.md`](docs/STATUS.md) and [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md). Remaining
-> work is public-page publication, final App Store assets, signing/TestFlight verification, and release-candidate QA
+> work is the follow-up TestFlight upload, human approval/upload of App Store metadata and screenshots, and release-candidate QA
 > (see [`LAUNCH_READINESS.md`](LAUNCH_READINESS.md) §9 and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
 
 ## What it is

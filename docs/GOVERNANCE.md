@@ -2,7 +2,7 @@
 id: DOC-GOVERNANCE
 canonicalFor: repository-authority-and-external-mirror-policy
 status: active
-lastVerified: 2026-07-29
+lastVerified: 2026-08-03
 readWhen:
   - planning or assigning work
   - updating Jira, Notion, or Studio OS
@@ -76,6 +76,21 @@ contract, commit, or evidence artifact. A Jira or Notion item may be more
 detailed for operational convenience, but it must not contradict or expand the
 approved repository scope.
 
+## Task decomposition rule
+
+Do not create subtasks to satisfy an arbitrary count or to make a task look more
+detailed. Create a subtask only when it has at least one meaningful execution
+boundary: a distinct deliverable, a different owner or execution agent, an
+independent estimate or worklog, a dependency or sequencing boundary, a
+separate approval, or its own verification evidence. Keep a task whole when one
+person or agent can complete and verify it as a coherent unit.
+
+Before splitting work, ask whether the child item could be assigned, estimated,
+blocked, reviewed, or completed independently. If not, retain it as acceptance
+criteria or a checklist inside the parent task rather than creating a Jira or
+Notion subtask. This rule applies to repository plans and their Jira, Notion,
+and Studio OS mirrors.
+
 ## Conflict resolution
 
 When repository and external trackers disagree:
@@ -93,4 +108,3 @@ When repository and external trackers disagree:
 Work is complete only when the requested change and required verification are
 represented in the repository. Tracker status changes follow that repository
 update. A Jira or Notion `Done` state by itself is not completion evidence.
-

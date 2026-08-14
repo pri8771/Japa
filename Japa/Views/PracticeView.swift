@@ -17,6 +17,7 @@ struct PracticeView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var tapScale: CGFloat = 1
+    @State private var showFinishConfirmation = false
 
     private var style: MalaStyle { app.preferences.malaStyle }
     private var isClassic: Bool { style == .classic }
@@ -86,6 +87,12 @@ struct PracticeView: View {
         .background(isClassic ? Theme.background : Color.black)
         .animation(.easeInOut(duration: 0.4), value: controller.phase)
         .toolbar(.hidden, for: .navigationBar)
+        .alert("Finish this round?", isPresented: $showFinishConfirmation) {
+            Button("Finish", role: .destructive) { controller.finishEarly() }
+            Button("Keep counting", role: .cancel) {}
+        } message: {
+            Text("Your current count will be saved to History and a fresh round will begin.")
+        }
         .onAppear { controller.prepare() }
     }
 
@@ -150,6 +157,20 @@ struct PracticeView: View {
                     )
             }
             .accessibilityHint("Steps back one bead")
+
+            Button(action: { showFinishConfirmation = true }) {
+                Text("Finish early")
+                    .font(Theme.ui(14, weight: .medium))
+                    .foregroundStyle(isClassic ? Theme.textSecondary : .white.opacity(0.88))
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 9)
+                    .background(Capsule().fill(.black.opacity(isClassic ? 0 : 0.26)))
+                    .overlay(
+                        Capsule().stroke(isClassic ? Theme.hairline : .white.opacity(0.32), lineWidth: 1)
+                    )
+            }
+            .accessibilityIdentifier("finishEarlyButton")
+            .accessibilityHint("Save this partial round to History and start a new round")
 
             Text("Tap anywhere to advance")
                 .font(Theme.ui(12))

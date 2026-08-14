@@ -18,19 +18,48 @@
 #   BUILD_NUMBER      overrides the TestFlight build number (defaults to the CI run number)
 
 require "shellwords"
+require "fileutils"
 
 default_platform(:ios)
 
 platform :ios do
+  def app_store_connect_key
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("ASC_KEY_PATH")
+    )
+  end
+
+  def repository_root
+    File.expand_path("..", __dir__)
+  end
+
+  def prepare_store_screenshots
+    source = File.join(
+      repository_root,
+      "AppStoreAssets",
+      "Screenshots",
+      "en-US",
+      "6.9-inch"
+    )
+    destination_root = File.join(repository_root, "build", "app-store-screenshots")
+    destination = File.join(destination_root, "en-US")
+    screenshots = Dir[File.join(source, "*.png")].sort
+
+    UI.user_error!("No App Store screenshots found at #{source}") if screenshots.empty?
+
+    FileUtils.rm_rf(destination_root)
+    FileUtils.mkdir_p(destination)
+    FileUtils.cp(screenshots, destination)
+    destination_root
+  end
+
   desc "Archive a signed Release build and upload it to TestFlight."
   desc "Requires ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH, DEVELOPMENT_TEAM."
   lane :beta do
     api_key_path = ENV.fetch("ASC_KEY_PATH")
-    api_key = app_store_connect_api_key(
-      key_id: ENV.fetch("ASC_KEY_ID"),
-      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
-      key_filepath: api_key_path
-    )
+    api_key = app_store_connect_key
 
     # project.yml is the source of truth for the Xcode project; regenerate the
     # .xcodeproj so the archive matches committed build settings.
@@ -86,6 +115,40 @@ platform :ios do
     upload_to_testflight(
       api_key: api_key,
       skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Upload the approved repository metadata and screenshots without submitting."
+  lane :store_metadata do
+    upload_to_app_store(
+      api_key: app_store_connect_key,
+      app_identifier: "com.priyansh.mala",
+      app_version: ENV.fetch("APP_VERSION", "1.0"),
+      metadata_path: File.join(repository_root, "fastlane", "metadata"),
+      screenshots_path: prepare_store_screenshots,
+      skip_binary_upload: true,
+      submit_for_review: false,
+      automatic_release: false,
+      overwrite_screenshots: true,
+      precheck_include_in_app_purchases: false,
+      force: true
+    )
+  end
+
+  desc "Submit an existing TestFlight build for review; manual release remains selected."
+  lane :submit_review do
+    upload_to_app_store(
+      api_key: app_store_connect_key,
+      app_identifier: "com.priyansh.mala",
+      app_version: ENV.fetch("APP_VERSION"),
+      build_number: ENV.fetch("BUILD_NUMBER"),
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: true,
+      automatic_release: false,
+      precheck_include_in_app_purchases: false,
+      force: true
     )
   end
 end

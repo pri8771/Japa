@@ -1,0 +1,101 @@
+name: App Store Metadata and Submission
+
+# Manual-only and approval-gated by design. The metadata action uploads the
+# repository-backed copy/screenshots but never submits. The submit action
+# requires an exact confirmation phrase and selects an already processed build.
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Upload metadata or submit an existing build"
+        required: true
+        type: choice
+        default: metadata
+        options:
+          - metadata
+          - submit
+      app_version:
+        description: "App Store version"
+        required: true
+        default: "1.0"
+      build_number:
+        description: "Processed TestFlight build number (required for submit)"
+        required: false
+      confirmation:
+        description: "For submit, enter SUBMIT-MALA-<version>"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-store-${{ inputs.action }}
+  cancel-in-progress: false
+
+jobs:
+  app-store:
+    name: ${{ inputs.action == 'submit' && 'Submit for App Review' || 'Upload Store Metadata' }}
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby and fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Prepare App Store Connect authentication
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        run: |
+          for name in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_CONTENT; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required GitHub Actions secret: ${name}"
+              exit 1
+            fi
+          done
+
+          umask 077
+          key_path="${RUNNER_TEMP}/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$ASC_KEY_CONTENT" | base64 -D > "$key_path"
+          echo "ASC_KEY_PATH=$key_path" >> "$GITHUB_ENV"
+
+      - name: Upload metadata and screenshots without submission
+        if: inputs.action == 'metadata'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_VERSION: ${{ inputs.app_version }}
+        run: bundle exec fastlane store_metadata
+
+      - name: Verify explicit submission confirmation
+        if: inputs.action == 'submit'
+        env:
+          APP_VERSION: ${{ inputs.app_version }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          if [[ -z "$BUILD_NUMBER" ]]; then
+            echo "::error::build_number is required for submission"
+            exit 1
+          fi
+          if [[ "$CONFIRMATION" != "SUBMIT-MALA-${APP_VERSION}" ]]; then
+            echo "::error::confirmation must equal SUBMIT-MALA-${APP_VERSION}"
+            exit 1
+          fi
+
+      - name: Submit processed build for App Review with manual release
+        if: inputs.action == 'submit'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_VERSION: ${{ inputs.app_version }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: bundle exec fastlane submit_review
