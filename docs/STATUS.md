@@ -20,9 +20,12 @@ supersedes: []
 Product lifecycle (per `iOS_app_factory_rules/governance/PROJECT_LIFECYCLE.md`
 controlled vocabulary): **`beta`** — Build 1 is available in TestFlight and
 Build 2, containing explicit Finish early and the current fixes, was uploaded
-manually through Xcode Organizer on 2026-08-06 and is **Ready to Submit** in App
-Store Connect. VoiceOver user validation is an explicitly accepted post-v1 risk,
-not a completed check.
+manually through Xcode Organizer on 2026-08-06, processed to **Ready to
+Submit**, and **submitted for App Review on 2026-08-06 at 11:40 PM**
+(submission `897d1493-c2f1-474f-afa6-01d3e92694c4`), where it currently sits
+**Waiting for Review**. VoiceOver support is out of scope by product decision
+(2026-08-14) — it is not a v1 gate, not a post-v1 plan, and not tracked as a
+residual risk. Dynamic Type remains the app's accessibility baseline.
 
 Factory registration is a separate axis and is **complete** (`projectType:
 existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
@@ -39,7 +42,8 @@ and manually release the approved version after a final status check.
 - **App Review:** version 1.0 Build 2 is Waiting for Review. It was submitted on
   2026-08-06 at 11:40 PM under submission `897d1493-c2f1-474f-afa6-01d3e92694c4`.
   Public release remains manual. GitHub automation is deferred and is not a
-  blocker. VoiceOver user validation remains an accepted post-v1 residual risk.
+  blocker. VoiceOver support is out of scope by product decision (2026-08-14)
+  and is not tracked as a residual risk.
 
 ## Verified
 
