@@ -2,7 +2,7 @@
 id: DOC-DECISIONS
 canonicalFor: approved-decisions
 status: active
-lastVerified: 2026-08-06
+lastVerified: 2026-08-20
 readWhen:
   - a change crosses a previously locked decision
 related:
@@ -142,3 +142,44 @@ supersedes: []
   not existing code.
 - **Related Files:** `docs/BUGS.md`, `docs/RISKS.md`, `docs/STATUS.md`,
   `LAUNCH_READINESS.md`
+
+## DEC-011 — Release Mala 1.0 Build 2 to the public App Store
+
+- **Status:** accepted
+- **Date Recorded:** 2026-08-20
+- **Context:** Version 1.0 Build 2 was submitted for App Review on 2026-08-06
+  (submission `897d1493-c2f1-474f-afa6-01d3e92694c4`) and entered Waiting for
+  Review. Apple moved it to In Review on 2026-08-20 at 6:22 AM and approved it
+  (Pending Developer Release) at 7:34 AM the same day. Public release remained
+  manual per DEC-009.
+- **Options Considered:** Wait for additional device-QA evidence (a dedicated
+  clean-install-vs-upgrade physical-device interruption test) before
+  releasing; release now on the strength of the existing automated suite plus
+  the 2026-07-18 physical-device smoke evidence and accept the residual gap as
+  an owner-waived risk.
+- **Decision:** The owner released the approved build immediately. Owner
+  clicked Release This Version in App Store Connect; the app moved Processing
+  for Distribution → Ready for Distribution, both at 8:20 PM on 2026-08-20.
+  Mala 1.0 (Build 2) is now live worldwide, free, no IAP, with the "Data Not
+  Collected" privacy label already published.
+- **Gate disposition:** Satisfied by real repository evidence — automated
+  suite (69/69, see `docs/TEST_PLAN.md`), physical-device haptic/full-round
+  validation (`quality/evidence/2026-07-18-device-validation-iphone16promax.md`),
+  App Store metadata/screenshots/support URL/age rating/privacy label
+  (`quality/evidence/2026-08-06-app-store-connect-preparation.md`), and
+  TestFlight release-candidate confirmation (2026-08-06). Owner-waived rather
+  than evidenced: a dedicated crash-free 108-bead round with a mid-round
+  interruption on a physical device, run separately on a clean install and on
+  an upgrade — no such evidence file exists in `quality/evidence/`; the owner
+  accepted this gap for 1.0 rather than blocking release on it (see
+  `docs/RELEASE_CHECKLIST.md`, `LAUNCH_READINESS.md` §9).
+- **Consequences:** GitHub Actions release automation (`ASC_KEY_CONTENT`)
+  remains unconfigured and deferred; it did not block this manual release,
+  consistent with R4 in `docs/RISKS.md`. Product lifecycle status moves
+  `beta` → `released` per `PROJECT_LIFECYCLE.md`'s controlled vocabulary.
+  Post-release work is monitoring App Store reviews and crash reports, not a
+  pending release gate.
+- **Related Prompt:** Release-doc reconciliation after Mala 1.0 went live.
+- **Related Files:** `docs/STATUS.md`, `docs/RELEASE_CHECKLIST.md`,
+  `LAUNCH_READINESS.md`, `docs/HANDOFF.md`, `docs/RISKS.md`,
+  `quality/evidence/2026-08-20-app-store-release.md`

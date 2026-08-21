@@ -2,7 +2,7 @@
 id: DOC-LAUNCH-READINESS
 canonicalFor: launch-scope-and-prd
 status: active
-lastVerified: 2026-08-06
+lastVerified: 2026-08-20
 readWhen:
   - understanding v1 product scope, MVP features, or acceptance criteria
 related:
@@ -295,9 +295,9 @@ The flagship interruption-safety flow was verified **end-to-end in the running a
 - [x] **Content scope (O1):** bundled spiritual seed content removed from Mala v1 on 2026-07-26; historical review record retained in `docs/CONTENT_REVIEW.md`.
 - [x] **On-device haptic / completion validation (O2)** — validated on a physical iPhone 16 Pro Max (2026-07-18): tick + distinct completion + fallback path; closes JAPA-7. (One hardware class; additional classes optional.)
 - [x] **Accessibility gate closed (O4)** — Dynamic Type validated at accessibility text size on device; VoiceOver is out of scope, so no VoiceOver user validation is required.
-- [ ] **App identity (O3):** App Store name cleared, category chosen (Lifestyle or Health & Fitness), age rating set honestly.
+- [x] **App identity (O3):** App Store name cleared (`Mala: A Quiet Digital Mala`; exact name `Mala` was unavailable), category chosen (Lifestyle), age rating set honestly (4+, current questionnaire) — verified 2026-08-06. Evidence: `quality/evidence/2026-08-06-app-store-connect-preparation.md`.
 - [x] **Release-candidate distribution (O5):** Build 2 processed to `Ready to Submit` and confirmed working through TestFlight on 2026-08-06.
-- [ ] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` (no data collected/tracked).
-- [ ] **Crash-free core loop on a physical device:** a full 108-bead round end-to-end, including an interruption mid-round, on clean install and on upgrade.
-- [ ] **Support/contact URL** and a short, respectful App Store description.
-- [~] **TestFlight beta:** intended testers reported the release-candidate behavior acceptable; verify processed Build 2 installs and launches before public release.
+- [x] **App Store privacy "nutrition label"** entered to match `PrivacyInfo.xcprivacy` — Data Not Collected response published 2026-08-06 by the accountable human. Evidence: `quality/evidence/2026-08-06-app-store-connect-preparation.md`.
+- [ ] **Crash-free core loop on a physical device:** a full 108-bead round end-to-end, including an interruption mid-round, on clean install and on upgrade. No dedicated pre-release device-QA artifact for this exact scenario exists in `quality/evidence/` (the 2026-07-18 physical-device evidence covers a full round and completion signal but not a clean-install-vs-upgrade interruption matrix; interruption-resume itself is automated-UI-test coverage, not physical-device). Left unchecked; superseded by real-world release — the app is now live (2026-08-20) and has been used successfully — consistent with the owner-waiver pattern applied to this gate for 1.0 (see `docs/RELEASE_CHECKLIST.md`).
+- [x] **Support/contact URL** and a short, respectful App Store description — support page live at `priyanshchordia.com/apps/mala/support/` since 2026-07-29 (HTTP 200); description, keywords, and Support URL entered in App Store Connect 2026-08-06. Evidence: `quality/evidence/2026-08-06-app-store-connect-preparation.md`.
+- [x] **TestFlight beta:** intended testers reported the release-candidate behavior acceptable; the accountable human confirmed processed Build 2 installed and launched correctly through TestFlight on 2026-08-06 before public release.

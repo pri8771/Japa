@@ -2,7 +2,7 @@
 id: DOC-RELEASE-CHECKLIST
 canonicalFor: release-readiness
 status: active
-lastVerified: 2026-08-06
+lastVerified: 2026-08-20
 readWhen:
   - preparing a release
 related:
@@ -39,6 +39,8 @@ Reconciled 2026-07-17 (re-dated 2026-07-18) against `LAUNCH_READINESS.md` §9 an
 - [x] App Store metadata, screenshots, support URL, age rating (MALA-5/6/8) — five 1284 × 2778 PNGs accepted; listing copy, URLs, Lifestyle category, 4+ age rating, content rights, worldwide free availability, App Review contact, published Data Not Collected response, active non-trader DSA status, Build 2, and manual release verified on 2026-08-06.
 - [x] Public privacy-policy and support pages — `priyanshchordia.com/apps/mala/privacy/` and `/apps/mala/support/` returned HTTP 200 and exposed `support@priyanshchordia.com` on 2026-07-29
 - [x] TestFlight release-candidate E2E — accountable user confirmed processed Build 2 worked correctly through TestFlight on 2026-08-06
+- [~] Crash-free 108-bead round on physical device, including a mid-round interruption, on clean install and on upgrade — **owner-waived for 1.0.** `quality/evidence/2026-07-18-device-validation-iphone16promax.md` covers a physical-device full round and completion signal, but not a dedicated clean-install-vs-upgrade interruption matrix; interruption-resume itself is covered by an automated UI test, not a physical-device run. No such dedicated evidence file exists in `quality/evidence/`. The owner accepted this gap and released 1.0 based on the passing automated suite plus the 2026-07-18 physical-device smoke rather than blocking on additional device QA.
+- [x] Version 1.0 Build 2 approved by Apple App Review and manually released to the public App Store — 2026-08-20, Processing for Distribution → Ready for Distribution (both 8:20 PM), owner clicked Release This Version. Evidence: `quality/evidence/2026-08-20-app-store-release.md`.
 
 ## Deployment automation
 

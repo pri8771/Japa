@@ -2,7 +2,7 @@
 id: DOC-STATUS
 canonicalFor: current-status
 status: active
-lastVerified: 2026-08-06
+lastVerified: 2026-08-20
 readWhen:
   - onboarding
   - checking current progress or blockers
@@ -18,32 +18,54 @@ supersedes: []
 ## Lifecycle status
 
 Product lifecycle (per `iOS_app_factory_rules/governance/PROJECT_LIFECYCLE.md`
-controlled vocabulary): **`beta`** — Build 1 is available in TestFlight and
-Build 2, containing explicit Finish early and the current fixes, was uploaded
-manually through Xcode Organizer on 2026-08-06, processed to **Ready to
-Submit**, and **submitted for App Review on 2026-08-06 at 11:40 PM**
-(submission `897d1493-c2f1-474f-afa6-01d3e92694c4`), where it currently sits
-**Waiting for Review**. VoiceOver support is out of scope by product decision
-(2026-08-14) — it is not a v1 gate, not a post-v1 plan, and not tracked as a
-residual risk. Dynamic Type remains the app's accessibility baseline.
+controlled vocabulary): **`released`** — version 1.0 Build 2 was approved by
+Apple App Review and released to the public App Store on **2026-08-20** (see
+"Released to the App Store" below; submission `897d1493-c2f1-474f-afa6-01d3e92694c4`).
+VoiceOver support is out of scope by product decision (2026-08-14) — it is not
+a v1 gate, not a post-v1 plan, and not tracked as a residual risk. Dynamic
+Type remains the app's accessibility baseline.
 
 Factory registration is a separate axis and is **complete** (`projectType:
 existing`, standard `0.4.0`); it is no longer an in-flight "onboarding" state.
 
 ## Current objective
 
-Monitor App Review for version 1.0 Build 2, respond to any reviewer questions,
-and manually release the approved version after a final status check.
+Mala 1.0 (Build 2) is live worldwide on the public App Store. There is no
+pending release action. Monitor App Store Connect crash reports and App Store
+reviews for the live version; address any user-reported defect through the
+normal bug-fix path (`docs/BUGS.md`) rather than as a release blocker.
+
+## Released to the App Store (2026-08-20)
+
+Version 1.0 Build 2 was approved by Apple App Review and released to the
+public App Store. History for app id `6796503849` in App Store Connect (read
+live from ASC's own History tab by the owner's assistant, authoritative):
+
+| Event | Timestamp | Actor |
+|---|---|---|
+| Prepare for Submission | Jul 30, 2026 6:49 PM | priyansh.chordia@gmail.com |
+| Ready for Review | Aug 6, 2026 11:39 PM | priyansh.chordia@gmail.com |
+| Waiting for Review | Aug 6, 2026 11:40 PM | priyansh.chordia@gmail.com (submission `897d1493-c2f1-474f-afa6-01d3e92694c4`) |
+| In Review | Aug 20, 2026 6:22 AM | Apple |
+| Pending Developer Release | Aug 20, 2026 7:34 AM | Apple (approved) |
+| Processing for Distribution | Aug 20, 2026 8:20 PM | priyansh.chordia@gmail.com (owner clicked Release This Version) |
+| Ready for Distribution | Aug 20, 2026 8:20 PM | priyansh.chordia@gmail.com (live on the App Store) |
+
+Mala is now live worldwide: version 1.0, Build 2, free, no IAP, "Data Not
+Collected" privacy label already published. GitHub Actions release automation
+(`ASC_KEY_CONTENT`) remains unconfigured/deferred and did not block this
+manual release (R4, `docs/RISKS.md`). Full evidence:
+`quality/evidence/2026-08-20-app-store-release.md`.
 
 ## Product maturity
 
 - **Implementation:** v1 feature set built and on-device validated (2026-07-18, iPhone 16 Pro Max); mala-style picker, Dynamic Type, merged practice surface, stale-round Finish, CI, and TestFlight deployment automation in place
 - **Factory registration:** existing project, standard `0.4.0` (upgraded from `0.2.0` on 2026-07-17), registered 2026-07-16
-- **App Review:** version 1.0 Build 2 is Waiting for Review. It was submitted on
-  2026-08-06 at 11:40 PM under submission `897d1493-c2f1-474f-afa6-01d3e92694c4`.
-  Public release remains manual. GitHub automation is deferred and is not a
-  blocker. VoiceOver support is out of scope by product decision (2026-08-14)
-  and is not tracked as a residual risk.
+- **App Review:** version 1.0 Build 2 was approved by Apple and released to
+  the public App Store on 2026-08-20 (submission `897d1493-c2f1-474f-afa6-01d3e92694c4`).
+  GitHub Actions release automation remains deferred and did not block this
+  manual release. VoiceOver support is out of scope by product decision
+  (2026-08-14) and is not tracked as a residual risk.
 
 ## Verified
 
@@ -81,9 +103,8 @@ and manually release the approved version after a final status check.
 
 ## Verification pending
 
-- Apple App Review decision and any reviewer follow-up
-- Accountable-human final release decision after approval; automatic release is disabled
 - VoiceOver validation with a real assistive-tech user is deferred post-v1 (MALA-7); Dynamic Type remains implemented and smoke-tested
+- GitHub Actions release automation (`ASC_KEY_CONTENT`) remains unconfigured; deferred, not blocking (R4)
 
 ## External trackers
 
@@ -93,7 +114,7 @@ and manually release the approved version after a final status check.
 
 ## Blockers
 
-- No pre-review submission blocker remains. The release is waiting on Apple's review decision.
+- None. Mala 1.0 Build 2 is live on the public App Store.
 
 ## Documentation reconciliation (2026-07-17)
 
@@ -156,6 +177,17 @@ and manually release the approved version after a final status check.
 
 ## Next action
 
-1. Monitor submission `897d1493-c2f1-474f-afa6-01d3e92694c4` for review status or reviewer messages.
-2. Address any App Review issue without replacing Build 2 unless a code change is required.
-3. After approval, perform a final product-page check and manually release version 1.0.
+1. Monitor App Store Connect crash/analytics data and App Store reviews for the live version 1.0 Build 2.
+2. Optionally configure `ASC_KEY_CONTENT` to enable unattended GitHub Actions release automation for future builds (deferred, not blocking; R4).
+3. No further v1 release action is pending.
+
+## Documentation reconciliation (2026-08-20)
+
+- Mala 1.0 Build 2 was approved by Apple App Review and released to the public
+  App Store on 2026-08-20 (Processing for Distribution → Ready for
+  Distribution, both 8:20 PM). Lifecycle status changed `beta` →
+  `released` per `PROJECT_LIFECYCLE.md`'s controlled vocabulary. Propagated
+  across `docs/STATUS.md`, `docs/RELEASE_CHECKLIST.md`,
+  `LAUNCH_READINESS.md`, `docs/DECISIONS.md` (DEC-011), and
+  `docs/HANDOFF.md`; new evidence record at
+  `quality/evidence/2026-08-20-app-store-release.md`.
